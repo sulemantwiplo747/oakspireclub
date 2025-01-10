@@ -35,16 +35,15 @@ class _SplashPageState extends State<SplashPage> {
         // Ensure the first frame is shown after the video is initialized
         setState(() {});
 
-        Timer(const Duration(seconds: 5), () { 
+        Timer(const Duration(seconds: 5), () {
           _prepareToLaunch();
         });
-    });
+      });
   }
 
   _prepareToLaunch() async {
-    
     await _getConfig();
-    await _tryToLogin(); 
+    await _tryToLogin();
   }
 
   Future<void> _tryToLogin() async {
@@ -52,30 +51,26 @@ class _SplashPageState extends State<SplashPage> {
 
     bool moveToSignIn = false;
 
-    if ( id == null ) {
+    if (id == null) {
       moveToSignIn = true;
     } else {
       bool response = await UserApi.getById(id);
-      if ( !response ) {
+      if (!response) {
         utils.removeLocal('user_id');
         moveToSignIn = true;
         return;
       }
-    }  
+    }
 
-    // set up firebase 
+    // set up firebase
     _saveFirebaseToken(null);
     FirebaseMessaging.instance.onTokenRefresh.listen(_saveFirebaseToken);
-   
-    
 
-    if ( moveToSignIn )
-    {
+    if (moveToSignIn) {
       Get.off(() => SignInPage());
     } else {
       Get.off(() => openDashboard(controller.user.value));
     }
-
   }
 
   Future<void> _getConfig() async {
@@ -83,20 +78,33 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _saveFirebaseToken(String? token) async {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
     Controller controller = Get.find<Controller>();
     // Get the token each time the application loads
     token ??= await FirebaseMessaging.instance.getToken();
 
     // Save the initial token to the database
-    if ( token != null )
-    {
+    if (token != null) {
       String? userId = controller.user.value.id;
       await FirebaseApi.storeFCM(userId, token);
     }
 
-     // also subscribe to firebase topic
-     await FirebaseMessaging.instance.subscribeToTopic('uncategorized');
-    
+    // also subscribe to firebase topic
+    await FirebaseMessaging.instance.subscribeToTopic('uncategorized');
   }
 
   @override
@@ -125,20 +133,20 @@ class _SplashPageState extends State<SplashPage> {
             ),
           ),
           Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset("assets/images/splash-logo.png", width: 300),
-                Text(
-                  "Helping the world become\nwhiskey wise™",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 18,
-                    color: Colors.white
-                  ),
-                )
-              ],
-            )
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/splash-logo.png", width: 300),
+              Text(
+                "Helping the world become\nwhiskey wise™",
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontSize: 18, color: Colors.white),
+              )
+            ],
+          )
         ],
       ),
     );
