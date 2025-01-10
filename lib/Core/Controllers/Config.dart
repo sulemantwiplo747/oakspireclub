@@ -5,6 +5,7 @@ class Config {
   String? portalUrl;
   String? termsUrl;
   String? privacyUrl;
+  Map? currentVersion;
 
   Config({
     this.stripePk,
@@ -22,6 +23,7 @@ class Config {
     portalUrl = json['portal_url'];
     termsUrl = json['terms_url'];
     privacyUrl = json['privacy_url'];
+    currentVersion = json['current_version'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,7 +33,8 @@ class Config {
       "subscribe_now_url": subscribeNowUrl,
       'portal_url': portalUrl,
       'terms_url': termsUrl,
-      'privacy_url': privacyUrl
+      'privacy_url': privacyUrl,
+      'current_version': currentVersion
     };
   }
 }
