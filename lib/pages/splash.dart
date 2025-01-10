@@ -1,16 +1,21 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:bourboneur/Core/Apis/Config.dart';
 import 'package:bourboneur/Core/Apis/Firebase.dart';
 import 'package:bourboneur/Core/Apis/User.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/Package.dart';
 import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/pages/page_helpers/open_dashboard.dart';
 import 'package:bourboneur/pages/sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:store_redirect/store_redirect.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashPage extends StatefulWidget {
@@ -43,7 +48,10 @@ class _SplashPageState extends State<SplashPage> {
 
   _prepareToLaunch() async {
     await _getConfig();
-    await _tryToLogin();
+    await _versionCheck(() async {
+      await _tryToLogin();
+    });
+    
   }
 
   Future<void> _tryToLogin() async {
@@ -75,6 +83,39 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _getConfig() async {
     bool response = await ConfigApi.all();
+  }
+
+  Future<void> _versionCheck( Function()? onComplete ) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    int buildNumber = int.parse(packageInfo.buildNumber);
+    int version = int.parse(controller.config.value.currentVersion!['version']);
+    bool mandatory = controller.config.value.currentVersion!['is_forced'].toString() == "1";
+
+    if ( buildNumber < version ) {
+      if ( !mounted ) return;
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => UpdaterPopup(
+          isMandatory: mandatory,
+          onCancel: () {
+            if ( onComplete != null ) onComplete();
+          },
+          onConfirm: () async {
+            PackageInfo packageInfo = await PackageInfo.fromPlatform();
+            StoreRedirect.redirect(
+              androidAppId: packageInfo.packageName,
+              iOSAppId: '6503428230'
+            );
+          },
+        )
+      );      
+
+      return;
+    }
+
+    if ( onComplete != null ) onComplete();    
   }
 
   Future<void> _saveFirebaseToken(String? token) async {
@@ -149,6 +190,65 @@ class _SplashPageState extends State<SplashPage> {
           )
         ],
       ),
+    );
+  }
+}
+
+class UpdaterPopup extends StatelessWidget {
+  UpdaterPopup({
+    super.key,
+    this.isMandatory,
+    this.onCancel,
+    this.onConfirm
+  });
+
+  bool? isMandatory;
+  void Function()? onConfirm;
+  void Function()? onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: ContinuousRectangleBorder(
+        side: const BorderSide(width: 2, color: Color(0xffe17f2f)),
+        borderRadius: BorderRadius.circular(0),
+      ),
+      backgroundColor: Colors.black,
+
+      content: Container(
+          padding: const EdgeInsets.only(left: 0, top: 10, right: 0),
+          child: Text(
+            isMandatory == true ? "App update required to continue" : "New update available",
+            style: const TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          )
+        ),
+      actions: [
+        if ( isMandatory != true ) 
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            if ( onCancel != null ) onCancel!();
+          },
+          child: const Text(
+            'Later',
+            style: TextStyle(
+                color: Color(0xffe17f2f),
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+        TextButton(
+          onPressed: onConfirm,
+          child: const Text(
+            'Update',
+            style: TextStyle(
+                color: Color(0xffe17f2f),
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
+          ),
+        )
+      ],
     );
   }
 }
