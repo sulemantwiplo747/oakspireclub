@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:bourboneur/Core/Apis/Config.dart';
 import 'package:bourboneur/Core/Apis/Firebase.dart';
@@ -88,7 +89,12 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _versionCheck( Function()? onComplete ) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     int buildNumber = int.parse(packageInfo.buildNumber);
-    int version = int.parse(controller.config.value.currentVersion!['version']);
+    
+    int version = int.parse(
+       Platform.isAndroid ?
+       controller.config.value.currentVersion!['android'] :
+       controller.config.value.currentVersion!['ios']
+    );
     bool mandatory = controller.config.value.currentVersion!['is_forced'].toString() == "1";
 
     if ( buildNumber < version ) {
