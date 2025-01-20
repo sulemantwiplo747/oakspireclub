@@ -65,7 +65,7 @@ class _BottleCreateState extends State<BottleCreate> {
       );
 
       Navigator.pop(context);
-      Navigator.pop(context);
+      if ( widget.onConfirm != null ) widget.onConfirm!();
     }
     
     
