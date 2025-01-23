@@ -58,51 +58,55 @@ class _SelectPackagePageState extends State<SelectPackagePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return !isLoading
-        ? SafeArea(
-            child: Scaffold(
-                body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30, top: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text("get whiskey wise,",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                                fontWeight: FontWeight.normal,
-                                color: Colors.white,
-                                fontFamily: 'Arial')),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                        controller.user.value.packageId == null
-                            ? "Start your 7-day free trial.  Cancel anytime."
-                            : "Start your subscription now. Cancel anytime.",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 16, color: const Color(0xffbfbfbf))),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const PackageForm()
-                    // if ( controller.user.value.packageId == null )
-                    // Text(
-                    //     "You will not be charged, until trial is over. After that your normal package price is active",
-                    //     textAlign: TextAlign.left,
-                    //     style: Theme.of(context)
-                    //         .textTheme
-                    //         .bodySmall
-                    //         ?.copyWith(color: const Color(0xffe07e2f))),
-                    // const SizedBox(
-                    //   height: 50,
-                    // ),
-                  ],
+        ? Container(
+          color:  Theme.of(context).colorScheme.background,
+          child: SafeArea(
+              child: Scaffold(
+                 backgroundColor: Theme.of(context).colorScheme.background,
+                  body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30, top: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text("get whiskey wise,",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                  fontFamily: 'Arial')),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                          controller.user.value.packageId == null
+                              ? "Start your 7-day free trial.  Cancel anytime."
+                              : "Start your subscription now. Cancel anytime.",
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 16, color: const Color(0xffbfbfbf))),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const PackageForm()
+                      // if ( controller.user.value.packageId == null )
+                      // Text(
+                      //     "You will not be charged, until trial is over. After that your normal package price is active",
+                      //     textAlign: TextAlign.left,
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .bodySmall
+                      //         ?.copyWith(color: const Color(0xffe07e2f))),
+                      // const SizedBox(
+                      //   height: 50,
+                      // ),
+                    ],
+                  ),
                 ),
-              ),
-            )),
-          )
+              )),
+            ),
+        )
         : const Scaffold(
             body: Center(
               child: CircularProgressIndicator(
