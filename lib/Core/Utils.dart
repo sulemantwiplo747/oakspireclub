@@ -4,8 +4,15 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
+  static SnackbarController? snackbarController;
+
   showToast(title, message) {
-    return Get.snackbar(
+    if ( snackbarController != null ) {
+      snackbarController!.close(withAnimations: false);
+      snackbarController = null;
+    }
+
+    snackbarController = Get.snackbar(
       title,
       message,
       snackPosition: SnackPosition.BOTTOM,
@@ -15,7 +22,8 @@ class Utils {
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       borderColor: const Color(0xffe17f2f),
       borderRadius: 0,
-      borderWidth: 2
+      borderWidth: 2,  
+          
     );
   }
 

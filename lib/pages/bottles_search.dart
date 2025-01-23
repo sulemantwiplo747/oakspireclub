@@ -58,7 +58,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     setState(() {
       isConfirmLoading = false;
     });
-    Navigator.pop(context);
+    // Navigator.pop(context);
     Utils().showToast("Success", "You bottle is now added.");
   }
 
@@ -69,7 +69,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
       isListLoading = true;
     });
 
-    bool response = await BlueBookApi.all(page.toString(), keyword, "20");
+    bool response = await BlueBookApi.all(page.toString(), keyword, "200");
     if (!response) {
       setState(() {
         isListLoading = false;
@@ -80,6 +80,10 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     setState(() {
       isListLoading = false;
     });
+  }
+
+  _handleCreateConfirm() {
+     Utils().showToast("Success", "You bottle is now added.");
   }
 
   @override
@@ -153,7 +157,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
 
     data.add(GestureDetector(
       onTap: () {
-        _showCreate();
+        _showCreate(onConfirm: _handleCreateConfirm);
       },
       child: const Row(children: [
         Expanded(
