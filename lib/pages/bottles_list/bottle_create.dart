@@ -1,21 +1,23 @@
 import 'package:bourboneur/Core/Apis/Bluebook.dart';
 import 'package:bourboneur/Core/Apis/Collection.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/common/custom_input.dart';
+import 'package:bourboneur/pages/bottles_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class BottleCreate extends StatefulWidget {
   BottleCreate({
-    super.key,
-    required this.isWishList,
+    super.key,    
+    required this.searchPageType,
     required this.onConfirm
   });
   
-  bool isWishList;
-  void Function()? onConfirm;
+  SearchPageType searchPageType;
+  void Function(BlueBook)? onConfirm;
 
   @override
   State<BottleCreate> createState() => _BottleCreateState();
@@ -58,14 +60,20 @@ class _BottleCreateState extends State<BottleCreate> {
 
     if ( bluebook != false ) {      
       // add to collection
-      await CollectionApi.add(
-        bluebook.id,
-        controller.user.value.id!,
-        widget.isWishList ? CollectionType.wishlist : CollectionType.normal
-      );
+      if (
+        widget.searchPageType == SearchPageType.wishlist ||
+        widget.searchPageType == SearchPageType.normal
+      ) {
+        await CollectionApi.add(
+          bluebook.id,
+          controller.user.value.id!,
+          widget.searchPageType == SearchPageType.wishlist ? CollectionType.wishlist : CollectionType.normal
+        );
+      }
+
 
       Navigator.pop(context);
-      if ( widget.onConfirm != null ) widget.onConfirm!();
+      if ( widget.onConfirm != null ) widget.onConfirm!(bluebook);
     }
     
     

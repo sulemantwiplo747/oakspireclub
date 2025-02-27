@@ -2,6 +2,7 @@ import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/pages/blog.dart';
 import 'package:bourboneur/pages/bluebook.dart';
+import 'package:bourboneur/pages/bourbonuer_testing.dart';
 import 'package:bourboneur/pages/chart_page.dart';
 import 'package:bourboneur/pages/explore.dart';
 import 'package:bourboneur/pages/good_pour.dart';
@@ -40,20 +41,21 @@ class _DashboardPageState extends State<DashboardPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(
-            height: 70,
+            height: 20,
           ),
           Container(
-            height: 200,            
+            height: 270,            
             padding: EdgeInsets.only(left: 130, top: 50),
             decoration: const BoxDecoration(
                 //color: Colors.red,
                 image: DecorationImage(
-                  image: AssetImage("assets/images/BourBonDashboardBeer.png"),
-                  alignment: Alignment.bottomLeft,
+                  image: AssetImage("assets/images/new-dashboard.jpg"),
+                  alignment: Alignment.center,
                   repeat: ImageRepeat.noRepeat
-                )),
+              )),
             child: Text(
-              "Elevate\nYour Spirit",
+              //"Elevate\nYour Spirit",
+              "",
               style: TextStyle(
                   fontFamily: 'Arial',
                   color: Theme.of(context).textTheme.titleMedium?.color,                  
@@ -84,12 +86,19 @@ class _DashboardPageState extends State<DashboardPage> {
             },
           ),
           DashBoardLinkItem(
-            text: "Explore Your Bourbon",
+            text: "Bourbon Testing",
             color: Color(0xFFdd871f),
             onTap: () {
-              Get.to(() => ExplorePage());
+              Get.to(() => BourbonuerTesting());
             },
           ),
+          // DashBoardLinkItem(
+          //   text: "Explore Your Bourbon",
+          //   color: Color(0xFFdd871f),
+          //   onTap: () {
+          //     Get.to(() => ExplorePage());
+          //   },
+          // ),
           DashBoardLinkItem(
             text: "Bourbon Suggestions By Taste",
             color: Color(0xFFc05915),
