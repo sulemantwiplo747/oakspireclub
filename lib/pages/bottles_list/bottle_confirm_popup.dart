@@ -1,3 +1,4 @@
+import 'package:bourboneur/pages/bottles_search.dart';
 import 'package:flutter/material.dart';
 
 class BottleConfirmPopup extends StatelessWidget {
@@ -48,32 +49,54 @@ class BottleAddPopup extends StatelessWidget {
   BottleAddPopup(
       {super.key,
       required this.value,
-      required this.isWishList,
-      required this.onConfirm});
+      required this.onConfirm,
+      required this.searchPageType});
 
   String value;
-  bool isWishList;
   void Function()? onConfirm;
+  SearchPageType searchPageType;
+
+  TextSpan _text() {
+
+    String text1 = "";
+    String text2 = "";
+    switch( searchPageType ) 
+    {
+      case SearchPageType.wishlist:
+        text1 = "Add ";
+        text2 = " to your wishlist?";
+        break;
+      case SearchPageType.normal:
+        text1 = "Add ";
+        text2 = " to your collection?";
+        break;
+      default:
+        text1 = "Select ";
+        text2 = "?";
+        break;
+    }
+    
+
+    return TextSpan(
+        text: text1,
+        style: const TextStyle(
+            color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        children: [
+          TextSpan(
+            text: value,
+            style: const TextStyle(color: Color(0xffe17f2f)),
+          ),
+          TextSpan(
+              text: text2)
+        ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BottleConfirmPopup(
       text: RichText(
         textAlign: TextAlign.center,
-        text: TextSpan(
-            text: "Add ",
-            style: const TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-            children: [
-              TextSpan(
-                text: value,
-                style: const TextStyle(color: Color(0xffe17f2f)),
-              ),
-              TextSpan(
-                  text: isWishList != true
-                      ? " to your collection?"
-                      : " to your wishlist?")
-            ]),
+        text: _text(),
       ),
       onConfirm: onConfirm,
       value: value,

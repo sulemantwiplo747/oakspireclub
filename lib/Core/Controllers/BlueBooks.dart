@@ -1,18 +1,21 @@
 class BlueBook {
   String? id;  
+  String? image;  
   String? bottleName;  
   String? average;
   String? low;
   String? high;
-  String? status;
+  String? status;  
 
-  BlueBook(
-      {this.id,
+  BlueBook({
+      this.id,
       this.bottleName,
       this.average,
       this.low,
       this.high,
-      this.status});
+      this.status,
+      this.image
+    });
 
   BlueBook.fromJson(json) {
     id = json['id'].toString();
@@ -21,6 +24,7 @@ class BlueBook {
     low = json['low'].toString();
     high = json['high'].toString();
     status = json['status'];
+    image = json['image'];     
   }
 
   Map<String, dynamic> toJson() {
@@ -30,7 +34,8 @@ class BlueBook {
       "average": average,
       "low": low,
       "high": high,
-      "status": status
+      "status": status,
+      "image": image
     };
   }
 }

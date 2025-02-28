@@ -13,10 +13,17 @@ import 'package:bourboneur/pages/bottles_list/search_input.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BottlesSearchPage extends StatefulWidget {
-  BottlesSearchPage({super.key, this.isWishList});
+enum SearchPageType { wishlist, normal, rating }
 
-  bool? isWishList;
+class BottlesSearchPage extends StatefulWidget {
+  BottlesSearchPage({
+    super.key,
+    required this.pageType,    
+    this.onSelect
+  });
+
+  SearchPageType pageType;
+  void Function(BlueBook)? onSelect;
 
   @override
   State<BottlesSearchPage> createState() => _BottlesSearchPageState();
@@ -46,20 +53,33 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     });
   }
 
-  _handleConfirm(String id) async {
+  _handleConfirm(BlueBook bluebook) async {
     Navigator.pop(context);
     setState(() {
       isConfirmLoading = true;
     });
 
-    CollectionType type =
-        widget.isWishList! ? CollectionType.wishlist : CollectionType.normal;
-    await CollectionApi.add(id, controller.user.value.id, type);
+    if (
+      widget.pageType == SearchPageType.wishlist ||
+      widget.pageType == SearchPageType.normal
+    ) {
+      CollectionType type = widget.pageType == SearchPageType.wishlist ? CollectionType.wishlist : CollectionType.normal;
+      await CollectionApi.add(bluebook.id!, controller.user.value.id, type);
+    }
+
     setState(() {
       isConfirmLoading = false;
     });
-    // Navigator.pop(context);
-    Utils().showToast("Success", "You bottle is now added.");
+
+    if (
+      widget.pageType == SearchPageType.wishlist ||
+      widget.pageType == SearchPageType.normal
+    ) {
+      Utils().showToast("Success", "You bottle is now added.");
+    } else {
+      // Navigator.pop(context);
+      if ( widget.onSelect != null ) widget.onSelect!(bluebook);
+    }
   }
 
   void getListData(page) async {
@@ -82,8 +102,16 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     });
   }
 
-  _handleCreateConfirm() {
-     Utils().showToast("Success", "You bottle is now added.");
+  _handleCreateConfirm(BlueBook bluebook) {    
+     if (
+      widget.pageType == SearchPageType.wishlist ||
+      widget.pageType == SearchPageType.normal
+    ) {
+      Utils().showToast("Success", "You bottle is now added.");
+    } else {
+      // Navigator.pop(context);
+      if ( widget.onSelect != null ) widget.onSelect!(bluebook);
+    }     
   }
 
   @override
@@ -148,7 +176,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
           _showConfirm(
               value: value.bottleName!,
               onConfirm: () {
-                _handleConfirm(value.id!);
+                _handleConfirm(value);
               });
         },
         // isAdded: i % 3 != 0,
@@ -181,18 +209,20 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
         builder: (BuildContext context) {
           return BottleAddPopup(
               value: value!,
-              isWishList: widget.isWishList!,
+              searchPageType: widget.pageType,              
               onConfirm: onConfirm);
         });
   }
 
-  Future<void> _showCreate({void Function()? onConfirm}) {
+  Future<void> _showCreate({void Function(BlueBook)? onConfirm}) {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return BottleCreate(
-              isWishList: widget.isWishList!, onConfirm: onConfirm);
+              searchPageType: widget.pageType,
+              onConfirm: onConfirm
+            );
         });
   }
 }

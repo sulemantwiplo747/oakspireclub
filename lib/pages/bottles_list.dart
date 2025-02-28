@@ -130,7 +130,9 @@ class _BottlesListState extends State<BottlesList> {
                 BottlesSearchInput(
                   readOnly: true,
                   onTap: () {
-                    Get.to(() => BottlesSearchPage(isWishList: isWishlist))
+                    Get.to(() => BottlesSearchPage(
+                      pageType: isWishlist ? SearchPageType.wishlist : SearchPageType.normal,                      
+                    ))
                         ?.then(onBack);
                   },
                 ),
