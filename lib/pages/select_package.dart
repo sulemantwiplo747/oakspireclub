@@ -203,7 +203,7 @@ class _PackageFormState extends State<PackageForm> {
         switch (purchaseDetails.status) {
 
           case PurchaseStatus.pending:
-
+             utils.hideLoadingDialog();
             break;
 
           case PurchaseStatus.purchased:
