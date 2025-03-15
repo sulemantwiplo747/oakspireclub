@@ -65,28 +65,39 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
           DashBoardLinkItem(
-            text: "My Bottles",
+            text:  const TextSpan( text: "My Bottles"),
             color: const Color(0xFFbe6720),
             onTap: () {
               Get.to(() => ChartPage() );
             },
           ),
           DashBoardLinkItem(
-            text: "Bourbon Blue Book",
-            color: Color(0xFFeeb775),
+            text: TextSpan( text: "Bourbon Blue Book", children: [ 
+               WidgetSpan(
+                      child: Transform.translate(
+                        offset:const Offset(2, -5),
+                        child: const Text('®', style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                        ),),
+                      ),
+                    )
+            ]) ,
+            color: const Color(0xFFeeb775),
             onTap: () {
-              Get.to(() => BlueBook());
+              Get.to(() => const BlueBook());
             },
           ),
           DashBoardLinkItem(
-            text: "Wheel of Destiny",
+            text:  const TextSpan( text: "Wheel of Destiny"),
             color: Color(0xFFe59d46),
             onTap: () {
               Get.to(() => WheelOfDestiny());
             },
           ),
           DashBoardLinkItem(
-            text: "Bourbon Testing",
+            text:  const TextSpan( text: "Bourbon Tasting"),
             color: Color(0xFFdd871f),
             onTap: () {
               Get.to(() => BourbonuerTesting());
@@ -100,21 +111,21 @@ class _DashboardPageState extends State<DashboardPage> {
           //   },
           // ),
           DashBoardLinkItem(
-            text: "Bourbon Suggestions By Taste",
+            text:  const TextSpan( text: "Bourbon Suggestions By Taste"),
             color: Color(0xFFc05915),
             onTap: () {
               Get.to(() => GoodPourPage());
             },
           ),
           DashBoardLinkItem(
-            text: "Bourboneur Blog",
+            text:  const TextSpan( text: "Bourboneur Blog"),
             color: const Color(0xFFbe6720),
             onTap: () {
               Get.to(() => Blog());
             },
           ),
           const SizedBox(
-            height: 40,
+            height: 30,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +165,7 @@ class _DashboardPageState extends State<DashboardPage> {
 class DashBoardLinkItem extends StatelessWidget {
   DashBoardLinkItem({super.key, required this.text, this.color, this.onTap});
 
-  final String text;
+  final TextSpan text;
   final Color? color;
   void Function()? onTap;
 
@@ -163,21 +174,22 @@ class DashBoardLinkItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(left: 20, top: 15, bottom: 15, right: 20),
         decoration: BoxDecoration(
             color: color,
             border: Border(
                 top: BorderSide(
                     width: 1,
                     color: Theme.of(context).colorScheme.background))),
-        child: Text(
-          text,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.background,
-              fontFamily: 'TradeGothic',
-              fontWeight: FontWeight.bold,
-              fontSize: 18),
-        ),
+                  child: Text.rich(
+                    text,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.background,
+                        fontFamily: 'TradeGothic',
+                        fontWeight: FontWeight.bold,                            
+                        fontSize: 22
+                    )
+                  ),
       ),
     );
   }

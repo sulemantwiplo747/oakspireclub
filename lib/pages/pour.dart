@@ -271,7 +271,7 @@ class _PourPageState extends State<PourPage> {
                   ),
                 if (blueBook != null)
                   const Text(
-                    "0 is the worst and 5 is the best",
+                    "0 is the worst and 10 is the best",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Color(0xff97881e)),
                   ),
@@ -477,7 +477,7 @@ class PourButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: color,
@@ -495,7 +495,7 @@ class PourButton extends StatelessWidget {
                     color: Theme.of(context).colorScheme.background,
                     fontFamily: 'TradeGothic',
                     fontWeight: FontWeight.bold,
-                    fontSize: 18),
+                    fontSize: 22),
               ),
               if (isLoading != null && isLoading != false)
               const SizedBox( width: 20 ),

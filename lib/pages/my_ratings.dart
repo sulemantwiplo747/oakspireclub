@@ -32,7 +32,7 @@ class _MyRatingsState extends State<MyRatings> {
   bool isLoading = false;    
   bool isFirstTimeLoading = true;
 
-  List<String> sortLabels = ["NEWEST", "NAME A-Z", "NAME Z-A", "OLDEST"];
+  List<String> sortLabels = ["HIGHEST", "NAME A-Z", "NAME Z-A", "LOWEST"];
   String? sortSelected;  
 
   @override
