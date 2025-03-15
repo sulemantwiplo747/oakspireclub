@@ -91,7 +91,7 @@ class _Favorite extends BaseApi {
     return Rating.fromJson(response.body['data']);
   }
 
-   Future<dynamic> isFavorite(
+  Future<dynamic> isFavorite(
     String userId,
     String bluebookId
   ) async {

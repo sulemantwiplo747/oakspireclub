@@ -55,7 +55,7 @@ class _MyTestingState extends State<MyTesting> {
                       fontFamily: 'Arial',
                       color: Color(0xffe17f2f),
                       fontWeight: FontWeight.bold,
-                      fontSize: 23,
+                      fontSize: 26,
                       height: 1.2),
                 ),
                 SizedBox(
@@ -64,11 +64,11 @@ class _MyTestingState extends State<MyTesting> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.star, color: Color(0xffead400), size: 35),
-                    Icon(Icons.star, color: Color(0xffead400), size: 35),
-                    Icon(Icons.star, color: Color(0xffead400), size: 35),
-                    Icon(Icons.star, color: Color(0xffead400), size: 35),
-                    Icon(Icons.star_border, color: Color(0xffead400), size: 35),
+                    Icon(Icons.star, color: Color(0xffead400), size: 37),
+                    Icon(Icons.star, color: Color(0xffead400), size: 37),
+                    Icon(Icons.star, color: Color(0xffead400), size: 37),
+                    Icon(Icons.star, color: Color(0xffead400), size: 37),
+                    Icon(Icons.star_border, color: Color(0xffead400), size: 37),
                   ],
                 )
               ],
@@ -107,11 +107,11 @@ class LinkItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15,),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15, top: 15),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: color,
@@ -126,7 +126,7 @@ class LinkItem extends StatelessWidget {
                 color: Theme.of(context).colorScheme.background,
                 fontFamily: 'TradeGothic',
                 fontWeight: FontWeight.bold,
-                fontSize: 18),
+                fontSize: 22),
           ),
         ),
       ),

@@ -75,7 +75,7 @@ class _BourbonuerTestingState extends State<BourbonuerTesting> {
             },
           ),
           LinkItem(
-            text: "Get the Right glass",
+            text: "Get the Right Glass",
             color: Color(0xFFdd871f),
             onTap: () {
               launchUrlString('https://www.bourboneur.com/shop', mode: LaunchMode.externalApplication);
@@ -103,7 +103,7 @@ class LinkItem extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(left: 20, top: 15, bottom: 15, right: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
               color: color,
@@ -118,7 +118,7 @@ class LinkItem extends StatelessWidget {
                 color: Theme.of(context).colorScheme.background,
                 fontFamily: 'TradeGothic',
                 fontWeight: FontWeight.bold,
-                fontSize: 18),
+                fontSize: 22),
           ),
         ),
       ),

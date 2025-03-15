@@ -30,11 +30,22 @@ class _MyRatingsTableState extends State<MyRatingsTable> {
           RxList<Rating>.from(widget.ratings!);
 
       switch (widget.sortMode) {
-        case 'NEWEST':
+        case 'HIGHEST':
           sortedList.sort((item1, item2) {
-            return item2.createdAt!
+            double nose1 = double.parse(item1.nose!);
+            double palate1 = double.parse(item1.palate!);
+            double finish1 = double.parse(item1.finish!);
+
+            double nose2 = double.parse(item2.nose!);
+            double palate2 = double.parse(item2.palate!);
+            double finish2 = double.parse(item2.finish!);
+
+            double total1 = nose1 + palate1 + finish1;
+            double total2 = nose2 + palate2 + finish2;
+
+            return total2
                 .toString()
-                .compareTo(item1.createdAt!.toString());
+                .compareTo(total1.toString());
           });
           break;
         case 'NAME A-Z':
@@ -51,11 +62,22 @@ class _MyRatingsTableState extends State<MyRatingsTable> {
                 .compareTo(item1.blueBook!.bottleName!.toLowerCase());
           });
           break;
-        case 'OLDEST':
+        case 'LOWEST':
           sortedList.sort((item1, item2) {
-            return item1.createdAt!
+            double nose1 = double.parse(item1.nose!);
+            double palate1 = double.parse(item1.palate!);
+            double finish1 = double.parse(item1.finish!);
+
+            double nose2 = double.parse(item2.nose!);
+            double palate2 = double.parse(item2.palate!);
+            double finish2 = double.parse(item2.finish!);
+
+            double total1 = nose1 + palate1 + finish1;
+            double total2 = nose2 + palate2 + finish2;
+
+            return total1
                 .toString()
-                .compareTo(item2.createdAt!.toString());
+                .compareTo(total2.toString());
           });
           break;
       }
