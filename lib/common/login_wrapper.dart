@@ -7,6 +7,7 @@ import 'package:bourboneur/pages/blog.dart';
 import 'package:bourboneur/pages/bluebook.dart';
 import 'package:bourboneur/pages/dashboard.dart';
 import 'package:bourboneur/pages/explore.dart';
+import 'package:bourboneur/pages/feedback.dart';
 import 'package:bourboneur/pages/good_pour.dart';
 import 'package:bourboneur/pages/ios_subscription_page.dart';
 import 'package:bourboneur/pages/portal.dart';
@@ -181,6 +182,11 @@ class _MenuState extends State<Menu> {
                   launchUrl(Uri.parse(
                       "https://apps.apple.com/account/subscriptions"));
                 }
+              }),
+          MenuItem(
+              text: 'Feedback',
+              onTap: () {
+                Get.to(() => FeedbackPage());
               }),
           MenuItem(
               text: 'Logout',

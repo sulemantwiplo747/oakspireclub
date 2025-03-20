@@ -34,8 +34,12 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/videos/splash.mp4')
-      ..initialize().then((_) {
+    _controller = VideoPlayerController.asset(
+      'assets/videos/splash.mp4',
+      videoPlayerOptions: VideoPlayerOptions(
+        mixWithOthers: true
+      )
+      )..initialize().then((_) {                
         _controller!.play();
         _controller!.setLooping(true);
         // Ensure the first frame is shown after the video is initialized

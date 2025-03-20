@@ -97,8 +97,56 @@ class _MyRatingsState extends State<MyRatings> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.asset('assets/images/bb-rating.png', height: 100),
-                SizedBox(
+                // Image.asset('assets/images/bb-rating.png', height: 100),
+                // const SizedBox(
+                //   height: 50,
+                // ),
+                if ( !isLoading )
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text("My",
+                      textAlign: TextAlign.center,   
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 23,
+                        height: 1.2
+                      )
+                    ),
+                    Text.rich( 
+                      textAlign: TextAlign.center,                     
+                      TextSpan(
+                        text: "${controller.ratings.length} ",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 50,
+                            height: 1,
+                            
+                        ),
+                        children: const [
+                          TextSpan(
+                            text: "Bourbon",
+                            style: TextStyle(
+                              color: Color(0xffe48235)
+                            )
+                          )
+                        ]
+                      )
+                    ),
+                    const Text("Ratings",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 23,
+                        height: 1.2,
+                      )
+                    )
+                  ],
+                ),
+                const SizedBox(
                   height: 50,
                 ),
                 BottleListSort(
