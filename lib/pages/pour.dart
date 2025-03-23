@@ -242,7 +242,7 @@ class _PourPageState extends State<PourPage> {
                                           : controller.config.value.uploadUrl! +
                                               '/' +
                                               blueBook!.image!),
-                                      fit: BoxFit.fill)),
+                                      fit: BoxFit.contain)),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
