@@ -188,6 +188,7 @@ class _BlueBookState extends State<BlueBook> {
                   onReachedBottom: _handleScrollReachedBottom,
                   showLoading: hasListData,
                   keyword: keyword,
+                  bluebooks: controller.bluebooks.toList(),
                 ),
               ),
               const SizedBox(
