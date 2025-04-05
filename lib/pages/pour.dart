@@ -36,6 +36,8 @@ class _PourPageState extends State<PourPage> {
   bool isLoading = false;
   bool isCollectionLoading = false;
   bool isSubmitting = false;
+  bool isRemoving = false;
+  bool isRated = false;
 
   String note = "";
   double nose = 0;
@@ -172,14 +174,44 @@ class _PourPageState extends State<PourPage> {
     });
 
     // handle submit
-    await RatingApi.rate(
+    var data = await RatingApi.rate(
         blueBook!.id!, controller.user.value.id!, nose, palate, finish, note);
+
+    if ( data != null && data != false )
+    {
+      widget.id = data['id'];
+      Utils().showToast('Success', "Successfully saved.");
+    }
 
     setState(() {
       isSubmitting = false;
     });
+  }
 
-    Utils().showToast('Success', "Successfully saved.");
+  _handleRemoveRating() async {
+    if ( widget.id == null ) return;
+
+    if ( isRemoving == true ) return;
+
+    setState(() {
+      isRemoving = true;
+    });
+
+    // handle submit
+    await RatingApi.remove(widget.id!);
+
+    widget.id = null;
+    note = "";
+    nose = 0;
+    palate = 0;
+    finish = 0;
+
+    Utils().showToast('Success', "Successfully removed rating.");
+    Navigator.pop(context);
+    
+    // setState(() {
+    //   isRemoving = false;
+    // });
   }
 
   @override
@@ -247,7 +279,7 @@ class _PourPageState extends State<PourPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                              children: [                                                               
                                 CustomCheckBox(
                                   label: "make a favorite",
                                   checked: favorite != null,
@@ -318,6 +350,13 @@ class _PourPageState extends State<PourPage> {
                   color: const Color(0xffead400),
                   onTap: _handleSubmit,
                   isLoading: isSubmitting,
+                ),
+                if ( widget.id != null )
+                PourButton(
+                  text: "Remove rating",
+                  color: Color.fromARGB(255, 253, 68, 68),
+                  onTap: _handleRemoveRating,
+                  isLoading: isRemoving,
                 ),
                 const SizedBox(
                   height: 50,

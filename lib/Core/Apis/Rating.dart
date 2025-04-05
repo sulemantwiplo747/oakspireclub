@@ -10,6 +10,7 @@ class _Rating extends BaseApi {
 
   static String ALL = 'rating/all';
   static String RATE = 'rating/rate';
+  static String RATE_DELETE = 'rating/delete';
   static String GET_BY_ID = 'rating/get-by-id';
   static String GET_BY_USER_BLUEBOOK = 'rating/get-by-user-bluebook';
  
@@ -41,21 +42,21 @@ class _Rating extends BaseApi {
     return response.body['data'];
   }
 
-  Future<dynamic> remove(    
+  Future<bool> remove(    
     String id
   ) async {
     
     var data = {
       "id": id
     };
-    var response = await sendPost(RATE, data);
+    var response = await sendPost(RATE_DELETE, data);
     if (response == null ) return false;
     if ( response.body['code'] != 'OK' ) {
       utils.showToast("Error", response.body['data']);
       return false;
     }
 
-    return;
+    return true;
   }
 
   Future<dynamic> all(

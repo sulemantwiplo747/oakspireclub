@@ -7,14 +7,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 class BlueBookTable extends StatefulWidget {
   BlueBookTable(
-      {super.key,
-      this.keyword,
-      required this.showLoading,
-      required this.onReachedBottom});
+      {
+        super.key,
+        this.keyword,
+        required this.showLoading,
+        required this.onReachedBottom,
+        required this.bluebooks
+      });
 
   String? keyword;
   bool showLoading;
   VoidCallback? onReachedBottom;
+  List<BlueBook> bluebooks;
 
   @override
   State<BlueBookTable> createState() => _BlueBookTableState();
@@ -180,15 +184,15 @@ class _BlueBookTableState extends State<BlueBookTable> {
     );
   }
 
-  List<TableRow> _prepareTableRows(RxList<BlueBook> result) {
+  List<TableRow> _prepareTableRows(List<BlueBook> result) {
     List<TableRow> list = [];
 
-    for (BlueBook bluebook in result.value) {
-      if (widget.keyword != null && widget.keyword != "") {
-        var bottleName = bluebook.bottleName!;
-        if (!bottleName.toUpperCase().contains(widget.keyword!.toUpperCase()))
-          continue;
-      }
+    for (BlueBook bluebook in result) {
+      // if (widget.keyword != null && widget.keyword != "") {
+      //   var bottleName = bluebook.bottleName!;
+      //   if (!bottleName.toUpperCase().contains(widget.keyword!.toUpperCase()))
+      //     continue;
+      // }
 
       list.add(TableRow(
           decoration: const BoxDecoration(
