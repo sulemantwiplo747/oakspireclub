@@ -13,7 +13,7 @@ import 'package:bourboneur/pages/bottles_list/search_input.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum SearchPageType { wishlist, normal, rating }
+enum SearchPageType { wishlist, normal, rating, trade }
 
 class BottlesSearchPage extends StatefulWidget {
   BottlesSearchPage({
@@ -53,8 +53,18 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     });
   }
 
-  _handleConfirm(BlueBook bluebook) async {
+  _handleConfirm(BlueBook bluebook) async {    
     Navigator.pop(context);
+
+    // If the page type is search we are going to call only confirm
+    if ( widget.pageType == SearchPageType.trade ) {
+        if ( widget.onSelect != null ) widget.onSelect!(bluebook);        
+        Utils().showToast('Success', "You bottle is now added.");
+        return;
+    }
+
+    // else process with other code
+
     setState(() {
       isConfirmLoading = true;
     });
@@ -174,31 +184,44 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
         text: value.bottleName!,
         onTap: () {
           _showConfirm(
-              value: value.bottleName!,
-              onConfirm: () {
-                _handleConfirm(value);
-              });
+            value: value.bottleName!,
+            onConfirm: () {
+              _handleConfirm(value);
+          });
         },
         // isAdded: i % 3 != 0,
       );
     }).toList());
 
-    data.add(GestureDetector(
-      onTap: () {
-        _showCreate(onConfirm: _handleCreateConfirm);
-      },
-      child: const Row(children: [
-        Expanded(
-          child: Text(
-            "DON'T SEE IT?  ADD YOUR OWN",
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 18, height: 2, color: Color(0xffe17f2f)),
+    if ( widget.pageType != SearchPageType.trade )
+    {
+      data.add(GestureDetector(
+        onTap: () {
+          _showCreate(onConfirm: _handleCreateConfirm);
+        },
+        child: const Row(children: [
+          Expanded(
+            child: Text(
+              "DON'T SEE IT?  ADD YOUR OWN",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 18, height: 2, color: Color(0xffe17f2f)),
+            ),
           ),
-        ),
-        SizedBox(width: 20),
-        Icon(Icons.add_circle, color: Color(0xffe17f2f))
-      ]),
-    ));
+          SizedBox(width: 20),
+          Icon(Icons.add_circle, color: Color(0xffe17f2f))
+        ]),
+      ));
+
+    }
+
+    
+      if ( data.isEmpty ) 
+      {
+        data.add(Center(
+          child: Text("Nothing found.."),
+        ));
+      }
+    
 
     return data;
   }
