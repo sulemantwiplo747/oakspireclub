@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
             fontFamily: 'Arial',
             color: Colors.white,
             fontSize: 14,
-          ),          
+          ),
           titleMedium:  TextStyle(
             fontFamily: 'Arial',
             fontWeight: FontWeight.bold,                 

@@ -7,6 +7,7 @@ import 'package:bourboneur/pages/blog.dart';
 import 'package:bourboneur/pages/bluebook.dart';
 import 'package:bourboneur/pages/dashboard.dart';
 import 'package:bourboneur/pages/explore.dart';
+import 'package:bourboneur/pages/feedback.dart';
 import 'package:bourboneur/pages/good_pour.dart';
 import 'package:bourboneur/pages/ios_subscription_page.dart';
 import 'package:bourboneur/pages/portal.dart';
@@ -15,6 +16,7 @@ import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Core/Utils.dart';
@@ -67,6 +69,22 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   Controller controller = Get.find<Controller>();
   var utils = Utils();
+  String? versionNumber;
+
+  @override
+  void initState() {
+    _getVersion(); 
+    super.initState();
+  }
+
+  
+  _getVersion() async {
+    PackageInfo info = await PackageInfo.fromPlatform();    
+    setState(() {
+      versionNumber = info.buildNumber;  
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -142,6 +160,7 @@ class _MenuState extends State<Menu> {
               onTap: () {
                 Get.to(() => Blog());
               }),
+          if ( controller.user.value.isFree != "1" )
           MenuItem(
               text: 'Billing',
               onTap: () {
@@ -165,11 +184,21 @@ class _MenuState extends State<Menu> {
                 }
               }),
           MenuItem(
+              text: 'Feedback',
+              onTap: () {
+                Get.to(() => FeedbackPage());
+              }),
+          MenuItem(
               text: 'Logout',
               onTap: () {
                 Auth.logout();
                 Get.offAll(() => SignInPage());
               }),
+              const Spacer(),
+          if ( versionNumber != null )
+          VersionNumber(
+            versionNumber: versionNumber!,
+          )
         ],
       ),
     );
@@ -199,6 +228,31 @@ class MenuItem extends StatelessWidget {
                 color: Color(0xfff47c1a),
                 fontWeight: FontWeight.bold,
                 fontSize: 22)),
+      ),
+    );
+  }
+}
+
+
+class VersionNumber extends StatelessWidget {
+  VersionNumber({
+    super.key,
+    required this.versionNumber
+  });
+
+  String versionNumber;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(    
+      padding: EdgeInsets.only(bottom: 20),  
+      child: Text(
+        "App version #${versionNumber}",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: const Color.fromARGB(255, 138, 137, 137)
+        ),
       ),
     );
   }

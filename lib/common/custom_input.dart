@@ -5,12 +5,14 @@ class CustomInput extends StatefulWidget {
     super.key, 
     required this.label, 
     this.obscureText = false,
-    this.controller
+    this.maxLine = 1,
+    this.controller,    
   });
 
   String label;
   bool obscureText;
   TextEditingController? controller;
+  int? maxLine;
 
   @override
   State<CustomInput> createState() => _CustomInputState();
@@ -68,7 +70,8 @@ class _CustomInputState extends State<CustomInput> {
             ),
           ),
           TextField(
-            controller: widget.controller,
+            controller: widget.controller,    
+            maxLines: widget.maxLine,        
             decoration: InputDecoration(
               border: InputBorder.none,
               filled: false,

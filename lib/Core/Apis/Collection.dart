@@ -15,6 +15,7 @@ class _Collection extends BaseApi {
   static String COLLECTION_DELETE = 'collection/delete';
   static String COLLECTION_ALL = 'collection/all';
   static String COLLECTION_CHART_DATA = 'collection/chart-data';
+  static String COLLECTION_IS_IN_COLLECTION = 'collection/is-in-collection';
 
   Future<dynamic> add(
     String bottleId,
@@ -34,7 +35,7 @@ class _Collection extends BaseApi {
       return false;
     }
 
-    return;
+    return response.body['data'];
   }
 
   Future<dynamic> remove(    
@@ -95,6 +96,27 @@ class _Collection extends BaseApi {
     return response.body['data'];
   }
 
+  Future<dynamic> isInCollection(
+    String userId,
+    String bottleId,
+    Enum type,
+  ) async {
+    
+    var data = {
+      "user_id": userId,
+      "bottle_id": bottleId,
+      "type" : type.name
+    };
+    var response = await sendPost(COLLECTION_IS_IN_COLLECTION, data);
+    if (response == null ) return false;
+    if ( response.body['code'] != 'OK' ) {
+      utils.showToast("Error", response.body['data']);
+      return false;
+    }
+
+    return response.body['data'];
+  }
+  
 
   List<Collection> _parseCollection(List responseBody) {
     List<Collection> list = [];

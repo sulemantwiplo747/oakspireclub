@@ -44,7 +44,7 @@ class _Auth extends BaseApi {
    ) async {
     
     var data = {      
-      "email": email,
+      "email": email.trim(),
       "password": password
     };
     var response = await sendPost(AUTH_LOGIN, data);

@@ -13,10 +13,17 @@ import 'package:bourboneur/pages/bottles_list/search_input.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BottlesSearchPage extends StatefulWidget {
-  BottlesSearchPage({super.key, this.isWishList});
+enum SearchPageType { wishlist, normal, rating, trade }
 
-  bool? isWishList;
+class BottlesSearchPage extends StatefulWidget {
+  BottlesSearchPage({
+    super.key,
+    required this.pageType,    
+    this.onSelect
+  });
+
+  SearchPageType pageType;
+  void Function(BlueBook)? onSelect;
 
   @override
   State<BottlesSearchPage> createState() => _BottlesSearchPageState();
@@ -46,19 +53,43 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     });
   }
 
-  _handleConfirm(String id) async {
+  _handleConfirm(BlueBook bluebook) async {    
     Navigator.pop(context);
+
+    // If the page type is search we are going to call only confirm
+    if ( widget.pageType == SearchPageType.trade ) {
+        if ( widget.onSelect != null ) widget.onSelect!(bluebook);        
+        Utils().showToast('Success', "You bottle is now added.");
+        return;
+    }
+
+    // else process with other code
+
     setState(() {
       isConfirmLoading = true;
     });
 
-    CollectionType type = widget.isWishList! ? CollectionType.wishlist : CollectionType.normal;
-    await CollectionApi.add(id, controller.user.value.id, type);
+    if (
+      widget.pageType == SearchPageType.wishlist ||
+      widget.pageType == SearchPageType.normal
+    ) {
+      CollectionType type = widget.pageType == SearchPageType.wishlist ? CollectionType.wishlist : CollectionType.normal;
+      await CollectionApi.add(bluebook.id!, controller.user.value.id, type);
+    }
+
     setState(() {
       isConfirmLoading = false;
-    });    
-    Navigator.pop(context);
-    Utils().showToast("Success", "You bottle is now added.");
+    });
+
+    if (
+      widget.pageType == SearchPageType.wishlist ||
+      widget.pageType == SearchPageType.normal
+    ) {
+      Utils().showToast("Success", "You bottle is now added.");
+    } else {
+      // Navigator.pop(context);
+      if ( widget.onSelect != null ) widget.onSelect!(bluebook);
+    }
   }
 
   void getListData(page) async {
@@ -68,7 +99,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
       isListLoading = true;
     });
 
-    bool response = await BlueBookApi.all(page.toString(), keyword, "20");
+    bool response = await BlueBookApi.all(page.toString(), keyword, "200");
     if (!response) {
       setState(() {
         isListLoading = false;
@@ -79,6 +110,18 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     setState(() {
       isListLoading = false;
     });
+  }
+
+  _handleCreateConfirm(BlueBook bluebook) {    
+     if (
+      widget.pageType == SearchPageType.wishlist ||
+      widget.pageType == SearchPageType.normal
+    ) {
+      Utils().showToast("Success", "You bottle is now added.");
+    } else {
+      // Navigator.pop(context);
+      if ( widget.onSelect != null ) widget.onSelect!(bluebook);
+    }     
   }
 
   @override
@@ -111,22 +154,22 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
               ),
             ),
           ),
-          if ( isConfirmLoading )
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: const Color.fromARGB(52, 0, 0, 0),
-            child: const Center(
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: Color(0xffe17f2f),
+          if (isConfirmLoading)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: const Color.fromARGB(52, 0, 0, 0),
+              child: const Center(
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: Color(0xffe17f2f),
+                  ),
                 ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );
@@ -141,32 +184,44 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
         text: value.bottleName!,
         onTap: () {
           _showConfirm(
-              value: value.bottleName!,
-              onConfirm: () {
-                _handleConfirm(value.id!);
-              });
+            value: value.bottleName!,
+            onConfirm: () {
+              _handleConfirm(value);
+          });
         },
         // isAdded: i % 3 != 0,
       );
     }).toList());
 
-    data.add(GestureDetector(
-      onTap: () {
-        _showCreate();
-      },
-      child: const Row(children: [
-        Expanded(
-          child: Text(
-            "DON'T SEE IT?  ADD YOUR OWN",
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-                fontSize: 18, height: 2, color: Color(0xffe17f2f)),
+    if ( widget.pageType != SearchPageType.trade )
+    {
+      data.add(GestureDetector(
+        onTap: () {
+          _showCreate(onConfirm: _handleCreateConfirm);
+        },
+        child: const Row(children: [
+          Expanded(
+            child: Text(
+              "DON'T SEE IT?  ADD YOUR OWN",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 18, height: 2, color: Color(0xffe17f2f)),
+            ),
           ),
-        ),
-        SizedBox(width: 20),
-        Icon(Icons.add_circle, color: Color(0xffe17f2f))
-      ]),
-    ));
+          SizedBox(width: 20),
+          Icon(Icons.add_circle, color: Color(0xffe17f2f))
+        ]),
+      ));
+
+    }
+
+    
+      if ( data.isEmpty ) 
+      {
+        data.add(Center(
+          child: Text("Nothing found.."),
+        ));
+      }
+    
 
     return data;
   }
@@ -177,20 +232,20 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
         builder: (BuildContext context) {
           return BottleAddPopup(
               value: value!,
-              isWishList: widget.isWishList!,
+              searchPageType: widget.pageType,              
               onConfirm: onConfirm);
         });
   }
 
-  Future<void> _showCreate({void Function()? onConfirm }) {
+  Future<void> _showCreate({void Function(BlueBook)? onConfirm}) {
     return showDialog(
-        context: context,        
+        context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return BottleCreate(
-            isWishList: widget.isWishList!,
-            onConfirm: onConfirm
-          );
+              searchPageType: widget.pageType,
+              onConfirm: onConfirm
+            );
         });
   }
 }
@@ -206,25 +261,30 @@ class BottleSearchItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  fontSize: 18,
-                  height: 2,
-                  color: isAdded == true
-                      ? Colors.grey
-                      : Theme.of(context).textTheme.bodyMedium?.color),
+      child: Column(children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                // overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 18,
+                    height: 2,
+                    color: isAdded == true
+                        ? Colors.grey
+                        : Theme.of(context).textTheme.bodyMedium?.color),
+              ),
             ),
-          ),
-          SizedBox(width: 20),
-          Icon(isAdded == true ? Icons.check_circle : Icons.add_circle,
-              color: isAdded == true ? Colors.grey : Color(0xffe17f2f))
-        ],
-      ),
+            SizedBox(width: 20),
+            Icon(isAdded == true ? Icons.check_circle : Icons.add_circle,
+                color: isAdded == true ? Colors.grey : Color(0xffe17f2f))
+          ],
+        ),
+        Divider(
+          color: const Color.fromARGB(255, 31, 31, 31),
+        )
+      ]),
     );
   }
 }

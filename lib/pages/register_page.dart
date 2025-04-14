@@ -32,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController controllerPass = TextEditingController();
 
   bool? isDrinkingAge = false;
-  bool? subscribeToWeeklyBlog = false;
+  bool? subscribeToWeeklyBlog = true;
 
   @override
   void initState() {
@@ -150,6 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 CustomCheckBox(
                   label: "Subscribe to Bourboneur",
+                  checked: true,
                   onChanged: (bool? value) {
                     subscribeToWeeklyBlog = value;
                   },

@@ -1,3 +1,4 @@
+import 'package:bourboneur/pages/bottles_search.dart';
 import 'package:flutter/material.dart';
 
 class BottleConfirmPopup extends StatelessWidget {
@@ -14,29 +15,53 @@ class BottleConfirmPopup extends StatelessWidget {
         side: const BorderSide(width: 2, color: Color(0xffe17f2f)),
         borderRadius: BorderRadius.circular(0),
       ),
+      backgroundColor: Colors.black,
       content: Container(
           padding: const EdgeInsets.only(left: 0, top: 10, right: 0),
           child: text),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
-                color: Color(0xffe17f2f),
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                    color: Color(0xffe17f2f),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (onConfirm != null) onConfirm!();
+              },
+              child: const Text(
+                'Yes',
+                style: TextStyle(
+                    color: Color(0xffe17f2f),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ),
-        TextButton(
-          onPressed: onConfirm,
-          child: const Text(
-            'Ok',
-            style: TextStyle(
-                color: Color(0xffe17f2f),
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: onConfirm,
+              child: const Text(
+                'Yes, and add another',
+                style: TextStyle(
+                    color: Color(0xffe17f2f),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
         )
       ],
     );
@@ -47,32 +72,54 @@ class BottleAddPopup extends StatelessWidget {
   BottleAddPopup(
       {super.key,
       required this.value,
-      required this.isWishList,
-      required this.onConfirm});
+      required this.onConfirm,
+      required this.searchPageType});
 
   String value;
-  bool isWishList;
   void Function()? onConfirm;
+  SearchPageType searchPageType;
+
+  TextSpan _text() {
+    String text1 = "";
+    String text2 = "";
+    switch (searchPageType) {
+      case SearchPageType.wishlist:
+        text1 = "Add ";
+        text2 = " to your wishlist?";
+        break;
+      case SearchPageType.normal:
+        text1 = "Add ";
+        text2 = " to your collection?";
+        break;
+      case SearchPageType.trade:
+        text1 = "Add ";
+        text2 = " to your trade evaluation?";
+        break;
+      default:
+        text1 = "Select ";
+        text2 = "?";
+        break;
+    }
+
+    return TextSpan(
+        text: text1,
+        style: const TextStyle(
+            color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        children: [
+          TextSpan(
+            text: value,
+            style: const TextStyle(color: Color(0xffe17f2f)),
+          ),
+          TextSpan(text: text2)
+        ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BottleConfirmPopup(
       text: RichText(
         textAlign: TextAlign.center,
-        text: TextSpan(
-            text: "Add ",
-            style: const TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-            children: [
-              TextSpan(
-                text: value,
-                style: const TextStyle(color: Color(0xffe17f2f)),
-              ),
-              TextSpan(
-                  text: isWishList != true
-                      ? " to your collection?"
-                      : " to your wishlist?")
-            ]),
+        text: _text(),
       ),
       onConfirm: onConfirm,
       value: value,

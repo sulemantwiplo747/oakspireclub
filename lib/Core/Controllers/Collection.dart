@@ -16,7 +16,7 @@ class Collection {
   Collection.fromJson(json) {
     id = json['id'].toString();    
     type = json['type'];
-    createdAt = json['created_at'];
+    createdAt = json['created_at'].toString();
     blueBook = BlueBook.fromJson(json['bluebook']);
   }
 

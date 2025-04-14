@@ -5,6 +5,10 @@ class Config {
   String? portalUrl;
   String? termsUrl;
   String? privacyUrl;
+  Map? currentVersion;
+  String? uploadUrl;
+  String? pourImagePlaceHolder;
+  String? ratingExportUrl;
 
   Config({
     this.stripePk,
@@ -12,7 +16,10 @@ class Config {
     this.subscribeNowUrl,
     this.portalUrl,
     this.termsUrl,
-    this.privacyUrl
+    this.privacyUrl,
+    this.uploadUrl,
+    this.pourImagePlaceHolder,
+    this.ratingExportUrl
   });
 
   Config.fromJson(json) {
@@ -22,6 +29,10 @@ class Config {
     portalUrl = json['portal_url'];
     termsUrl = json['terms_url'];
     privacyUrl = json['privacy_url'];
+    currentVersion = json['current_version'];
+    pourImagePlaceHolder = json['pour_image_placeholder'];
+    uploadUrl = json['upload_url'];
+    ratingExportUrl = json['rating_export_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,7 +42,11 @@ class Config {
       "subscribe_now_url": subscribeNowUrl,
       'portal_url': portalUrl,
       'terms_url': termsUrl,
-      'privacy_url': privacyUrl
+      'privacy_url': privacyUrl,
+      'current_version': currentVersion,
+      'upload_url': uploadUrl,
+      'pur_image_placeholder': pourImagePlaceHolder,
+      'rating_export_url': ratingExportUrl
     };
   }
 }

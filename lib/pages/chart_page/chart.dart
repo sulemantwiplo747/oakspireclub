@@ -39,23 +39,26 @@ class Chart extends StatelessWidget {
   double? priceGap;
   double? dayGap;
 
+  DateTime? first;
+  DateTime? last;
+
 
   _prepareData() {
 
     if ( data.isNotEmpty )
     {
 
-      DateTime first = DateTime.parse(data.first['date']);
-      DateTime last = DateTime.parse(data.last['date']);
+      first = DateTime.parse(data.first['date']);
+      last = DateTime.parse(data.last['date']);
 
-      var d = last.difference(first).inDays;      
+      var d = last!.difference(first!).inDays;      
       int i = 0;
 
       Map mapData = _listToMap(data);
       double price = 0;      
 
       while( i <= d ) {
-        String date = DateFormat('yyyy-MM-dd').format(first.add(Duration( days: i )));
+        String date = DateFormat('yyyy-MM-dd').format(first!.add(Duration( days: i )));
 
         if ( mapData.containsKey(date) ) {
           price = double.parse(mapData[date]);
@@ -103,6 +106,8 @@ class Chart extends StatelessWidget {
       priceGap = (priceGap! / maxY).ceilToDouble();
       priceGap = priceGap == 0 ? 1 : priceGap;
       dayGap = (maxX / 4).ceil().toDouble();
+      // print(dayGap);
+
     }
 
     
@@ -151,22 +156,29 @@ class Chart extends StatelessWidget {
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: dayGap,
+            reservedSize: 40,
+            maxIncluded: true,
+            minIncluded: true,
+            interval: dayGap! <= 0 ? null : dayGap,
             getTitlesWidget: bottomTitleWidgets
           ),
         ),
         rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
+          sideTitles: SideTitles(
+            // showTitles: true,
+            // reservedSize: 50
+          ),
         ),
         topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
-          sideTitles: SideTitles(
+          axisNameSize: 150,          
+          sideTitles: SideTitles(            
               getTitlesWidget: leftTitleWidgets,
               showTitles: true,
               interval: priceGap,              
-              reservedSize: 40,
+              reservedSize: 60,
               // minIncluded: true
           ),
         ),
@@ -179,11 +191,17 @@ class Chart extends StatelessWidget {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       // fontWeight: FontWeight.bold,
-      fontSize: 13,
+      fontSize: 12,
       color: Colors.grey
     );
 
-    return Text('\$' + value.toInt().toString(), style: style, textAlign: TextAlign.center);
+    final NumberFormat formatter = NumberFormat.compact(
+      locale: 'en_us',      
+    )..maximumFractionDigits = 1;
+    // formatter.maximumIntegerDigits = 2;    
+    final String formatted = formatter.format(value);
+
+    return Text('\$' + formatted  , style: style, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis);
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
@@ -208,17 +226,17 @@ class Chart extends StatelessWidget {
     //     break;
     // }
 
-    String currentYear = DateTime.now().year.toString();
-    String startDate = "$currentYear-01-01";
+    // String currentYear = DateTime.now().year.toString();
+    // String startDate = DateFormat('yyyy-MM-dd').format(first);
 
-    DateTime date = DateTime.parse(startDate);
-    date = date.add(Duration(days: value.toInt()));
+    // DateTime date = DateTime.parse(startDate);
+    DateTime date = first!.add(Duration(days: value.toInt()));
 
     String formattedDate = DateFormat('MMMd').format(date);
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      // angle: 45,      
+      angle: 45,      
       fitInside: SideTitleFitInsideData.disable(),
       space: 10,
       child: Padding(

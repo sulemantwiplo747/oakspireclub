@@ -48,6 +48,7 @@ class _ChooseBottleWhiskeyState extends State<ChooseBottleWhiskey> {
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 height: 1.2)),
+                        SizedBox(height: 5),
                         Text("IT FEEL TO BE",
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -56,7 +57,7 @@ class _ChooseBottleWhiskeyState extends State<ChooseBottleWhiskey> {
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 height: 1.2)),
-                        SizedBox(height: 10),
+                        SizedBox(height: 5),
                         Text("WHISKEY WISE?",
                             textAlign: TextAlign.left,
 

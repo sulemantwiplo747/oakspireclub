@@ -1,21 +1,23 @@
 import 'package:bourboneur/Core/Apis/Bluebook.dart';
 import 'package:bourboneur/Core/Apis/Collection.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/common/custom_input.dart';
+import 'package:bourboneur/pages/bottles_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class BottleCreate extends StatefulWidget {
   BottleCreate({
-    super.key,
-    required this.isWishList,
+    super.key,    
+    required this.searchPageType,
     required this.onConfirm
   });
   
-  bool isWishList;
-  void Function()? onConfirm;
+  SearchPageType searchPageType;
+  void Function(BlueBook)? onConfirm;
 
   @override
   State<BottleCreate> createState() => _BottleCreateState();
@@ -58,14 +60,20 @@ class _BottleCreateState extends State<BottleCreate> {
 
     if ( bluebook != false ) {      
       // add to collection
-      await CollectionApi.add(
-        bluebook.id,
-        controller.user.value.id!,
-        widget.isWishList ? CollectionType.wishlist : CollectionType.normal
-      );
+      if (
+        widget.searchPageType == SearchPageType.wishlist ||
+        widget.searchPageType == SearchPageType.normal
+      ) {
+        await CollectionApi.add(
+          bluebook.id,
+          controller.user.value.id!,
+          widget.searchPageType == SearchPageType.wishlist ? CollectionType.wishlist : CollectionType.normal
+        );
+      }
+
 
       Navigator.pop(context);
-      Navigator.pop(context);
+      if ( widget.onConfirm != null ) widget.onConfirm!(bluebook);
     }
     
     
@@ -80,6 +88,7 @@ class _BottleCreateState extends State<BottleCreate> {
       return AlertDialog(
         
         actionsAlignment: MainAxisAlignment.center,
+        backgroundColor: Colors.black,
         shape: ContinuousRectangleBorder(
           side: const BorderSide(width: 2, color: Color(0xffe17f2f)),
           borderRadius: BorderRadius.circular(0),
@@ -87,7 +96,7 @@ class _BottleCreateState extends State<BottleCreate> {
         title: const Text(
           "CREATE A CUSTOM ENTRY",
           style: TextStyle(
-            color: Color(0xffe17f2f),
+            color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold
           ),
@@ -101,6 +110,7 @@ class _BottleCreateState extends State<BottleCreate> {
                 BottleCreateInput(
                   label: "BOTTLE",
                   controller: controllerBottleName,
+                  keyboardType: TextInputType.text,
                 ),
                 const SizedBox(
                   height: 30,
@@ -108,6 +118,7 @@ class _BottleCreateState extends State<BottleCreate> {
                 BottleCreateInput(
                   label: "PRICE",
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.number,
                   controller: controllerBottlePrice,
                 )
               ],
@@ -133,8 +144,7 @@ class _BottleCreateState extends State<BottleCreate> {
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
-            ),
-            Spacer(),
+            ),            
           if (!isLoading)
             TextButton(
               onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -159,12 +169,14 @@ class BottleCreateInput extends StatelessWidget {
     super.key,
     this.controller,
     required this.label,
-    this.inputFormatters
+    this.inputFormatters,
+    this.keyboardType
   });
 
   TextEditingController? controller;
   String label;
   List<TextInputFormatter>? inputFormatters;
+  TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -178,14 +190,14 @@ class BottleCreateInput extends StatelessWidget {
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Colors.red
+            color: Colors.white
           )
         ),
         const SizedBox(
           height: 5,
         ),
         TextField(
-          keyboardType: TextInputType.number,  
+          keyboardType: keyboardType,  
           controller: controller,      
           maxLines: 1,
           inputFormatters: inputFormatters,

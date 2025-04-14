@@ -6,121 +6,193 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BlueBookTable extends StatefulWidget {
-  BlueBookTable({
-    super.key,
-    this.keyword,
-    required this.showLoading,
-    required this.onReachedBottom
-  });
+  BlueBookTable(
+      {
+        super.key,
+        this.keyword,
+        required this.showLoading,
+        required this.onReachedBottom,
+        required this.bluebooks
+      });
 
   String? keyword;
   bool showLoading;
   VoidCallback? onReachedBottom;
+  List<BlueBook> bluebooks;
 
   @override
   State<BlueBookTable> createState() => _BlueBookTableState();
 }
 
 class _BlueBookTableState extends State<BlueBookTable> {
-  Controller controller = Get.find<Controller>();  
+  Controller controller = Get.find<Controller>();
   ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     _scrollController.addListener(() {
-        double maxScroll = _scrollController.position.maxScrollExtent;
-        double currentScroll = _scrollController.position.pixels;
-        double delta = 100.0; // or something else..
-        if ( maxScroll - currentScroll <= delta) { // whatever you determine here
-          if ( widget.onReachedBottom != null ) widget.onReachedBottom!();
-        }
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.position.pixels;
+      double delta = 100.0; // or something else..
+      if (maxScroll - currentScroll <= delta) {
+        // whatever you determine here
+        if (widget.onReachedBottom != null) widget.onReachedBottom!();
+      }
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      child: Table(
-      border: TableBorder.symmetric(
-          inside: BorderSide.none, outside: BorderSide.none),
-      columnWidths: const {
-        0: FixedColumnWidth(170),
-        1: FlexColumnWidth(),
-        2: FlexColumnWidth(),
-        3: FlexColumnWidth(),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+    return Stack(
       children: [
-        TableRow(
-          decoration: BoxDecoration(color:  Theme.of(context).textTheme.titleMedium!.color),
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12, right: 12),
-              child: Text(
-                "Bottle",
-                style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.background),
+        SingleChildScrollView(
+          controller: _scrollController,
+          child: Table(
+            border: TableBorder.symmetric(
+                inside: BorderSide.none, outside: BorderSide.none),
+            columnWidths: const {
+              0: FixedColumnWidth(170),
+              1: FlexColumnWidth(),
+              2: FlexColumnWidth(),
+              3: FlexColumnWidth(),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: [
+              TableRow(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).textTheme.titleMedium!.color),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 12, top: 12, bottom: 12, right: 12),
+                    child: Text(
+                      "Bottle",
+                      style: TextStyle(
+                          fontFamily: 'BebasNeue',
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.background),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12, bottom: 12),
+                    child: Text(
+                      "Average",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'BebasNeue',
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.background),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12, bottom: 12),
+                    child: Text(
+                      "Low",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'BebasNeue',
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.background),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 12, bottom: 12, right: 12),
+                    child: Text(
+                      "High",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'BebasNeue',
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.background),
+                    ),
+                  )
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 12),
-              child: Text(
-                "Average",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.background),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 12),
-              child: Text(
-                "Low",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.background),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 12, right: 12),
-              child: Text(
-                "High",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.background),
-              ),
-            )
-          ],
+            ]..addAll(_prepareTableRows(controller.bluebooks)),
+          ),
         ),
-      ]..addAll(_prepareTableRows(controller.bluebooks)),
-    ),
+        Container(
+          color: Theme.of(context).textTheme.titleMedium!.color,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 170,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 12, top: 12, bottom: 12, right: 12),
+                  child: Text(
+                    "Bottle",
+                    style: TextStyle(
+                        fontFamily: 'BebasNeue',
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.background),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 12),
+                  child: Text(
+                    "Average",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'BebasNeue',
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.background),
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 12),
+                child: Text(
+                  "Low",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'BebasNeue',
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.background),
+                ),
+              )),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 12, right: 12),
+                child: Text(
+                  "High",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'BebasNeue',
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.background),
+                ),
+              ))
+            ],
+          ),
+        )
+      ],
     );
   }
 
-  List<TableRow> _prepareTableRows(RxList<BlueBook> result) {
+  List<TableRow> _prepareTableRows(List<BlueBook> result) {
     List<TableRow> list = [];
-    
-    
-    for (BlueBook bluebook in result.value) {
 
-      if ( widget.keyword != null && widget.keyword != "" )
-      {
-        var bottleName = bluebook.bottleName!;
-        if ( !bottleName.toUpperCase().contains(widget.keyword!.toUpperCase()) ) continue;
-      }
+    for (BlueBook bluebook in result) {
+      // if (widget.keyword != null && widget.keyword != "") {
+      //   var bottleName = bluebook.bottleName!;
+      //   if (!bottleName.toUpperCase().contains(widget.keyword!.toUpperCase()))
+      //     continue;
+      // }
 
       list.add(TableRow(
           decoration: const BoxDecoration(
@@ -129,7 +201,8 @@ class _BlueBookTableState extends State<BlueBookTable> {
                       color: Color.fromARGB(255, 73, 73, 73), width: 1))),
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12, right: 12),
+              padding: const EdgeInsets.only(
+                  left: 12, top: 12, bottom: 12, right: 12),
               child: Text(
                 bluebook.bottleName!,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -174,7 +247,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
           ]));
     }
 
-    if ( widget.showLoading ) {
+    if (widget.showLoading) {
       list.add(TableRow(
           decoration: const BoxDecoration(
               border: BorderDirectional(
@@ -182,7 +255,8 @@ class _BlueBookTableState extends State<BlueBookTable> {
                       color: Color.fromARGB(255, 73, 73, 73), width: 1))),
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12, right: 12),
+              padding: const EdgeInsets.only(
+                  left: 12, top: 12, bottom: 12, right: 12),
               child: Text(
                 "Loading...",
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -222,7 +296,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
               ),
             )
           ]));
-          return list;
+      return list;
     }
 
     return list;

@@ -11,6 +11,7 @@ class User {
   String? subscriptionType;
   String? lastPaymentMethod;
   String? subscriptionStatus;
+  String? isFree;
 
   User(
       {this.id,
@@ -24,7 +25,8 @@ class User {
       this.packagePrice,
       this.subscriptionType,
       this.lastPaymentMethod,
-      this.subscriptionStatus});
+      this.subscriptionStatus,
+      this.isFree});
 
   User.fromJson(json) {
     id = json['id'].toString();
@@ -40,6 +42,7 @@ class User {
     subscriptionType = json['subscription_type'];
     lastPaymentMethod = json['last_payment_method'];
     subscriptionStatus = json['subscription_status'];
+    isFree = json['is_free'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -55,7 +58,8 @@ class User {
       "package_price": packagePrice,
       "subscription_type": subscriptionType,
       "last_payment_method": lastPaymentMethod,
-      "subscription_status": subscriptionStatus
+      "subscription_status": subscriptionStatus,
+      'is_free': isFree
     };
   }
 }
