@@ -40,7 +40,7 @@ class _BourbonuerTestingState extends State<BourbonuerTesting> {
             decoration: const BoxDecoration(
                 //color: Colors.red,
                 image: DecorationImage(
-                    image: AssetImage("assets/images/new-dashboard.jpg"),
+                    image: AssetImage("assets/images/new-test.jpg"),
                     alignment: Alignment.center,
                     repeat: ImageRepeat.noRepeat)),
             child: Text(
