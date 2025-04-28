@@ -53,8 +53,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     });
   }
 
-  _handleConfirm(BlueBook bluebook) async {    
-    Navigator.pop(context);
+  _handleConfirm(BlueBook bluebook) async {        
 
     // If the page type is search we are going to call only confirm
     if ( widget.pageType == SearchPageType.trade ) {
@@ -233,7 +232,9 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
           return BottleAddPopup(
               value: value!,
               searchPageType: widget.pageType,              
-              onConfirm: onConfirm);
+              onConfirm: onConfirm,
+              disableThirdButton: widget.pageType == SearchPageType.rating,
+          );
         });
   }
 

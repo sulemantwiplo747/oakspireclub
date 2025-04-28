@@ -217,11 +217,11 @@ class DashBoardLinkItem extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
         padding:
-            const EdgeInsets.only(left: 15, top: 10, bottom: 10, right: 15),
+            const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
         width: flexible != true ? 160 : null,
         height: flexible != true ? 120 : null,
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background.withOpacity(.7),
+            color: Theme.of(context).colorScheme.background.withOpacity(.8),
             border: Border.all(
               color: const Color(0Xfffe8003),
               width: 3,
@@ -232,8 +232,9 @@ class DashBoardLinkItem extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.white,
                   fontFamily: 'TradeGothic',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22)),
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                  fontSize: 24)),
         ),
       ),
     );
