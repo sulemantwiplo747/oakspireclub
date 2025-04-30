@@ -87,7 +87,6 @@ class _PourPageState extends State<PourPage> {
       isLoading = true;
     });
 
-    Navigator.pop(context);
     blueBook = b;
 
     Rating? rating = await RatingApi.getByUserIdBluebookId(

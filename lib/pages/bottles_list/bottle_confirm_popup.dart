@@ -2,11 +2,18 @@ import 'package:bourboneur/pages/bottles_search.dart';
 import 'package:flutter/material.dart';
 
 class BottleConfirmPopup extends StatelessWidget {
-  BottleConfirmPopup({super.key, this.value, this.text, this.onConfirm});
+  BottleConfirmPopup({
+    super.key,
+      this.value,
+      this.text,
+      this.onConfirm,
+      this.disableThirdButton
+    });
 
   Widget? text;
   String? value;
   void Function()? onConfirm;
+  bool? disableThirdButton;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +43,7 @@ class BottleConfirmPopup extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                Navigator.pop(context);
                 if (onConfirm != null) onConfirm!();
               },
               child: const Text(
@@ -48,11 +56,15 @@ class BottleConfirmPopup extends StatelessWidget {
             ),
           ],
         ),
+        if ( disableThirdButton != true )
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: onConfirm,
+              onPressed: () {
+                Navigator.pop(context);
+                if (onConfirm != null) onConfirm!();
+              },
               child: const Text(
                 'Yes, and add another',
                 style: TextStyle(
@@ -70,14 +82,17 @@ class BottleConfirmPopup extends StatelessWidget {
 
 class BottleAddPopup extends StatelessWidget {
   BottleAddPopup(
-      {super.key,
+    {super.key,
       required this.value,
       required this.onConfirm,
-      required this.searchPageType});
+      required this.searchPageType,
+      this.disableThirdButton
+    });
 
   String value;
   void Function()? onConfirm;
   SearchPageType searchPageType;
+  bool? disableThirdButton;  
 
   TextSpan _text() {
     String text1 = "";
@@ -122,6 +137,7 @@ class BottleAddPopup extends StatelessWidget {
         text: _text(),
       ),
       onConfirm: onConfirm,
+      disableThirdButton: disableThirdButton,
       value: value,
     );
   }
