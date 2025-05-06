@@ -43,9 +43,10 @@ class _MyRatingsTableState extends State<MyRatingsTable> {
             double total1 = nose1 + palate1 + finish1;
             double total2 = nose2 + palate2 + finish2;
 
-            return total2
-                .toString()
-                .compareTo(total1.toString());
+            print(total1);
+            print(total2);
+
+            return total2.compareTo(total1);
           });
           break;
         case 'NAME A-Z':
