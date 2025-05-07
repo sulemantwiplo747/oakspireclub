@@ -61,7 +61,7 @@ class _BottlesListState extends State<BottlesList> {
     _showConfirm(
       value: collection.blueBook!.bottleName!,
       onConfirm: () async {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         setState(() {
           isRemoving = true;
         });
@@ -101,7 +101,7 @@ class _BottlesListState extends State<BottlesList> {
         return BottleRemovePopup(
             value: value!,
             isWishList: isWishlist,
-            onConfirm: onConfirm
+            onConfirm: onConfirm,
         );
     });
   }

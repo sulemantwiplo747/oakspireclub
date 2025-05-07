@@ -43,7 +43,9 @@ class BottleConfirmPopup extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.pop(context);
+                // one more pop if disable third button is not true.
+                if ( disableThirdButton != true ) Navigator.pop(context);
+
                 if (onConfirm != null) onConfirm!();
               },
               child: const Text(
@@ -157,6 +159,7 @@ class BottleRemovePopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottleConfirmPopup(
+      disableThirdButton: true,
       text: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
