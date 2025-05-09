@@ -83,6 +83,7 @@ class _PourPageState extends State<PourPage> {
   }
 
   _handleSelect(BlueBook b) async {
+    Navigator.pop(context);
     setState(() {
       isLoading = true;
     });
