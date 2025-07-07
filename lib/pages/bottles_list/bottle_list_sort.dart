@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class BottleListSort extends StatefulWidget {
-
-  BottleListSort({
-    super.key,
-    required this.labels,
-    this.defaultSelected = 0,
-    this.onChange
-  });
+  BottleListSort(
+      {super.key,
+      required this.labels,
+      this.defaultSelected = 0,
+      this.onChange});
 
   List<String> labels;
   int defaultSelected;
@@ -18,7 +16,6 @@ class BottleListSort extends StatefulWidget {
 }
 
 class _BottleListSortState extends State<BottleListSort> {
-  
   int? selectedValue;
 
   @override
@@ -29,34 +26,48 @@ class _BottleListSortState extends State<BottleListSort> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          color: Color(0xffe17f2f),
-          borderRadius: BorderRadius.all(Radius.circular(30))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: _prepareItems(),
-      ),
+    return Column(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+              color: Color(0xffe17f2f),
+              borderRadius: BorderRadius.all(Radius.circular(30))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _prepareItems(widget.labels.take(4).toList()),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Container(
+            decoration: const BoxDecoration(
+                color: Color(0xffe17f2f),
+                borderRadius: BorderRadius.all(Radius.circular(30))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _prepareItems(widget.labels.skip(4).take(4).toList()),
+            ))
+      ],
     );
   }
 
-  List<BottleListSortItem> _prepareItems() {
+  List<BottleListSortItem> _prepareItems(List<String> labels) {
     List<BottleListSortItem> items = [];
-    items = widget.labels.map((String value) {
-      return BottleListSortItem(
-        text: value,
-        value: value,
-        isSelected: widget.labels.indexOf(value) == selectedValue,
-        onTap: (String value) {
-          setState(() {
-            selectedValue = widget.labels.indexOf(value);
-          });
-          if ( widget.onChange != null ) widget.onChange!(selectedValue!);
-        },
-      );
-    }).toList();
-
+    items = labels.map(_SortItem).toList();
     return items;
+  }
+
+  BottleListSortItem _SortItem(String value) {
+    return BottleListSortItem(
+      text: value,
+      value: value,
+      isSelected: widget.labels.indexOf(value) == selectedValue,
+      onTap: (String value) {
+        setState(() {
+          selectedValue = widget.labels.indexOf(value);
+        });
+        if (widget.onChange != null) widget.onChange!(selectedValue!);
+      },
+    );
   }
 }
 

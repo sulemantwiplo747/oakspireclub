@@ -9,12 +9,14 @@ class FavoritePourTable extends StatefulWidget {
   FavoritePourTable({
     super.key,
     this.favorites,
-    this.sortMode
+    this.sortMode,
+    this.onTap
   });
 
   String? sortMode;
   RxList<Favorite>? favorites;  
   void Function(Collection collection)? onPressRemove;
+  void Function(String id)? onTap;
   // bool isWishList;
 
   @override
@@ -61,12 +63,26 @@ class _FavoritePourTableState extends State<FavoritePourTable> {
                 .compareTo(item2.createdAt!.toString());
           });
           break;
+        case 'PRICE HIGH TO LOW':
+          sortedList.sort((item1, item2) {
+            double price1 = double.parse(item1.blueBook!.high!);
+            double price2 = double.parse(item2.blueBook!.high!);
+            return price2.compareTo(price1);
+          });
+          break;
+        case 'PRICE LOW TO HIGH':
+          sortedList.sort((item1, item2) {
+            double price1 = double.parse(item1.blueBook!.high!);
+            double price2 = double.parse(item2.blueBook!.high!);
+            return price1.compareTo(price2);
+          });
+          break;
       }
 
       list.addAll(sortedList.map((element) {
         return MyFavoriteTableItem(
-            id: element.id!,
-            title: element.blueBook!.bottleName!,
+            favorite: element,
+            onTap: widget.onTap,
         );
       }).toList());
     }
@@ -76,8 +92,6 @@ class _FavoritePourTableState extends State<FavoritePourTable> {
 
   @override
   Widget build(BuildContext context) {
-       
-
     return Container(
         constraints: const BoxConstraints(minHeight: 200),
         decoration: BoxDecoration(
@@ -101,28 +115,61 @@ class _FavoritePourTableState extends State<FavoritePourTable> {
 class MyFavoriteTableItem extends StatelessWidget {
   MyFavoriteTableItem(
     {super.key,
-      required this.title,      
-      required this.id,    
+      required this.favorite,
+      this.onTap
     });
 
-  String title;  
-  String id;
+  Favorite favorite;
+   void Function(String)? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+     return GestureDetector(
+      onTap: () {
+         if (onTap != null) onTap!(favorite.blueBook!.id!);
+      },
+      child: Padding(
       padding: EdgeInsets.only(top: 5, bottom: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(
-              child: Text(
-            title,
+          Expanded(child:  Text(
+            favorite.blueBook!.bottleName!,
             textAlign: TextAlign.left,
-            overflow: TextOverflow.clip,            
-          )),          
+            overflow: TextOverflow.ellipsis,
+          )),
+          // if ( editMode )
+          // NumberIncrementWidget(
+          //   number: collection.count!,
+          //   onTap: (isIncrement ) {},
+          // ),
+          // if (!editMode)
+          // Container(
+          //   width: 30,            
+          //   alignment: Alignment.center,
+          //   child: Text("${favorite.count!}"),
+          // ),   
+          // if (!editMode)
+          Container(
+            width: 60,            
+            alignment: Alignment.topRight,
+            child: Text("\$${favorite.blueBook!.high}", style: TextStyle( color: Colors.white ),),
+          ),  
+         
+          // if (editMode)
+          //   GestureDetector(
+          //     onTap: () {
+          //       if (onPressRemove != null) onPressRemove!(collection);
+          //     },
+          //     child: const Icon(
+          //       Icons.delete_forever,
+          //       color: Color(0xffe17f2f),
+          //       size: 25,
+          //     ),
+          //   )
         ],
       ),
-    );
+    ),
+     );
   }
 }

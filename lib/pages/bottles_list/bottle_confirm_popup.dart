@@ -12,7 +12,7 @@ class BottleConfirmPopup extends StatelessWidget {
 
   Widget? text;
   String? value;
-  void Function()? onConfirm;
+  void Function(int)? onConfirm;
   bool? disableThirdButton;
 
   @override
@@ -46,7 +46,7 @@ class BottleConfirmPopup extends StatelessWidget {
                 // one more pop if disable third button is not true.
                 if ( disableThirdButton != true ) Navigator.pop(context);
 
-                if (onConfirm != null) onConfirm!();
+                if (onConfirm != null) onConfirm!(1);
               },
               child: const Text(
                 'Yes',
@@ -65,10 +65,10 @@ class BottleConfirmPopup extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                if (onConfirm != null) onConfirm!();
+                if (onConfirm != null) onConfirm!(2);
               },
               child: const Text(
-                'Yes, and add another',
+                'Add more than one',
                 style: TextStyle(
                     color: Color(0xffe17f2f),
                     fontSize: 18,
@@ -92,7 +92,7 @@ class BottleAddPopup extends StatelessWidget {
     });
 
   String value;
-  void Function()? onConfirm;
+  void Function(int)? onConfirm;
   SearchPageType searchPageType;
   bool? disableThirdButton;  
 
@@ -154,7 +154,7 @@ class BottleRemovePopup extends StatelessWidget {
 
   String value;
   bool isWishList;
-  void Function()? onConfirm;
+  void Function(int)? onConfirm;
 
   @override
   Widget build(BuildContext context) {

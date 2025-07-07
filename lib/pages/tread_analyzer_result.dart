@@ -62,24 +62,24 @@ class _TreadAnalyzerLoadingPageState extends State<TreadAnalyzerResultPage> {
               child: Text("Trade\nAnalyzer",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 65,
-                      height: 1.3,
+                      fontSize: 45,
+                      height: 1.2,
                       fontWeight: FontWeight.bold,
                       color: Color(0xffe48235))),
-            ),
+            ),            
             const Text("RESULTS",
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.normal,
                     color: Colors.white)),
             const SizedBox(
-              height: 15,
+              height: 25,
             ),
             Image(
               image: AssetImage(resultImage),
-              height: 120,
+              height: 100,
             ),
             const SizedBox(
               height: 15,
@@ -88,18 +88,20 @@ class _TreadAnalyzerLoadingPageState extends State<TreadAnalyzerResultPage> {
               resultText,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 28,
+                fontSize: 25,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const Spacer(),
+            SizedBox(
+              height: 50,
+            ),
             Text(
               (widget.result >= 0
                   ? "+ \$${widget.result.toInt()}"
                   : "- \$${widget.result.abs().toInt()}"),
               style: TextStyle(
-                fontSize: 50,
+                fontSize: 45,
                 fontWeight: FontWeight.bold,
                 color: resultColor,
               ),
