@@ -1,7 +1,9 @@
+import 'dart:ffi';
 import 'dart:math' as math;
 import 'package:bourboneur/Core/Apis/Collection.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/Controllers/Collection.dart';
+import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/pages/bottles_list/bottle_confirm_popup.dart';
 import 'package:bourboneur/pages/bottles_list/bottle_list_sort.dart';
@@ -29,10 +31,17 @@ class _BottlesListState extends State<BottlesList> {
   bool isLoading = false;
   bool isRemoving = false;
   bool isEditing = false;
-  bool isFirstTimeLoading = true;
+  bool isFirstTimeLoading = true;  
 
-  List<String> sortLabels = ["NEWEST", "NAME A-Z", "NAME Z-A", "OLDEST"];
-  String? sortSelected;  
+  List<String> sortLabels = [
+    "NEWEST",
+    "NAME A-Z",
+    "NAME Z-A",
+    "OLDEST",
+    "PRICE HIGH TO LOW",
+    "PRICE LOW TO HIGH"
+  ];
+  String? sortSelected;
 
   @override
   void initState() {
@@ -40,10 +49,15 @@ class _BottlesListState extends State<BottlesList> {
     sortSelected = sortLabels[0];
 
     getListItems();
+
     super.initState();
   }
 
   void _handleOnTapEdit() {
+    if (isEditing) {
+      getListItems();
+    }
+
     setState(() {
       isEditing = !isEditing;
     });
@@ -57,23 +71,28 @@ class _BottlesListState extends State<BottlesList> {
     }
   }
 
-  void _handleCollectionRemove(Collection collection) {
+  void _handleCollectionRemove(GroupedCollection collection) {
     _showConfirm(
-      value: collection.blueBook!.bottleName!,
-      onConfirm: () async {
-        // Navigator.pop(context);
-        setState(() {
-          isRemoving = true;
-        });
+        value: collection.blueBook!.bottleName!,
+        onConfirm: (int button) async {
+          // Navigator.pop(context);
+          setState(() {
+            isRemoving = true;
+          });
 
-        await CollectionApi.remove(collection.id!);
-        setState(() {
-          isRemoving = false;
-        });
+          await CollectionApi.removeByUserBottle(
+              collection.blueBook!.id!,
+              controller.user.value.id!,
+              collection.type == CollectionType.normal.name
+                  ? CollectionType.normal
+                  : CollectionType.wishlist);
 
-        getListItems();
-      }
-    );
+          setState(() {
+            isRemoving = false;
+          });
+
+          getListItems();
+        });
   }
 
   getListItems() async {
@@ -82,28 +101,27 @@ class _BottlesListState extends State<BottlesList> {
     });
     CollectionType type =
         isWishlist ? CollectionType.wishlist : CollectionType.normal;
-    await CollectionApi.all(controller.user.value.id!, type);
+    await CollectionApi.grouped(controller.user.value.id!, type);
     setState(() {
       isLoading = false;
       isFirstTimeLoading = false;
     });
   }
 
-  Future onBack(value) {
-    print(value.toString());
+  Future onBack(value) {    
     return getListItems();
   }
 
-  Future<void> _showConfirm({void Function()? onConfirm, String? value}) {
+  Future<void> _showConfirm({void Function(int)? onConfirm, String? value}) {
     return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return BottleRemovePopup(
+        context: context,
+        builder: (BuildContext context) {
+          return BottleRemovePopup(
             value: value!,
             isWishList: isWishlist,
             onConfirm: onConfirm,
-        );
-    });
+          );
+        });
   }
 
   @override
@@ -111,97 +129,144 @@ class _BottlesListState extends State<BottlesList> {
     return LoginWrapper(
         child: Stack(
       children: [
-        SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(17),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (isWishlist)
-                  const SizedBox(
-                    height: 70,
-                    child: Text("WISHLIST",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 35)),
+        Column(
+          children: [
+            Flexible(
+                child: Container(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(17),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (isWishlist)
+                        const SizedBox(
+                          height: 70,
+                          child: Text("WISHLIST",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 35)),
+                        ),
+                      BottlesSearchInput(
+                        readOnly: true,
+                        onTap: () {
+                          Get.to(() => BottlesSearchPage(
+                                pageType: isWishlist
+                                    ? SearchPageType.wishlist
+                                    : SearchPageType.normal,
+                              ))?.then(onBack);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      ButtonListCounter(
+                        count: controller.groupedCollections.length,
+                        onTapEdit: _handleOnTapEdit,
+                        isEditing: isEditing,
+                      ),
+                      const SizedBox(height: 20),
+                      BottleListSort(
+                        onChange: _handleOnSortChange,
+                        labels: sortLabels,
+                        defaultSelected: 0,
+                      ),
+                      const SizedBox(height: 20),
+                      BottleListTable(
+                        collections: controller.groupedCollections,
+                        sortMode: sortSelected,
+                        editMode: isEditing,
+                        onPressRemove: _handleCollectionRemove,
+                      ),
+                      const SizedBox(height: 20),
+                      if (isWishlist)
+                        const Text(
+                          "SOMETIMES, WISHES DO COME TRUE…",
+                          style: TextStyle(
+                              color: Color(0xffe17f2f),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                    ],
                   ),
-                BottlesSearchInput(
-                  readOnly: true,
-                  onTap: () {
-                    Get.to(() => BottlesSearchPage(
-                      pageType: isWishlist ? SearchPageType.wishlist : SearchPageType.normal,                      
-                    ))
-                        ?.then(onBack);
-                  },
                 ),
-                const SizedBox(height: 20),
-                ButtonListCounter(
-                  count: controller.collections.length,
-                  onTapEdit: _handleOnTapEdit,
-                  isEditing: isEditing,
-                ),
-                const SizedBox(height: 20),
-                BottleListSort(
-                  onChange: _handleOnSortChange,
-                  labels: sortLabels,
-                  defaultSelected: 0,
-                ),
-                const SizedBox(height: 20),
-                BottleListTable(
-                  collections: controller.collections,
-                  sortMode: sortSelected,
-                  editMode: isEditing,
-                  onPressRemove: _handleCollectionRemove,
-                ),
-                const SizedBox(height: 20),
-                if (isWishlist)
-                const Text(
-                "SOMETIMES, WISHES DO COME TRUE…",
-                  style: TextStyle(
-                    color: Color(0xffe17f2f),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-                GestureDetector(
-                    onTap: () {
-                      if (isWishlist) {
-                        launchUrl(Uri.parse('https://brbnfndr.com'));
-                        return;
-                      }else {
-                        Get.to(() => WheelOfDestiny( exportCollection: true ));
-                      }
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: const Color(0xffe17f2f), width: 1),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(7))),
-                        padding: const EdgeInsets.all(15),
-                        child: Text(
-                            isWishlist == false
-                                ? "EXPORT TO WHEEL OF DESTINY"
-                                : "BRBNFNDR.COM",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Arial',
-                                fontWeight: FontWeight.bold,                                
-                                color: Colors.white,
-                                fontSize: isWishlist == false ? 20 : 30,
-                                letterSpacing: isWishlist == false ? null : 2.9,
-                                height: 1.2))))
-              ],
-            ),
-          ),
+              ),
+            )),
+            Container(
+                padding:
+                    EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          // if (isWishlist) {
+                          //   launchUrl(Uri.parse('https://brbnfndr.com'));
+                          //   return;
+                          // } else {
+                          //   Get.to(
+                          //       () => WheelOfDestiny(exportCollection: true));
+                          // }
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xffe17f2f), width: 1),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(7))),
+                            padding: const EdgeInsets.all(15),
+                            child: Text("EXPORT TO EXCEL",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'Arial',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: isWishlist == false ? 20 : 30,
+                                    letterSpacing:
+                                        isWishlist == false ? null : 2.9,
+                                    height: 1.2)))),
+                    SizedBox(height: 20),
+                    GestureDetector(
+                        onTap: () {
+                          if (isWishlist) {
+                            launchUrl(Uri.parse('https://brbnfndr.com'));
+                            return;
+                          } else {
+                            Get.to(
+                                () => WheelOfDestiny(exportCollection: true));
+                          }
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xffe17f2f), width: 1),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(7))),
+                            padding: const EdgeInsets.all(15),
+                            child: Text(
+                                isWishlist == false
+                                    ? "EXPORT TO WHEEL OF DESTINY"
+                                    : "BRBNFNDR.COM",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'Arial',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: isWishlist == false ? 20 : 30,
+                                    letterSpacing:
+                                        isWishlist == false ? null : 2.9,
+                                    height: 1.2))))
+                  ],
+                )),
+          ],
         ),
-        if ( isRemoving || isLoading || isFirstTimeLoading )
+        if (isRemoving || isLoading || isFirstTimeLoading)
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            color: isFirstTimeLoading ? Colors.black : const Color.fromARGB(52, 0, 0, 0),
+            color: isFirstTimeLoading
+                ? Colors.black
+                : const Color.fromARGB(52, 0, 0, 0),
             child: const Center(
               child: SizedBox(
                 width: 30,

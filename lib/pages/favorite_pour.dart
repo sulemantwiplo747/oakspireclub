@@ -4,7 +4,9 @@ import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/Controllers/Collection.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/pages/bottles_list/bottle_confirm_popup.dart';
+import 'package:bourboneur/pages/bottles_list/bottle_list_sort.dart';
 import 'package:bourboneur/pages/favorite_pour/favorite_pour_table.dart';
+import 'package:bourboneur/pages/pour.dart';
 import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +26,9 @@ class _FavoritePourState extends State<FavoritePour> {
 
   bool isWishlist = false;
   bool isLoading = false;
+
+  List<String> sortLabels = ["NEWEST", "NAME A-Z", "NAME Z-A", "OLDEST", "PRICE HIGH TO LOW", "PRICE LOW TO HIGH"];
+  String? sortSelected;  
   
   @override
   void initState() {
@@ -44,12 +49,27 @@ class _FavoritePourState extends State<FavoritePour> {
     });
   }
 
+  void _handleOnSortChange(int index) {
+    if (sortSelected != sortLabels[index]) {
+      setState(() {
+        sortSelected = sortLabels[index];
+      });
+    }
+  }
+
+   _handleOnTapFavorite(String id) {    
+    Get.to(() => PourPage(
+      id: id,
+      idType: 'bluebook',
+    ))?.then(onBack);
+  }
+
   Future onBack(value) {
     print(value.toString());
     return getListItems();
   }
 
-  Future<void> _showConfirm({void Function()? onConfirm, String? value}) {
+  Future<void> _showConfirm({void Function(int)? onConfirm, String? value}) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -89,24 +109,27 @@ class _FavoritePourState extends State<FavoritePour> {
                Padding(
                 padding: EdgeInsets.only(left: 15, right: 15),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                      Container(
                   alignment: Alignment.centerLeft,
                   child: Image.asset('assets/images/favorite_pours.png',
                       width: 330),
                 ),
-                SizedBox(
+                const Text("Click your bottles to edit", style: TextStyle(color: Colors.white)),
+                const SizedBox(
                   height: 10,
                 ),
-                // BottleListSort(
-                //   onChange: _handleOnSortChange,
-                //   labels: sortLabels,
-                //   defaultSelected: 0,
-                // ),
-                // const SizedBox(height: 20),
+                BottleListSort(
+                  onChange: _handleOnSortChange,
+                  labels: sortLabels,
+                  defaultSelected: 0,
+                ),
+                const SizedBox(height: 20),
                 FavoritePourTable(
                   favorites: controller.favorites,
-                  sortMode: 'NEWEST'
+                  sortMode: sortSelected,
+                  onTap: _handleOnTapFavorite,
                 ),
                 const SizedBox(height: 20),
                 // CustomButton(text: "Export Data to Excel")

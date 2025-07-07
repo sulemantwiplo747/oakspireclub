@@ -3,6 +3,7 @@ import 'package:bourboneur/Core/Controllers/Collection.dart';
 import 'package:bourboneur/Core/Controllers/Config.dart';
 import 'package:bourboneur/Core/Controllers/Favorite.dart';
 import 'package:bourboneur/Core/Controllers/GoodPour.dart';
+import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:bourboneur/Core/Controllers/LastUpdate.dart';
 import 'package:bourboneur/Core/Controllers/Package.dart';
 import 'package:bourboneur/Core/Controllers/Rating.dart';
@@ -15,6 +16,7 @@ class Controller extends GetxController {
   Rx<User> user = User().obs;
   RxList<BlueBook> bluebooks = <BlueBook>[].obs;
   RxList<Collection> collections = <Collection>[].obs;
+  RxList<GroupedCollection> groupedCollections = <GroupedCollection>[].obs;
   RxList<Rating> ratings = <Rating>[].obs;
   RxList<Favorite> favorites = <Favorite>[].obs;
   Rx<LastUpdate> lastUpdate = LastUpdate().obs;

@@ -68,7 +68,7 @@ class _MyRatingsState extends State<MyRatings> {
     return getListItems();
   }
 
-  _handleOnTapRating(String id) {
+  _handleOnTapRating(String id) {    
     Get.to(() => PourPage(
       id: id
     ))?.then(onBack);

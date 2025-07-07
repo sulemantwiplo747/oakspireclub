@@ -37,6 +37,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
   bool isListLoading = false;
 
   bool isConfirmLoading = false;
+  bool isBulkAdd = false;
 
   @override
   void initState() {
@@ -182,9 +183,14 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
       return BottleSearchItem(
         text: value.bottleName!,
         onTap: () {
+          if ( isBulkAdd ) {
+            _handleConfirm(value);
+            return;
+          }
           _showConfirm(
             value: value.bottleName!,
-            onConfirm: () {
+            onConfirm: ( int button ) {
+              if ( button == 2 ) isBulkAdd = true;
               _handleConfirm(value);
           });
         },
@@ -225,7 +231,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     return data;
   }
 
-  Future<void> _showConfirm({void Function()? onConfirm, String? value}) {
+  Future<void> _showConfirm({void Function(int)? onConfirm, String? value}) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {

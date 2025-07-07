@@ -25,18 +25,18 @@ class _TradeAnalyzerPageState extends State<TradeAnalyzerPage> {
               const Text("Trade\nAnalyzer",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 65,
-                      height: 1.3,
+                      fontSize: 45,
+                      height: 1.2,
                       fontWeight: FontWeight.bold,
                       color: Color(0xffe48235))),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               const Text(
-                  "Add your proposed trade bottles below to see how fair the deal is.",
-                  textAlign: TextAlign.left,                  
+                  "Add your proposed trade\nbottles below to see how fair\nthe deal is.",
+                  textAlign: TextAlign.center,                  
                   style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.italic,
                       color: Colors.white)),

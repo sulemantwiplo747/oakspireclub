@@ -106,7 +106,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     DashBoardLinkItem(
-                      text: const TextSpan(text: "Wheel\nof\nDestiny"),
+                      text: const TextSpan(text: "Wheel of\nDestiny"),
                       onTap: () {
                         Get.to(() => WheelOfDestiny());
                       },
@@ -234,7 +234,7 @@ class DashBoardLinkItem extends StatelessWidget {
                   fontFamily: 'TradeGothic',
                   fontWeight: FontWeight.w800,
                   height: 1.2,
-                  fontSize: 24)),
+                  fontSize: 21)),
         ),
       ),
     );

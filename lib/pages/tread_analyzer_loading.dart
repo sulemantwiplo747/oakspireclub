@@ -71,7 +71,7 @@ class _TreadAnalyzerLoadingPageState extends State<TreadAnalyzerLoadingPage> {
             Center(
               child: Image.asset(
                 "assets/images/analyzer.png",
-                height: 250,
+                height: 200,
               ),
             ),
             const SizedBox(height: 30),

@@ -77,10 +77,10 @@ class _MyAppState extends State<MyApp> {
           )
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF000000).withOpacity(1),
-          foregroundColor: Color(0xFF000000).withOpacity(1),
-          surfaceTintColor: Color(0xFF000000).withOpacity(1),          
-          iconTheme: IconThemeData(
+          backgroundColor: const Color(0xFF000000).withOpacity(1),
+          foregroundColor: const Color(0xFF000000).withOpacity(1),
+          surfaceTintColor: const Color(0xFF000000).withOpacity(1),          
+          iconTheme: const IconThemeData(
             color: Color(0xffe17f2f)
           )
         ),
