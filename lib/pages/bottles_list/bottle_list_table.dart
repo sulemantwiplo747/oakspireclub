@@ -5,6 +5,7 @@ import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:get/get.dart';
 
 class BottleListTable extends StatefulWidget {
@@ -142,12 +143,31 @@ class _BottleListTableItemState extends State<BottleListTableItem> {
 
   @override
   void initState() {
-    
-    count = int.parse(widget.collection.count!);    
-    initCount = count;
-
+    updateCount();
     super.initState();
   }
+
+  void updateCount() {
+    count = int.parse(widget.collection.count!);        
+    setState(() {
+      initCount = count;
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant BottleListTableItem oldWidget) {
+    if ( oldWidget.collection.count != widget.collection.count! ) {
+      updateCount();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   print(widget.collection.blueBook!.bottleName!);
+  //   print(count);
+  //   super.didChangeDependencies();
+  // }
 
   @override
   void dispose() {
