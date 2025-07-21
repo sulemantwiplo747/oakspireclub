@@ -200,13 +200,13 @@ class _BottlesListState extends State<BottlesList> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          // if (isWishlist) {
-                          //   launchUrl(Uri.parse('https://brbnfndr.com'));
-                          //   return;
-                          // } else {
-                          //   Get.to(
-                          //       () => WheelOfDestiny(exportCollection: true));
-                          // }
+                           String? url = controller.config.value.collectionDownloadUrl;
+                          String? userId = controller.user.value.id;                          
+                          if (isWishlist) {
+                            launchUrl(Uri.parse(url! + '?&user_id=' + userId!  + "&type=wishlist"), mode: LaunchMode.externalApplication);
+                          } else {
+                            launchUrl(Uri.parse(url! + '?&user_id=' + userId!  + "&type=normal"), mode: LaunchMode.externalApplication);
+                          }
                         },
                         child: Container(
                             decoration: BoxDecoration(

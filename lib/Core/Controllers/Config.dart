@@ -9,6 +9,7 @@ class Config {
   String? uploadUrl;
   String? pourImagePlaceHolder;
   String? ratingExportUrl;
+  String? collectionDownloadUrl;
 
   Config({
     this.stripePk,
@@ -19,7 +20,8 @@ class Config {
     this.privacyUrl,
     this.uploadUrl,
     this.pourImagePlaceHolder,
-    this.ratingExportUrl
+    this.ratingExportUrl,
+    this.collectionDownloadUrl
   });
 
   Config.fromJson(json) {
@@ -33,6 +35,7 @@ class Config {
     pourImagePlaceHolder = json['pour_image_placeholder'];
     uploadUrl = json['upload_url'];
     ratingExportUrl = json['rating_export_url'];
+    collectionDownloadUrl = json['collection_download_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,7 +49,8 @@ class Config {
       'current_version': currentVersion,
       'upload_url': uploadUrl,
       'pur_image_placeholder': pourImagePlaceHolder,
-      'rating_export_url': ratingExportUrl
+      'rating_export_url': ratingExportUrl,
+      'collection_download_url': collectionDownloadUrl
     };
   }
 }
