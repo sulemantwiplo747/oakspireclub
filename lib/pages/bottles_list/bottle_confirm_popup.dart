@@ -44,7 +44,6 @@ class BottleConfirmPopup extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
                 // one more pop if disable third button is not true.
-                if ( disableThirdButton != true ) Navigator.pop(context);
 
                 if (onConfirm != null) onConfirm!(1);
               },
