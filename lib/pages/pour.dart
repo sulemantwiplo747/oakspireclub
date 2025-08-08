@@ -63,17 +63,23 @@ class _PourPageState extends State<PourPage> {
     });
 
     // else
-    Rating rating = widget.idType == 'rating' ?
+    Rating? rating = widget.idType == 'rating' ?
       await RatingApi.getById(widget.id!) : await await RatingApi.getByUserIdBluebookId(
       controller.user.value.id!,
       widget.id!
     );
 
-    blueBook = rating.blueBook!;
-    note = rating.notes!;
-    nose = double.parse(rating.nose!);
-    palate = double.parse(rating.palate!);
-    finish = double.parse(rating.finish!);
+    if ( rating != null )
+    {
+      blueBook = rating.blueBook!;
+      note = rating.notes!;
+      nose = double.parse(rating.nose!);
+      palate = double.parse(rating.palate!);
+      finish = double.parse(rating.finish!);
+    }else {
+      // it means there is no rating just load the bluebook
+      blueBook =  await BlueBookApi.getById(widget.id!);
+    }
 
     // Check if is in wish list.
     var data = await CollectionApi.isInCollection(

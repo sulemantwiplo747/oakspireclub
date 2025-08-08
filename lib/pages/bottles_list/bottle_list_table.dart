@@ -4,6 +4,7 @@ import 'package:bourboneur/Core/Apis/Collection.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
+import 'package:bourboneur/pages/bottles_list/number_increment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:get/get.dart';
@@ -98,15 +99,17 @@ class _BottleListTableState extends State<BottleListTable> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        constraints: const BoxConstraints(minHeight: 200),
-        decoration: BoxDecoration(
+    return Flexible(child:  Container(            
+        // constraints: BoxConstraints.,
+        decoration: BoxDecoration(          
             border: Border.all(color: const Color(0xffe17f2f), width: 1),
             borderRadius: const BorderRadius.all(Radius.circular(7))),
         padding: const EdgeInsets.all(15),
-        child: widget.collections != null && widget.collections!.isNotEmpty ? Column(
+        child: widget.collections != null && widget.collections!.isNotEmpty ? SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: _prepareCollections(),
+        ),
         ): const Text(
           "SEARCH ABOVE TO ADD YOUR BOTTLES",
           style: TextStyle(
@@ -114,7 +117,7 @@ class _BottleListTableState extends State<BottleListTable> {
             fontSize: 15,
             fontWeight: FontWeight.bold
           ),
-        ));
+        )));
   }
 }
 
@@ -249,40 +252,6 @@ class _BottleListTableItemState extends State<BottleListTableItem> {
             )
         ],
       ),
-    );
-  }
-}
-
-class NumberIncrementWidget extends StatelessWidget {
-  final String number;
-  final void Function(bool isIncrement) onTap;
-
-  const NumberIncrementWidget({
-    super.key,
-    required this.number,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_left, size: 32, color: Colors.white),
-          onPressed: () => onTap(false), // Pass decrement event
-          tooltip: 'Decrement',
-        ),
-        Text(
-          '$number',   
-          style: TextStyle( color: Colors.white ),       
-        ),
-        IconButton(
-          icon: const Icon(Icons.arrow_right, size: 32, color: Colors.white),
-          onPressed: () => onTap(true), // Pass increment event
-          tooltip: 'Increment',
-        ),
-      ],
     );
   }
 }

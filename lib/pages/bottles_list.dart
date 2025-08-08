@@ -31,7 +31,7 @@ class _BottlesListState extends State<BottlesList> {
   bool isLoading = false;
   bool isRemoving = false;
   bool isEditing = false;
-  bool isFirstTimeLoading = true;  
+  bool isFirstTimeLoading = true;
 
   List<String> sortLabels = [
     "NEWEST",
@@ -108,7 +108,7 @@ class _BottlesListState extends State<BottlesList> {
     });
   }
 
-  Future onBack(value) {    
+  Future onBack(value) {
     return getListItems();
   }
 
@@ -132,9 +132,8 @@ class _BottlesListState extends State<BottlesList> {
         Column(
           children: [
             Flexible(
-                child: Container(
-              child: SingleChildScrollView(
-                child: Padding(
+                child: Container(                  
+              child: Padding(
                   padding: EdgeInsets.all(17),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -178,6 +177,7 @@ class _BottlesListState extends State<BottlesList> {
                         editMode: isEditing,
                         onPressRemove: _handleCollectionRemove,
                       ),
+                      if ( isWishlist )
                       const SizedBox(height: 20),
                       if (isWishlist)
                         const Text(
@@ -190,22 +190,32 @@ class _BottlesListState extends State<BottlesList> {
                     ],
                   ),
                 ),
-              ),
             )),
             Container(
-                padding:
-                    EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
+                padding: const EdgeInsets.only(
+                    top: 15, bottom: 15, left: 15, right: 15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     GestureDetector(
                         onTap: () {
-                           String? url = controller.config.value.collectionDownloadUrl;
-                          String? userId = controller.user.value.id;                          
+                          String? url =
+                              controller.config.value.collectionDownloadUrl;
+                          String? userId = controller.user.value.id;
                           if (isWishlist) {
-                            launchUrl(Uri.parse(url! + '?&user_id=' + userId!  + "&type=wishlist"), mode: LaunchMode.externalApplication);
+                            launchUrl(
+                                Uri.parse(url! +
+                                    '?&user_id=' +
+                                    userId! +
+                                    "&type=wishlist"),
+                                mode: LaunchMode.externalApplication);
                           } else {
-                            launchUrl(Uri.parse(url! + '?&user_id=' + userId!  + "&type=normal"), mode: LaunchMode.externalApplication);
+                            launchUrl(
+                                Uri.parse(url! +
+                                    '?&user_id=' +
+                                    userId! +
+                                    "&type=normal"),
+                                mode: LaunchMode.externalApplication);
                           }
                         },
                         child: Container(
@@ -221,9 +231,10 @@ class _BottlesListState extends State<BottlesList> {
                                     fontFamily: 'Arial',
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: isWishlist == false ? 20 : 30,
-                                    letterSpacing:
-                                        isWishlist == false ? null : 2.9,
+                                    // fontSize: isWishlist == false ? 20 : 30,
+                                    fontSize: 20,
+                                    // letterSpacing:
+                                    //     isWishlist == false ? null : 2.9,
                                     height: 1.2)))),
                     SizedBox(height: 20),
                     GestureDetector(
@@ -252,7 +263,7 @@ class _BottlesListState extends State<BottlesList> {
                                     fontFamily: 'Arial',
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: isWishlist == false ? 20 : 30,
+                                    fontSize: 25,
                                     letterSpacing:
                                         isWishlist == false ? null : 2.9,
                                     height: 1.2))))
