@@ -197,26 +197,18 @@ class _BottlesListState extends State<BottlesList> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if ( !isWishlist )
                     GestureDetector(
                         onTap: () {
                           String? url =
                               controller.config.value.collectionDownloadUrl;
                           String? userId = controller.user.value.id;
-                          if (isWishlist) {
-                            launchUrl(
-                                Uri.parse(url! +
-                                    '?&user_id=' +
-                                    userId! +
-                                    "&type=wishlist"),
-                                mode: LaunchMode.externalApplication);
-                          } else {
-                            launchUrl(
+                          launchUrl(
                                 Uri.parse(url! +
                                     '?&user_id=' +
                                     userId! +
                                     "&type=normal"),
                                 mode: LaunchMode.externalApplication);
-                          }
                         },
                         child: Container(
                             decoration: BoxDecoration(
@@ -263,7 +255,7 @@ class _BottlesListState extends State<BottlesList> {
                                     fontFamily: 'Arial',
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: 25,
+                                    fontSize: isWishlist ? 25 : 22,
                                     letterSpacing:
                                         isWishlist == false ? null : 2.9,
                                     height: 1.2))))
