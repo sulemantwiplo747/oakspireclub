@@ -143,36 +143,132 @@ class _PackageFormState extends State<PackageForm> {
       return;
     }
     if (Platform.isIOS) {
-      if (isAvailable) {
-        _subscribe(
-            product: _products.firstWhere(
-            (product) => product.id == selectedAppStorePackageId,
-          ));
-      } else {
-        utils.showToast("Sorry", "This product is currently unavailable");
+      if (!isAvailable) {
+        utils.showToast(
+            "Error", "In-App Purchases are not available on this device.");
+        return;
       }
-    } else {
+
+      if (_products.isEmpty) {
+        utils.showToast("Error", "No products available for purchase.");
+        return;
+      }
+
+      try {
+        final product = _products.firstWhere(
+          (p) => p.id == selectedAppStorePackageId,
+          orElse: () => throw Exception("Selected product not found."),
+        );
+        await _subscribe(product: product);
+      } catch (e) {
+        utils.hideLoadingDialog();
+        utils.showToast(
+            "Error", "Failed to initiate purchase: ${e.toString()}");
+      }
+    }
+    // if (Platform.isIOS) {
+    //   if (isAvailable) {
+    //     _subscribe(
+    //         product: _products.firstWhere(
+    //         (product) => product.id == selectedAppStorePackageId,
+    //       ));
+    //   } else {
+    //     utils.showToast("Sorry", "This product is currently unavailable");
+    //   }
+    // }
+     else {
       Get.off(() => CapturePaymentDetails(
             packageId: selectedPackageId!,
             trialAvailable: controller.user.value.packageId == null,
           ));
     }
   }
-
+Future<void> _handleRestore() async {
+    try {
+      utils.showLoadingDialog();
+      await _inAppPurchase.restorePurchases();
+    } catch (e) {
+      utils.hideLoadingDialog();
+      utils.showToast("Error", "Failed to restore purchases: ${e.toString()}");
+    }
+  }
   @override
   void initState() {
-    Platform.isIOS ? intilizeIosPayment() : null;
+    Platform.isIOS ? initializeIosPayment() : null;
     super.initState();
   }
-
+@override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
   Future<List<ProductDetails>> _getProducts(
       {required Set<String> productIds}) async {
-    ProductDetailsResponse response =
-        await _inAppPurchase.queryProductDetails(productIds);
-    return response.productDetails;
+    try {
+      ProductDetailsResponse response =
+          await _inAppPurchase.queryProductDetails(productIds);
+      return response.productDetails;
+    } catch (e) {
+      utils.showToast("Error", "Failed to fetch products: ${e.toString()}");
+      return [];
+    }
   }
+  // Future<List<ProductDetails>> _getProducts(
+  //     {required Set<String> productIds}) async {
+  //   ProductDetailsResponse response =
+  //       await _inAppPurchase.queryProductDetails(productIds);
+  //   return response.productDetails;
+  // }
+  Future<void> initializeIosPayment() async {
+    try {
+      isAvailable = await _inAppPurchase.isAvailable();
+      if (!isAvailable) {
+        utils.showToast(
+            "Error", "In-App Purchases are not available on this device.");
+        return;
+      }
 
-  intilizeIosPayment() async {
+      Set<String> appleStoreIds = controller.packages
+          .where((package) => package.appleStoreId != null)
+          .map((package) => package.appleStoreId!)
+          .toSet();
+
+      if (appleStoreIds.isEmpty) {
+        utils.showToast("Error", "No valid products found for purchase.");
+        return;
+      }
+
+      List<ProductDetails> products =
+          await _getProducts(productIds: appleStoreIds);
+      if (products.isEmpty) {
+        utils.showToast(
+            "Error", "Some products are unavailable. Please try again later.");
+        return;
+      }
+
+      setState(() {
+        _products = products;
+      });
+
+      final Stream<List<PurchaseDetails>> purchaseUpdated =
+          _inAppPurchase.purchaseStream;
+      _subscription = purchaseUpdated.listen(
+        _listenToPurchaseUpdated,
+        onDone: () {
+          _subscription?.cancel();
+        },
+        onError: (error) {
+          utils.hideLoadingDialog();
+          utils.showToast(
+              "Error", "Purchase stream error: ${error.toString()}");
+          _subscription?.cancel();
+        },
+      );
+    } catch (e) {
+      utils.showToast("Error", "Failed to initialize payment: ${e.toString()}");
+    }
+  }
+  /*intilizeIosPayment() async {
     isAvailable = await _inAppPurchase.isAvailable();
     Set<String> appleStoreIds = {};
     for (var package in controller.packages) {
@@ -196,8 +292,9 @@ class _PackageFormState extends State<PackageForm> {
       _subscription!.cancel();
     });
   }
-
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+  */
+// 21/7/25
+ /* void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     try {
       purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
         switch (purchaseDetails.status) {
@@ -238,20 +335,92 @@ class _PackageFormState extends State<PackageForm> {
       EasyLoading.showError(e.toString());
     }
   }
-
-  Future<void> _subscribe({required ProductDetails product}) async {
-    late PurchaseParam purchaseParam;
+  */
+  //END 21/7/25
+  void _listenToPurchaseUpdated(
+      List<PurchaseDetails> purchaseDetailsList) async {
     try {
-      utils.showLoadingDialog();
-      purchaseParam = PurchaseParam(productDetails: product);
-      // _inAppPurchase
-      _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+      for (PurchaseDetails purchaseDetails in purchaseDetailsList) {
+        switch (purchaseDetails.status) {
+          case PurchaseStatus.pending:
+          utils.hideLoadingDialog();
+            // Already showing loading dialog
+            break;
+
+          case PurchaseStatus.purchased:
+          case PurchaseStatus.restored:
+            try {
+              await PackageApi.subscribe(
+                controller.user.value.id!,
+                selectedPackageId!,
+                purchaseDetails.purchaseID.toString(),
+              );
+              await UserApi.getById(controller.user.value.id!);
+              utils.hideLoadingDialog();
+              Get.offAll(() => openDashboard(controller.user.value));
+              utils.showToast(
+                  "Success", "Your package has been activated, enjoy!");
+            } catch (e) {
+              utils.hideLoadingDialog();
+              utils.showToast(
+                  "Error", "Failed to activate subscription: ${e.toString()}");
+            }
+            break;
+
+          case PurchaseStatus.error:
+            utils.hideLoadingDialog();
+            utils.showToast("Error",
+                "Purchase failed: ${purchaseDetails.error?.message ?? 'Unknown error'}");
+            break;
+
+          case PurchaseStatus.canceled:
+            utils.hideLoadingDialog();
+            utils.showToast("Info", "Purchase was canceled by the user.");
+            break;
+
+          default:
+            utils.hideLoadingDialog();
+            utils.showToast("Error", "Unknown purchase status.");
+            break;
+        }
+
+        if (purchaseDetails.pendingCompletePurchase) {
+          try {
+            await _inAppPurchase.completePurchase(purchaseDetails);
+          } catch (e) {
+            utils.showToast(
+                "Error", "Failed to complete purchase: ${e.toString()}");
+          }
+        }
+      }
     } catch (e) {
-       utils.hideLoadingDialog();
-        utils.showToast("Sorry", e.toString());
-      //  utils.showToast("Sorry", "Looks like we were not able to open in app purchase");
+      utils.hideLoadingDialog();
+      utils.showToast("Error", "Purchase processing error: ${e.toString()}");
     }
   }
+Future<void> _subscribe({required ProductDetails product}) async {
+    try {
+      utils.showLoadingDialog();
+      final purchaseParam = PurchaseParam(productDetails: product);
+      await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+    } catch (e) {
+      utils.hideLoadingDialog();
+      utils.showToast("Error", "Purchase failed: ${e.toString()}");
+    }
+  }
+  // Future<void> _subscribe({required ProductDetails product}) async {
+  //   late PurchaseParam purchaseParam;
+  //   try {
+  //     utils.showLoadingDialog();
+  //     purchaseParam = PurchaseParam(productDetails: product);
+  //     // _inAppPurchase
+  //     _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+  //   } catch (e) {
+  //      utils.hideLoadingDialog();
+  //       utils.showToast("Sorry", e.toString());
+  //     //  utils.showToast("Sorry", "Looks like we were not able to open in app purchase");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +469,15 @@ class _PackageFormState extends State<PackageForm> {
               ? "Start free 1 week trial"
               : "Renew subscription",
           onTap: _handleSubmit,
+        ),
+        if(Platform.isIOS)
+         const SizedBox(
+            height: 15,
+          ),
+            if (Platform.isIOS)
+        CustomButton(
+          text: "Restore subscription",
+          onTap: _handleRestore,
         ),
         const SizedBox(
           height: 15,
