@@ -7,6 +7,7 @@ import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
+import 'package:bourboneur/pages/bottle_search/add_mutiple_popup.dart';
 import 'package:bourboneur/pages/bottles_list/bottle_create.dart';
 import 'package:bourboneur/pages/bottles_list/bottle_confirm_popup.dart';
 import 'package:bourboneur/pages/bottles_list/search_input.dart';
@@ -37,6 +38,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
   bool isListLoading = false;
 
   bool isConfirmLoading = false;
+  bool isBulkAdd = false;
 
   @override
   void initState() {
@@ -53,16 +55,25 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     });
   }
 
-  _handleConfirm(BlueBook bluebook) async {        
-
+  _handleConfirm(int button, BlueBook bluebook) async {
+ 
     // If the page type is search we are going to call only confirm
     if ( widget.pageType == SearchPageType.trade ) {
         if ( widget.onSelect != null ) widget.onSelect!(bluebook);        
         Utils().showToast('Success', "You bottle is now added.");
         return;
     }
-
     // else process with other code
+    
+    // this button 2 means add more than one
+    if ( button == 2 ) {
+      _showMultiple(
+        bluebook: bluebook,
+        pageType: widget.pageType
+      );
+      // we open another popup
+      return;
+    }
 
     setState(() {
       isConfirmLoading = true;
@@ -71,9 +82,9 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     if (
       widget.pageType == SearchPageType.wishlist ||
       widget.pageType == SearchPageType.normal
-    ) {
+    ) {      
       CollectionType type = widget.pageType == SearchPageType.wishlist ? CollectionType.wishlist : CollectionType.normal;
-      await CollectionApi.add(bluebook.id!, controller.user.value.id, type);
+      await CollectionApi.add(bluebook.id!, controller.user.value.id, type);      
     }
 
     setState(() {
@@ -84,7 +95,8 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
       widget.pageType == SearchPageType.wishlist ||
       widget.pageType == SearchPageType.normal
     ) {
-      Utils().showToast("Success", "You bottle is now added.");
+      Utils().showToast("Success", "You bottle is now added.");      
+      Navigator.pop(context);
     } else {
       // Navigator.pop(context);
       if ( widget.onSelect != null ) widget.onSelect!(bluebook);
@@ -182,10 +194,15 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
       return BottleSearchItem(
         text: value.bottleName!,
         onTap: () {
+          // if ( isBulkAdd ) {
+          //   _handleConfirm(value);
+          //   return;
+          // }
           _showConfirm(
             value: value.bottleName!,
-            onConfirm: () {
-              _handleConfirm(value);
+            onConfirm: ( int button ) {
+              // if ( button == 2 ) isBulkAdd = true;
+              _handleConfirm(button, value);
           });
         },
         // isAdded: i % 3 != 0,
@@ -225,7 +242,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
     return data;
   }
 
-  Future<void> _showConfirm({void Function()? onConfirm, String? value}) {
+  Future<void> _showConfirm({void Function(int)? onConfirm, String? value}) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -247,6 +264,18 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
               searchPageType: widget.pageType,
               onConfirm: onConfirm
             );
+        });
+  }
+
+   Future<void> _showMultiple({ void Function(BlueBook)? onConfirm, BlueBook? bluebook, SearchPageType? pageType } ) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AddMultiplePopup(
+            bluebook: bluebook!,
+            pageType: pageType!
+          );
         });
   }
 }

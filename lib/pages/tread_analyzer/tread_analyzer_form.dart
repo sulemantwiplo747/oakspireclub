@@ -170,7 +170,7 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
           const Text("GIVING",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 22,
                   height: 1,
                   fontWeight: FontWeight.bold,
                   color: Color(0xffe48235))),
@@ -184,7 +184,7 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
           const Text("GETTING",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 22,
                   height: 1,
                   fontWeight: FontWeight.bold,
                   color: Color(0xffe48235))),
@@ -202,7 +202,7 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
               textStyle: TextStyle(
                 color: Theme.of(context).colorScheme.background,
                 fontWeight: FontWeight.bold,
-                fontSize: 25
+                fontSize: 22
               )
             ),
             text: "Analyze Trade",
@@ -264,7 +264,7 @@ class AnalyzerInput extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
           ),

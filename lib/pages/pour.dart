@@ -7,6 +7,7 @@ import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Controllers/Collection.dart';
 import 'package:bourboneur/Core/Controllers/Favorite.dart';
 import 'package:bourboneur/Core/Controllers/Rating.dart';
+import 'package:bourboneur/Core/Controllers/WOD.dart';
 import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/common/checkbox_input.dart';
 
@@ -18,9 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PourPage extends StatefulWidget {
-  PourPage({super.key, this.id});
+  PourPage({super.key, this.id, this.idType = 'rating'});
 
   String? id;
+  String? idType;
 
   @override
   State<PourPage> createState() => _PourPageState();
@@ -61,12 +63,23 @@ class _PourPageState extends State<PourPage> {
     });
 
     // else
-    Rating rating = await RatingApi.getById(widget.id!);
-    blueBook = rating.blueBook!;
-    note = rating.notes!;
-    nose = double.parse(rating.nose!);
-    palate = double.parse(rating.palate!);
-    finish = double.parse(rating.finish!);
+    Rating? rating = widget.idType == 'rating' ?
+      await RatingApi.getById(widget.id!) : await await RatingApi.getByUserIdBluebookId(
+      controller.user.value.id!,
+      widget.id!
+    );
+
+    if ( rating != null )
+    {
+      blueBook = rating.blueBook!;
+      note = rating.notes!;
+      nose = double.parse(rating.nose!);
+      palate = double.parse(rating.palate!);
+      finish = double.parse(rating.finish!);
+    }else {
+      // it means there is no rating just load the bluebook
+      blueBook =  await BlueBookApi.getById(widget.id!);
+    }
 
     // Check if is in wish list.
     var data = await CollectionApi.isInCollection(
@@ -83,6 +96,7 @@ class _PourPageState extends State<PourPage> {
   }
 
   _handleSelect(BlueBook b) async {
+    Navigator.pop(context);
     setState(() {
       isLoading = true;
     });

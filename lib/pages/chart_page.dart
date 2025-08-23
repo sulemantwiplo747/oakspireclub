@@ -6,6 +6,7 @@ import 'package:bourboneur/pages/chart_page/chart_widget.dart';
 import 'package:bourboneur/pages/chart_page/choose_bottle_wiskey.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ChartPage extends StatefulWidget {
   const ChartPage({super.key});
@@ -35,7 +36,10 @@ class _ChartPageState extends State<ChartPage> {
     Map<String, dynamic> data = await CollectionApi.getChartData(controller.user.value.id!);    
     chartData = data['data'];
 
-    valuation = double.parse(data['last_price']).toStringAsFixed(2);
+    // valuation = double.parse("23123").toString();
+    final formatter = NumberFormat('#,##0.00'); // Format with commas and 2 decimal places
+    valuation = formatter.format(double.parse(data['last_price']));
+
     ytd = double.parse(data['trend_ytd']).toStringAsFixed(2);
     overall = double.parse(data['trend_overall']).toStringAsFixed(2);
 
