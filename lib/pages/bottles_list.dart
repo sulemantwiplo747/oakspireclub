@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:math' as math;
 import 'package:bourboneur/Core/Apis/Collection.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Controllers/Collection.dart';
 import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
@@ -32,6 +33,8 @@ class _BottlesListState extends State<BottlesList> {
   bool isRemoving = false;
   bool isEditing = false;
   bool isFirstTimeLoading = true;
+
+  int bottleCounts = 0;
 
   List<String> sortLabels = [
     "NEWEST",
@@ -102,10 +105,19 @@ class _BottlesListState extends State<BottlesList> {
     CollectionType type =
         isWishlist ? CollectionType.wishlist : CollectionType.normal;
     await CollectionApi.grouped(controller.user.value.id!, type);
+    updateBottleCount();
+
     setState(() {
       isLoading = false;
       isFirstTimeLoading = false;
     });
+  }
+
+  updateBottleCount() {
+    bottleCounts = 0;
+    for (GroupedCollection grouped in  controller.groupedCollections ) {
+      bottleCounts += int.parse(grouped.count!);
+    }
   }
 
   Future onBack(value) {
@@ -158,7 +170,7 @@ class _BottlesListState extends State<BottlesList> {
                     ),
                     const SizedBox(height: 20),
                     ButtonListCounter(
-                      count: controller.groupedCollections.length,
+                      count: bottleCounts,
                       onTapEdit: _handleOnTapEdit,
                       isEditing: isEditing,
                     ),
