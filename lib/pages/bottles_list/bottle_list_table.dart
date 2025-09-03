@@ -16,13 +16,15 @@ class BottleListTable extends StatefulWidget {
     this.sortMode,
     this.editMode = true,
     // this.isWishList = false,
-    this.onPressRemove
+    this.onPressRemove,
+    this.onCountChange
   });
 
   String? sortMode;
   RxList<GroupedCollection>? collections;
   bool editMode;
   void Function(GroupedCollection collection)? onPressRemove;
+  void Function(GroupedCollection collection)? onCountChange;
   // bool isWishList;
 
   @override
@@ -89,7 +91,8 @@ class _BottleListTableState extends State<BottleListTable> {
         return BottleListTableItem(
             collection: element,
             editMode: widget.editMode,
-            onPressRemove: widget.onPressRemove
+            onPressRemove: widget.onPressRemove,
+            onUpdateComplete: widget.onCountChange,
         );
       }).toList());
     }
@@ -123,14 +126,18 @@ class _BottleListTableState extends State<BottleListTable> {
 
 class BottleListTableItem extends StatefulWidget {
    BottleListTableItem(
-      {super.key,
-      required this.collection,
-      required this.editMode,
-      this.onPressRemove});
+      {
+        super.key,
+        required this.collection,
+        required this.editMode,
+        this.onPressRemove,
+        this.onUpdateComplete
+      });
 
   GroupedCollection collection;
   bool editMode;
   void Function(GroupedCollection)? onPressRemove;
+  void Function(GroupedCollection)? onUpdateComplete;
 
   @override
   State<BottleListTableItem> createState() => _BottleListTableItemState();
@@ -181,8 +188,8 @@ class _BottleListTableItemState extends State<BottleListTableItem> {
    // Debounced API call
   void _debouncedUpdate() {
     _debounceTimer?.cancel(); // Cancel any existing timer
-    _debounceTimer = Timer(Duration(seconds: 1), () {
-      CollectionApi.addBulk(
+    _debounceTimer = Timer(Duration(seconds: 1),  () async {
+      await CollectionApi.addBulk(
         widget.collection.blueBook!.id!,
         controller.user.value.id,
         widget.collection.type == CollectionType.normal.name ?
@@ -191,6 +198,8 @@ class _BottleListTableItemState extends State<BottleListTableItem> {
         // params
         quantity: count
       );
+
+      if ( widget.onUpdateComplete != null ) widget.onUpdateComplete!(widget.collection);
     });
   }
 

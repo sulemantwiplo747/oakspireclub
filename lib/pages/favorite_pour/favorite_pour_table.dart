@@ -153,7 +153,7 @@ class MyFavoriteTableItem extends StatelessWidget {
           Container(
             width: 60,            
             alignment: Alignment.topRight,
-            child: Text("\$${favorite.blueBook!.high}", style: TextStyle( color: Colors.white ),),
+            child: Text("\$${favorite.blueBook!.average}", style: TextStyle( color: Colors.white ),),
           ),  
          
           // if (editMode)

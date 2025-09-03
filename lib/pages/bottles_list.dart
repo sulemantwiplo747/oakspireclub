@@ -57,9 +57,9 @@ class _BottlesListState extends State<BottlesList> {
   }
 
   void _handleOnTapEdit() {
-    if (isEditing) {
-      getListItems();
-    }
+    // if (isEditing) {
+    //   getListItems();
+    // }
 
     setState(() {
       isEditing = !isEditing;
@@ -96,6 +96,10 @@ class _BottlesListState extends State<BottlesList> {
 
           getListItems();
         });
+  }
+
+  _handleCountChange(GroupedCollection collection){
+     getListItems();
   }
 
   getListItems() async {
@@ -186,6 +190,7 @@ class _BottlesListState extends State<BottlesList> {
                       sortMode: sortSelected,
                       editMode: isEditing,
                       onPressRemove: _handleCollectionRemove,
+                      onCountChange: _handleCountChange,
                     ),
                     if (isWishlist) const SizedBox(height: 20),
                     if (isWishlist)
