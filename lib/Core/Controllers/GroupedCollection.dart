@@ -24,7 +24,7 @@ class GroupedCollection {
     count = json['count'].toString();    
     blueBook = BlueBook.fromJson(json['bluebook']);
 
-    price = (int.parse(count!) * int.parse(blueBook!.high!)).toString();
+    price = (int.parse(count!) * int.parse(blueBook!.average!)).toString();
   }
 
   Map<String, dynamic> toJson() {
