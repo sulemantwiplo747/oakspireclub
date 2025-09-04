@@ -83,7 +83,7 @@ class _PourNoteState extends State<PourNote> {
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
                           image: NetworkImage(widget.imageUrl),
-                          fit: BoxFit.fill
+                          fit: BoxFit.contain
                         )
                       ),
                     ),
