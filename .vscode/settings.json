@@ -1,7 +1,7 @@
 {
-    "cSpell.words": [
-        "Bourboneur",
-        "uncategorize"
-    ],
-    "dart.flutterSdkPath": ".fvm/flutter_sdk"
+  "cSpell.words": [
+    "Bourboneur",
+    "uncategorize"
+  ],
+  "dart.flutterSdkPath": ".fvm/versions/3.32.5"
 }

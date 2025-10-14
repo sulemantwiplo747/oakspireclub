@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:bourboneur/Core/BlogController.dart';
 import 'package:bourboneur/Core/Controller.dart';
@@ -11,9 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
-
 void main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   ByteData data = await rootBundle.load('assets/certificate/cert.pem');
   SecurityContext context = SecurityContext.defaultContext;
   context.setTrustedCertificatesBytes(data.buffer.asUint8List());
@@ -33,25 +31,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
-  void initState() {    
+  void initState() {
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      
       title: 'Bourboneur',
       theme: ThemeData(
-      
+        scaffoldBackgroundColor: const Color(0xFF000000),
         textTheme: const TextTheme(
           headlineSmall: TextStyle(color: Color(0xFFd5bb9b)),
           headlineMedium: TextStyle(
             fontFamily: 'Arial',
-            color: Color(0xFFd5bb9b),            
-            fontSize: 28, 
+            color: Color(0xFFd5bb9b),
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
           headlineLarge: TextStyle(color: Colors.white),
@@ -60,40 +56,36 @@ class _MyAppState extends State<MyApp> {
           displaySmall: TextStyle(color: Colors.white),
           bodyLarge: TextStyle(color: Colors.white),
           bodyMedium: TextStyle(color: Color(0xFFd5bb9b)),
-          bodySmall:  TextStyle(
+          bodySmall: TextStyle(
             fontFamily: 'Arial',
             color: Color(0xFFd5bb9b),
             fontSize: 14,
           ),
-          labelMedium:  TextStyle(
+          labelMedium: TextStyle(
             fontFamily: 'Arial',
             color: Colors.white,
             fontSize: 14,
           ),
-          titleMedium:  TextStyle(
+          titleMedium: TextStyle(
             fontFamily: 'Arial',
-            fontWeight: FontWeight.bold,                 
+            fontWeight: FontWeight.bold,
             color: Color(0xFFd5bb9b),
             fontSize: 14,
-          )
+          ),
         ),
         appBarTheme: AppBarTheme(
           backgroundColor: const Color(0xFF000000).withOpacity(1),
           foregroundColor: const Color(0xFF000000).withOpacity(1),
-          surfaceTintColor: const Color(0xFF000000).withOpacity(1),          
-          iconTheme: const IconThemeData(
-            color: Color(0xffe17f2f)
-          )
+          surfaceTintColor: const Color(0xFF000000).withOpacity(1),
+          iconTheme: const IconThemeData(color: Color(0xffe17f2f)),
         ),
-        colorScheme: ColorScheme.fromSwatch(      
-              
-          backgroundColor: Color(0xFF000000).withOpacity(1),          
+        colorScheme: ColorScheme.fromSwatch(
+          backgroundColor: const Color(0xFF000000).withOpacity(1),
         ),
-        useMaterial3: true,        
+        useMaterial3: true,
       ),
-      home: SplashPage(),
+      home: const SplashPage(),
       builder: EasyLoading.init(),
     );
   }
 }
-
