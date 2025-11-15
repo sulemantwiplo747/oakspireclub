@@ -2,12 +2,18 @@ import 'dart:io';
 
 import 'package:bourboneur/Core/BlogController.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/notification_services.dart';
 import 'package:bourboneur/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +22,8 @@ void main() async {
   context.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
   FirebaseApp defaultApp = await Firebase.initializeApp();
+  await NotificationService().initInfo();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   Get.put(Controller(), permanent: true);
   Get.put(BlogController(), permanent: true);
