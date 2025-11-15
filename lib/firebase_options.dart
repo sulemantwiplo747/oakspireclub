@@ -51,19 +51,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAfpw6aWAX3-8LqYt13GgHGhlSukmniAlM',
-    appId: '1:939688701827:android:f6ccd808134ac85c9d50b6',
-    messagingSenderId: '939688701827',
-    projectId: 'bourboneur-4c010',
-    storageBucket: 'bourboneur-4c010.firebasestorage.app',
+    apiKey: 'AIzaSyBhMES6y9lcoqdPT5qmvA_3G5AQ9ZOZBms',
+    appId: '1:570904028386:android:5ad7da3729a25e13c6aabb',
+    messagingSenderId: '570904028386',
+    projectId: 'bourboneur-c374d',
+    storageBucket: 'bourboneur-c374d.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAPipXHpMeJ7U1wH9PBuiqC_9n6DsOKNis',
-    appId: '1:939688701827:ios:b73e4a298c454b249d50b6',
-    messagingSenderId: '939688701827',
-    projectId: 'bourboneur-4c010',
-    storageBucket: 'bourboneur-4c010.firebasestorage.app',
+    apiKey: 'AIzaSyD7pcPqzM3Ojj4Qlf_b0uPr22dhuw5dvgE',
+    appId: '1:570904028386:ios:9f5836bb8c7d2625c6aabb',
+    messagingSenderId: '570904028386',
+    projectId: 'bourboneur-c374d',
+    storageBucket: 'bourboneur-c374d.firebasestorage.app',
     iosBundleId: 'com.app.bourboneur',
   );
 
