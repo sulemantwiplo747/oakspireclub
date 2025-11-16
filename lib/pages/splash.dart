@@ -128,7 +128,9 @@ class _SplashPageState extends State<SplashPage> {
     Controller controller = Get.find<Controller>();
     // Get the token each time the application loads
     token ??= await FirebaseMessaging.instance.getToken();
-    print("fcm=$token");
+
+    print("Firebase: " + token.toString());
+
     // Save the initial token to the database
     if (token != null) {
       String? userId = controller.user.value.id;
