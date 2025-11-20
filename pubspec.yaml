@@ -54,6 +54,7 @@ dependencies:
   device_info_plus: ^11.5.0
   package_info_plus: ^8.1.2
   store_redirect: ^2.0.3
+  flutter_local_notifications: ^19.5.0
 
 dev_dependencies:
   flutter_test:
