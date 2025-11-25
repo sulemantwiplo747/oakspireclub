@@ -18,6 +18,7 @@ class NotificationService {
 
   /// Initialize Notification Service
   Future<void> initInfo() async {
+    await requestPermission();
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
           alert: true,
@@ -49,6 +50,34 @@ class NotificationService {
     );
 
     setupInteractedMessage();
+  }
+
+  Future<void> requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // iOS Permission
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: false,
+      provisional: false,
+      sound: true,
+    );
+
+    log('User granted permission: ${settings.authorizationStatus}');
+
+    // Android 13+ Permission
+    final FlutterLocalNotificationsPlugin plugin =
+        FlutterLocalNotificationsPlugin();
+    final AndroidFlutterLocalNotificationsPlugin? androidPlugin = plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    if (androidPlugin != null) {
+      await androidPlugin.requestNotificationsPermission();
+    }
   }
 
   /// Handle Firebase Messaging Setup
