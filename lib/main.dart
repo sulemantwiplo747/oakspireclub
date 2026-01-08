@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bourboneur/Core/BlogController.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/notification_services.dart';
+import 'package:bourboneur/firebase_options.dart';
 import 'package:bourboneur/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,7 +22,9 @@ void main() async {
   SecurityContext context = SecurityContext.defaultContext;
   context.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
-  FirebaseApp defaultApp = await Firebase.initializeApp();
+  FirebaseApp defaultApp = await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   await NotificationService().initInfo();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
