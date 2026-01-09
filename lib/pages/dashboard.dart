@@ -7,6 +7,7 @@ import 'package:bourboneur/pages/bourbonuer_testing.dart';
 import 'package:bourboneur/pages/chart_page.dart';
 import 'package:bourboneur/pages/explore.dart';
 import 'package:bourboneur/pages/good_pour.dart';
+import 'package:bourboneur/pages/home.dart';
 import 'package:bourboneur/pages/select_package.dart';
 import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
@@ -25,179 +26,35 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   Controller controller = Get.find<Controller>();
 
-  bool isLoading = true;
+  int pageIndex = 2;
 
   @override
   void initState() {
     super.initState();
   }
+  
+
+  void onTap(int index) {    
+    setState(() {
+      pageIndex = index;
+    });
+  }
+
+  static const List<Widget> _pages = <Widget>[
+    Center(child: Text('Page 1', style: TextStyle(fontSize: 30))),    
+    Center(child: Text('Page 2', style: TextStyle(fontSize: 30))),
+    Home(),
+    Center(child: Text('Page 4', style: TextStyle(fontSize: 30))),
+    Center(child: Text('Page 5', style: TextStyle(fontSize: 30))),
+    Center(child: Text('Page 6', style: TextStyle(fontSize: 30))),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
-        child: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 20, right: 20),
-            child: Text("Cheers, ${controller.user.value.name!}",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Color(0xfffe8003),
-                    fontFamily: 'TradeGothic',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22)),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/new-dashboard.png"),
-                    alignment: Alignment.center,
-                    repeat: ImageRepeat.noRepeat,
-                    fit: BoxFit.cover)),
-            child: Column(
-              children: [
-                DashBoardLinkItem(
-                  flexible: true,
-                  text: TextSpan(text: "Bourbon Blue Book", children: [
-                    WidgetSpan(
-                      child: Transform.translate(
-                        offset: const Offset(2, -5),
-                        child: const Text(
-                          '®',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                    )
-                  ]),
-                  onTap: () {
-                    Get.to(() => const BlueBook());
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DashBoardLinkItem(
-                      text: const TextSpan(text: "Trade\nAnalysis\nTool"),
-                      onTap: () {
-                        Get.to(() => TradeAnalyzerPage());
-                      },
-                    ),
-                    DashBoardLinkItem(
-                      text: const TextSpan(text: "My\nBottles"),
-                      onTap: () {
-                        Get.to(() => ChartPage());
-                      },
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DashBoardLinkItem(
-                      text: const TextSpan(text: "Wheel of\nDestiny"),
-                      onTap: () {
-                        Get.to(() => WheelOfDestiny());
-                      },
-                    ),
-                    DashBoardLinkItem(
-                      text: const TextSpan(text: "Bourbon\nTasting"),
-                      onTap: () {
-                        Get.to(() => BourbonuerTesting());
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DashBoardLinkItem(
-                      text: const TextSpan(text: "Bourbon\nSuggestions"),
-                      onTap: () {
-                        Get.to(() => GoodPourPage());
-                      },
-                    ),
-                    DashBoardLinkItem(
-                      text: const TextSpan(text: "Bourboneur\nBlog"),
-                      onTap: () {
-                        Get.to(() => Blog());
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
-            ),
-          ),
-          // Container(
-          //   height: 270,
-          //   padding: EdgeInsets.only(left: 130, top: 50),
-          //   decoration: const BoxDecoration(
-          //       //color: Colors.red,
-          //       image: DecorationImage(
-          //         image: AssetImage("assets/images/new-dashboard.jpg"),
-          //         alignment: Alignment.center,
-          //         repeat: ImageRepeat.noRepeat
-          //     )),
-          //   child: Text(
-          //     //"Elevate\nYour Spirit",
-          //     "",
-          //     style: TextStyle(
-          //         fontFamily: 'Arial',
-          //         color: Theme.of(context).textTheme.titleMedium?.color,
-          //         fontSize: 35,
-          //         height: 1.2
-          //       ),
-          //   ),
-          // ),
-
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SocialIcon(
-                onTap: () {
-                  launchUrl(Uri.parse('https://www.facebook.com/Bourboneur/'));
-                },
-                icon: 'assets/images/social/facebook.png',
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              SocialIcon(
-                  onTap: () {
-                    launchUrl(
-                        Uri.parse('https://www.instagram.com/thebourboneur/'));
-                  },
-                  icon: 'assets/images/social/instagram.png'),
-              const SizedBox(
-                width: 20,
-              ),
-              SocialIcon(
-                  onTap: () {
-                    launchUrl(Uri.parse('https://www.tiktok.com/@bourboneur'));
-                  },
-                  icon: 'assets/images/social/tik-tok.png')
-            ],
-          )
-        ],
-      ),
-    ));
+      onTapNav: onTap,
+      child: _pages[pageIndex]
+    );
   }
 }
 

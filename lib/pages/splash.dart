@@ -22,29 +22,33 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
   Controller controller = Get.find<Controller>();
-  VideoPlayerController? _controller;
+
   Utils utils = Utils();
+
+  late AnimationController _controller;
+  late Animation<Offset> _bgSlideAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller =
-        VideoPlayerController.asset(
-            'assets/videos/splash.mp4',
-            videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-          )
-          ..initialize().then((_) {
-            _controller!.play();
-            _controller!.setLooping(true);
-            // Ensure the first frame is shown after the video is initialized
-            setState(() {});
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
 
-            Timer(const Duration(seconds: 5), () {
-              _prepareToLaunch();
-            });
-          });
+    _bgSlideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1), // Start fully below the screen
+      end: Offset.zero, // End at normal position
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
+    // Start the animation as soon as the screen loads
+    _controller.forward();
+    Timer(const Duration(seconds: 3), () {
+      _prepareToLaunch();
+    });
   }
 
   _prepareToLaunch() async {
@@ -77,7 +81,7 @@ class _SplashPageState extends State<SplashPage> {
     if (moveToSignIn) {
       Get.off(() => const SignInPage());
     } else {
-      Get.off(() => openDashboard(controller.user.value));
+      Get.off(() => openDashboard(controller.user.value), curve: Curves.easeIn);
     }
   }
 
@@ -142,40 +146,48 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SizedBox.expand(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: _controller!.value.size.width,
-                height: _controller!.value.size.height,
-                child: VideoPlayer(_controller!),
+          // Empty container to ensure stack takes full space
+          Container(
+            color: Colors.black,
+          ), // fallback color if image is transparent
+          // Animated background image sliding up from bottom
+          SlideTransition(
+            position: _bgSlideAnimation,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset(
+                'assets/images/new_bg.png',
+                fit:
+                    BoxFit.fitWidth, // keeps width full, crops height if needed
+                width: double.infinity,
               ),
             ),
           ),
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: Colors.black.withOpacity(0.8),
-            ),
-          ),
+
+          // Foreground content: logo + text (centered, no animation)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset("assets/images/splash-logo.png", width: 300),
+              const SizedBox(height: 30),
               Text(
                 "Helping the world become\nwhiskey wise™",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontSize: 18,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
