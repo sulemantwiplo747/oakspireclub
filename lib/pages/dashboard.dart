@@ -8,7 +8,9 @@ import 'package:bourboneur/pages/chart_page.dart';
 import 'package:bourboneur/pages/explore.dart';
 import 'package:bourboneur/pages/good_pour.dart';
 import 'package:bourboneur/pages/home.dart';
+import 'package:bourboneur/pages/my_bottles.dart';
 import 'package:bourboneur/pages/select_package.dart';
+import 'package:bourboneur/pages/settings.dart';
 import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
@@ -41,12 +43,12 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   static const List<Widget> _pages = <Widget>[
-    Center(child: Text('Page 1', style: TextStyle(fontSize: 30))),    
+    MyBottles(),    
     Center(child: Text('Page 2', style: TextStyle(fontSize: 30))),
     Home(),
     Center(child: Text('Page 4', style: TextStyle(fontSize: 30))),
     Center(child: Text('Page 5', style: TextStyle(fontSize: 30))),
-    Center(child: Text('Page 6', style: TextStyle(fontSize: 30))),
+    Settings(),
   ];
 
   @override

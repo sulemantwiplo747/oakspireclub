@@ -6,6 +6,7 @@ class CustomInput extends StatefulWidget {
     required this.label, 
     this.obscureText = false,
     this.maxLine = 1,
+    this.readOnly = false,
     this.controller,    
   });
 
@@ -13,11 +14,11 @@ class CustomInput extends StatefulWidget {
   bool obscureText;
   TextEditingController? controller;
   int? maxLine;
+  bool readOnly;
 
   @override
   State<CustomInput> createState() => _CustomInputState();
 }
-
 class _CustomInputState extends State<CustomInput> {
 
   bool _obscure = false;
@@ -28,31 +29,38 @@ class _CustomInputState extends State<CustomInput> {
     super.initState();
   }
 
-  Widget TogglePasswordIcon()
-  {
+  Widget TogglePasswordIcon() {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _obscure = !_obscure;
-        });
+        setState(() => _obscure = !_obscure);
       },
       child: Icon(
-        _obscure == true ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+        _obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
         size: 24,
         color: Colors.white,
-      )
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(      
-      decoration: BoxDecoration(      
+    final bool isReadOnly = widget.readOnly;
+    
+    final textColor = isReadOnly 
+        ? Colors.grey.shade400          // ← lighter grey for read-only
+        : Colors.white;
+
+    final borderColor = isReadOnly 
+        ? Colors.grey.shade700          // slightly dimmer border when readonly
+        : const Color(0xFFff8202);
+
+    return Container(
+      decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: const Color(0xFFff8202)
+          color: borderColor,
         ),
-        borderRadius: const BorderRadius.all(Radius.circular(15))        
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
       child: Stack(
         clipBehavior: Clip.none,
@@ -61,29 +69,34 @@ class _CustomInputState extends State<CustomInput> {
             top: -10,
             left: 15,
             child: Container(
-              color: Theme.of(context).colorScheme.background.withOpacity(1),          
+              color: Theme.of(context).colorScheme.background.withOpacity(1),
               padding: const EdgeInsets.only(left: 10, right: 10),
               child: Text(
                 widget.label,
-                style: Theme.of(context).textTheme.labelMedium,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: isReadOnly ? Colors.grey.shade500 : null,
+                ),
               ),
             ),
           ),
           TextField(
-            controller: widget.controller,    
-            maxLines: widget.maxLine,        
+            readOnly: isReadOnly,
+            controller: widget.controller,
+            maxLines: widget.maxLine,
             decoration: InputDecoration(
               border: InputBorder.none,
               filled: false,
               isDense: true,
               contentPadding: const EdgeInsets.all(13),
-              suffixIcon: widget.obscureText == true ? TogglePasswordIcon() : null
+              suffixIcon: widget.obscureText && !isReadOnly 
+                  ? TogglePasswordIcon() 
+                  : null,
             ),
             obscureText: _obscure,
-            style: Theme.of(context).textTheme.bodySmall?.apply(
-                
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: textColor,
             ),
-          )
+          ),
         ],
       ),
     );

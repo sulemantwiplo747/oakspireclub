@@ -1,65 +1,12 @@
+import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/bluebook.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomeContent extends StatefulWidget {
+class HomeContent extends StatelessWidget {
+  // Now stateless – animation is handled inside the wrapper
   const HomeContent({super.key});
-
-  @override
-  State<HomeContent> createState() => _HomeContentState();
-}
-
-class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin {
-  late List<AnimationController> _controllers;
-  late List<Animation<double>> _fadeAnimations;
-  late List<Animation<Offset>> _slideAnimations;
-
-  @override
-  void initState() {
-    super.initState();
-    const int itemCount = 4;
-    _controllers = List.generate(
-      itemCount,
-      (_) => AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 800),
-      ),
-    );
-
-    _fadeAnimations = _controllers.map((controller) {
-      return Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeOut),
-      );
-    }).toList();
-
-    _slideAnimations = _controllers.map((controller) {
-      return Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeOut),
-      );
-    }).toList();
-
-    // Staggered start with smaller delay for subtle sequencing
-    for (int i = 0; i < _controllers.length; i++) {
-      Future.delayed(Duration(milliseconds: i * 150), () {
-        if (mounted) _controllers[i].forward();
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) controller.dispose();
-    super.dispose();
-  }
-
-  Widget _buildSubtleAnimation({required Widget child, required int index}) {
-    return FadeTransition(
-      opacity: _fadeAnimations[index],
-      child: SlideTransition(
-        position: _slideAnimations[index],
-        child: child,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +17,9 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 1. Greeting
-            _buildSubtleAnimation(
+            const StaggeredItemAnimation(
               index: 0,
-              child: const Row(
+              child: Row(
                 children: [
                   Expanded(
                     child: Text(
@@ -91,7 +38,7 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
             const SizedBox(height: 15),
 
             // 2. Collection Value Card
-            _buildSubtleAnimation(
+            StaggeredItemAnimation(
               index: 1,
               child: Container(
                 padding: const EdgeInsets.all(15),
@@ -104,24 +51,44 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
                   children: [
                     Text(
                       "Collection Value",
-                      style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 19,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: 7),
                     Text(
                       "\$4.5k",
-                      style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 40,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Row(
                       children: [
-                        Icon(Icons.arrow_drop_up, color: Color(0xff92d050), size: 40),
+                        Icon(
+                          Icons.arrow_drop_up,
+                          color: Color(0xff92d050),
+                          size: 40,
+                        ),
                         Text(
                           "\$293.44 (+6.90%)",
-                          style: TextStyle(fontSize: 19, color: Color(0xff92d050), fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 19,
+                            color: Color(0xff92d050),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         SizedBox(width: 15),
                         Text(
                           "3 months",
-                          style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 19,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -132,57 +99,78 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
             const SizedBox(height: 20),
 
             // 3. Bourbon Blue Book Card
-            _buildSubtleAnimation(
+            StaggeredItemAnimation(
               index: 2,
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.white),
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                ),
-                child: const Text(
-                  "Bourbon Blue Book®",
-                  style: TextStyle(fontSize: 27, color: Colors.white, fontWeight: FontWeight.bold),
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(() => BlueBook());
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.white),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: const Text(
+                    "Bourbon Blue Book®",
+                    style: TextStyle(
+                      fontSize: 27,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 20),
 
             // 4. Blog + Social Row
-            _buildSubtleAnimation(
+            StaggeredItemAnimation(
               index: 3,
               child: Row(
                 children: [
                   Container(
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Colors.white),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: const Text(
-                        "Blog",
-                        style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2, color: Colors.white),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
+                    child: const Text(
+                      "Blog",
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   const SizedBox(width: 20),
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         border: Border.all(width: 2, color: Colors.white),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
                       child: Row(
                         children: [
                           const Text(
                             "Social",
-                            style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const Spacer(),
                           SocialIcon(
                             onTap: () async {
-                              final uri = Uri.parse('https://www.facebook.com/Bourboneur/');
+                              final uri = Uri.parse(
+                                'https://www.facebook.com/Bourboneur/',
+                              );
                               if (await canLaunchUrl(uri)) await launchUrl(uri);
                             },
                             icon: 'assets/images/social/facebook.png',
@@ -190,7 +178,9 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
                           const SizedBox(width: 20),
                           SocialIcon(
                             onTap: () async {
-                              final uri = Uri.parse('https://www.instagram.com/thebourboneur/');
+                              final uri = Uri.parse(
+                                'https://www.instagram.com/thebourboneur/',
+                              );
                               if (await canLaunchUrl(uri)) await launchUrl(uri);
                             },
                             icon: 'assets/images/social/instagram.png',
@@ -198,7 +188,9 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
                           const SizedBox(width: 20),
                           SocialIcon(
                             onTap: () async {
-                              final uri = Uri.parse('https://www.tiktok.com/@bourboneur');
+                              final uri = Uri.parse(
+                                'https://www.tiktok.com/@bourboneur',
+                              );
                               if (await canLaunchUrl(uri)) await launchUrl(uri);
                             },
                             icon: 'assets/images/social/tik-tok.png',
@@ -218,6 +210,7 @@ class _HomeContentState extends State<HomeContent> with TickerProviderStateMixin
   }
 }
 
+// SocialIcon remains unchanged
 class SocialIcon extends StatelessWidget {
   const SocialIcon({super.key, required this.onTap, required this.icon});
 
