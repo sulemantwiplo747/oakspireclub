@@ -22,10 +22,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../Core/Utils.dart';
 
 class LoginWrapper extends StatefulWidget {
-  LoginWrapper({super.key, required this.child, this.onTapNav});
+  LoginWrapper({
+    super.key,
+    required this.child,
+    this.onTapNav,
+    this.showBottomNavigator = true,
+  });
 
   Widget child;
   void Function(int)? onTapNav;
+  bool showBottomNavigator;
 
   @override
   State<LoginWrapper> createState() => _LoginWrapperState();
@@ -59,41 +65,39 @@ class _LoginWrapperState extends State<LoginWrapper> {
         centerTitle: true,
         title: Image.asset('assets/images/logo.png', width: 150),
         actions: [
-          GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Menu();
-                },
-              );
-            },
-            child: Container(
-              color: Theme.of(context).colorScheme.background,
-              padding: const EdgeInsets.all(15.0),
-              child: const Icon(Icons.menu, color: Color(0xFFf47c1a), size: 30),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () {
+          //     showDialog(
+          //       context: context,
+          //       builder: (BuildContext context) {
+          //         return Menu();
+          //       },
+          //     );
+          //   },
+          //   child: Container(
+          //     color: Theme.of(context).colorScheme.background,
+          //     padding: const EdgeInsets.all(15.0),
+          //     child: const Icon(Icons.menu, color: Color(0xFFf47c1a), size: 30),
+          //   ),
+          // ),
         ],
       ),
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: widget.showBottomNavigator == true ? BottomNavigationBar(
         backgroundColor: Colors.black,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        unselectedItemColor: const Color(0xFFf47c1a), 
-        selectedItemColor: const Color(
-          0xFFe06f17,
-        ),
+        unselectedItemColor: const Color(0xFFf47c1a),
+        selectedItemColor: const Color(0xFFe06f17),
         type: BottomNavigationBarType.fixed,
         iconSize: 32,
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() => _selectedIndex = index);
-          if ( widget.onTapNav != null ) {
+          if (widget.onTapNav != null) {
             widget.onTapNav!(index);
           }
-        },  
+        },
         items: [
           BottomNavigationBarItem(
             icon: _buildAnimatedIcon(Icons.menu, 0),
@@ -105,7 +109,11 @@ class _LoginWrapperState extends State<LoginWrapper> {
               Icons.wine_bar_sharp,
               1,
             ), // Replace with your actual icons
-            activeIcon: _buildAnimatedIcon(Icons.wine_bar_sharp, 1, isActive: true),
+            activeIcon: _buildAnimatedIcon(
+              Icons.wine_bar_sharp,
+              1,
+              isActive: true,
+            ),
             label: "Home",
           ),
           BottomNavigationBarItem(
@@ -137,7 +145,7 @@ class _LoginWrapperState extends State<LoginWrapper> {
             label: "Blog",
           ),
         ],
-      ),
+      ) : null,
     );
   }
 }

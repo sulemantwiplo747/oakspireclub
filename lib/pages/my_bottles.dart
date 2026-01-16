@@ -1,8 +1,11 @@
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/my_bottles/filter_bottom_sheet.dart';
+import 'package:bourboneur/pages/my_bottles/add_to_collection.dart';
 import 'package:bourboneur/pages/my_bottles/my_bottles_list.dart';
+import 'package:bourboneur/pages/my_bottles/my_bottles_single.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MyBottles extends StatefulWidget {
   const MyBottles({super.key});
@@ -101,7 +104,9 @@ class _MyBottlesState extends State<MyBottles> {
                   ),
                   const SizedBox(width: 7),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => AddToCollection());
+                    },
                     child: Image.asset("assets/images/plus.png", width: 30),
                   ),
                   const SizedBox(width: 7),
@@ -192,7 +197,10 @@ class _MyBottlesState extends State<MyBottles> {
               child: Container(
                 color: Colors.black,
                 padding: const EdgeInsets.only(top: 15),
-                child: MyBottlesList(bottles: dummyBottles, onBottleTap: () {}),
+                child: MyBottlesList(
+                  bottles: dummyBottles, onBottleTap: () {
+                  Get.to(() => MyBottlesSingle());
+                }),
               ),
             ),
 

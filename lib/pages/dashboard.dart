@@ -30,31 +30,36 @@ class _DashboardPageState extends State<DashboardPage> {
 
   int pageIndex = 2;
 
-  @override
+  List<Widget> _pages = <Widget>[];
+
+    @override
   void initState() {
     super.initState();
+
+    _pages = <Widget>[
+       MyBottles(),    
+      BourbonuerTesting(),
+      Home(
+        changeTab: _changeIndex
+      ),
+      TradeAnalyzerPage(),
+      BlueBook(),
+      Settings(),
+    ];
   }
   
 
-  void onTap(int index) {    
+  void _changeIndex(int index) {    
+    
     setState(() {
       pageIndex = index;
     });
   }
 
-  static const List<Widget> _pages = <Widget>[
-    MyBottles(),    
-    Center(child: Text('Page 2', style: TextStyle(fontSize: 30))),
-    Home(),
-    Center(child: Text('Page 4', style: TextStyle(fontSize: 30))),
-    Center(child: Text('Page 5', style: TextStyle(fontSize: 30))),
-    Settings(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
-      onTapNav: onTap,
+      onTapNav: _changeIndex,
       child: _pages[pageIndex]
     );
   }

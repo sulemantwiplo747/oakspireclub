@@ -19,6 +19,8 @@ class StaggeredItemAnimation extends StatefulWidget {
   /// Optional: starting offset (default same as yours)
   final Offset beginOffset;
 
+  final bool fadeOnly;
+
   const StaggeredItemAnimation({
     super.key,
     required this.child,
@@ -27,6 +29,7 @@ class StaggeredItemAnimation extends StatefulWidget {
     this.duration = const Duration(milliseconds: 800),
     this.curve = Curves.easeOut,
     this.beginOffset = const Offset(0, 0.3),
+    this.fadeOnly = false
   });
 
   @override
@@ -71,7 +74,7 @@ class _StaggeredItemAnimationState extends State<StaggeredItemAnimation>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _fade,
-      child: SlideTransition(
+      child: widget.fadeOnly == true? widget.child : SlideTransition(
         position: _slide,
         child: widget.child,
       ),

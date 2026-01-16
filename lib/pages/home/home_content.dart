@@ -1,12 +1,15 @@
 import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/bluebook.dart';
+import 'package:bourboneur/pages/chart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeContent extends StatelessWidget {
-  // Now stateless – animation is handled inside the wrapper
-  const HomeContent({super.key});
+  
+  HomeContent({super.key, this.changeTab});
+
+   void Function(int)? changeTab;
 
   @override
   Widget build(BuildContext context) {
@@ -40,59 +43,64 @@ class HomeContent extends StatelessWidget {
             // 2. Collection Value Card
             StaggeredItemAnimation(
               index: 1,
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.white),
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "Collection Value",
-                      style: TextStyle(
-                        fontSize: 19,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 7),
-                    Text(
-                      "\$4.5k",
-                      style: TextStyle(
-                        fontSize: 40,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_drop_up,
-                          color: Color(0xff92d050),
-                          size: 40,
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(() => ChartPage());
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.white),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Collection Value",
+                        style: TextStyle(
+                          fontSize: 19,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(
-                          "\$293.44 (+6.90%)",
-                          style: TextStyle(
-                            fontSize: 19,
+                      ),
+                      SizedBox(height: 7),
+                      Text(
+                        "\$4.5k",
+                        style: TextStyle(
+                          fontSize: 40,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_drop_up,
                             color: Color(0xff92d050),
-                            fontWeight: FontWeight.bold,
+                            size: 40,
                           ),
-                        ),
-                        SizedBox(width: 15),
-                        Text(
-                          "3 months",
-                          style: TextStyle(
-                            fontSize: 19,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            "\$293.44 (+6.90%)",
+                            style: TextStyle(
+                              fontSize: 19,
+                              color: Color(0xff92d050),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          SizedBox(width: 15),
+                          Text(
+                            "3 months",
+                            style: TextStyle(
+                              fontSize: 19,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -103,7 +111,7 @@ class HomeContent extends StatelessWidget {
               index: 2,
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => BlueBook());
+                  changeTab!(4);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(15),

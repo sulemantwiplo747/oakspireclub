@@ -26,8 +26,7 @@ class BlueBook extends StatefulWidget {
 class _BlueBookState extends State<BlueBook> {
   @override
   Widget build(BuildContext context) {
-    return LoginWrapper(
-      child: Stack(
+    return Stack(
         children: [
           Container(height: double.infinity),
           Positioned.fill(
@@ -50,8 +49,7 @@ class _BlueBookState extends State<BlueBook> {
           // //   height: double.infinity,
           // // ),
         ],
-      ),
-    );
+      );
   }
 }
 

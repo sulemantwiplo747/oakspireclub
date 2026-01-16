@@ -140,8 +140,8 @@ class Chart extends StatelessWidget {
         lineBarsData: lineBarsData1,
         minX: 0,
         maxX: maxX,
-        maxY: maxPrice,
-        minY: minPrice,
+        // maxY: maxPrice,
+        // minY: minPrice,
       );
 
   LineTouchData get lineTouchData1 => LineTouchData(
@@ -155,7 +155,7 @@ class Chart extends StatelessWidget {
   FlTitlesData get titlesData1 => FlTitlesData(
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: true,
+            showTitles: false,
             reservedSize: 40,
             maxIncluded: true,
             minIncluded: true,
@@ -176,7 +176,7 @@ class Chart extends StatelessWidget {
           axisNameSize: 150,          
           sideTitles: SideTitles(            
               getTitlesWidget: leftTitleWidgets,
-              showTitles: true,
+              showTitles: false,
               interval: priceGap,              
               reservedSize: 60,
               // minIncluded: true
@@ -290,7 +290,7 @@ class Chart extends StatelessWidget {
         isCurved: true,
         // isStrokeJoinRound: true,
         curveSmoothness: .05,
-        color: Colors.red,
+        color: Color(0xff92d050),
         barWidth: 2,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
