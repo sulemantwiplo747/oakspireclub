@@ -83,7 +83,7 @@ class HomeContent extends StatelessWidget {
                           Text(
                             "\$293.44 (+6.90%)",
                             style: TextStyle(
-                              fontSize: 19,
+                              fontSize: 18,
                               color: Color(0xff92d050),
                               fontWeight: FontWeight.bold,
                             ),
@@ -92,7 +92,7 @@ class HomeContent extends StatelessWidget {
                           Text(
                             "3 months",
                             style: TextStyle(
-                              fontSize: 19,
+                              fontSize: 16,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
