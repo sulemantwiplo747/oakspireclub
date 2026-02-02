@@ -5,6 +5,7 @@ import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/bottles_list.dart';
 import 'package:bourboneur/pages/chart_page/chart_widget.dart';
 import 'package:bourboneur/pages/chart_page/choose_bottle_wiskey.dart';
+import 'package:bourboneur/pages/chart_page/collection_parcent.dart';
 import 'package:bourboneur/pages/my_bottles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,35 +21,37 @@ class ChartPage extends StatefulWidget {
 class _ChartPageState extends State<ChartPage> {
   Controller controller = Get.find<Controller>();
   List chartData = [];
-  String valuation = "0.00";
-  String ytd = "0.00";
-  String overall = "0.00";
+  List indexData = [];
+  String valuation = "0.00";  
+  double overall = 0.00;
   List marketIndex = ['up', 00.00];
+  int _animatedIndex = 0;
 
   bool isChartLoading = true;
 
+  int lookBack = 365;
+
   @override
   void initState() {
-    getData();
+    getData(lookBack);
 
     super.initState();
   }
 
-  getData() async {
+  getData(int lookBack) async {
     Map<String, dynamic> data = await CollectionApi.getChartData(
       controller.user.value.id!,
+      lookBack
     );
-    chartData = data['data'];
+    chartData = data['data'];    
+    indexData = data['index_data'];
 
-    // valuation = double.parse("23123").toString();
-    // final formatter = NumberFormat('#,##0.00'); // Format with commas and 2 decimal places
     final NumberFormat formatter = NumberFormat.compact(locale: 'en_us')
       ..maximumFractionDigits = 2;
-    // formatter.maximumIntegerDigits = 2;
+
     valuation = formatter.format(double.parse(data['last_price']));
 
-    ytd = double.parse(data['trend_ytd']).toStringAsFixed(2);
-    overall = double.parse(data['trend_overall']).toStringAsFixed(2);
+    overall = double.parse(data['trend_overall']);
 
     isChartLoading = false;
 
@@ -58,19 +61,46 @@ class _ChartPageState extends State<ChartPage> {
       marketIndex.add(
         double.parse(data['index']['movement'].toString()).toStringAsFixed(2),
       );
-      // marketIndex.add(double.parse(data['index']['movement'].toString()).toStringAsFixed(2));
+      
     }
     setState(() {});
   }
 
+  List<double> _buildTrend() {
+    List<double> data = [0, 0, 0];
+
+    double priceDiff = 0;
+    double indexDiff = 0;
+
+    if ( chartData.isNotEmpty ) {
+      Map first = chartData[0];
+      Map last = chartData[chartData.length - 1];
+       data[0] = 100 - (double.parse(first['price']) * 100 / double.parse(last['price']));      
+    }
+
+    if ( indexData.isNotEmpty ) {      
+      Map last = indexData[indexData.length - 1];
+      data[1] = double.parse(last['price'].toString());      
+    }
+
+    return data;
+  }
+
+  void _handleOnChangeDate(int lookback) {
+    getData(lookback);
+  }
+
   Future onBack(value) {
-    return getData();
+    return getData(lookBack);
   }
 
   @override
   Widget build(BuildContext context) {
-    int _animatedIndex = 0;
+    List data = _buildTrend();
+    
+
     return LoginWrapper(
+      showBottomNavigator: false,
       child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(17),
@@ -109,10 +139,10 @@ class _ChartPageState extends State<ChartPage> {
                 fadeOnly: true,
                 child: ChartWidget(
                   data: chartData,
+                  indexData: indexData,
                   isLoading: isChartLoading,
-                  valuation: valuation,
-                  ytd: ytd,
-                  overall: overall,
+                  valuation: valuation,                  
+                  onDateChange: _handleOnChangeDate,
                 ),
               ),
               const SizedBox(height: 10),
@@ -217,19 +247,19 @@ class _ChartPageState extends State<ChartPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CollectionPercent(
-                        percentage: 6.40,
+                        percentage: data[0],
                         label: "Collection",
                         positiveColor: Color(0xff92d050),
                         negativeColor: Color(0xff92d050),
                       ),
                       CollectionPercent(
-                        percentage: 4.25,
+                        percentage: overall,
                         label: "S&P",
                         positiveColor: Color(0xff699ebf),
                         negativeColor: Color(0xff699ebf),
                       ),
                       CollectionPercent(
-                        percentage: 5.13,
+                        percentage: data[1],
                         label: "BSMI",
                         positiveColor: Color(0xffff7520),
                         negativeColor: Color(0xffff7520),
@@ -242,55 +272,6 @@ class _ChartPageState extends State<ChartPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CollectionPercent extends StatelessWidget {
-  final double percentage; // e.g. 6.90, -2.45, 12.8
-  final String label; // e.g. "Collection", "Return", "Change"
-  final Color? positiveColor; // optional - color when positive
-  final Color? negativeColor; // optional - color when negative
-
-  const CollectionPercent({
-    super.key,
-    required this.percentage,
-    this.label = "Collection",
-    this.positiveColor,
-    this.negativeColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Determine color based on value
-    final bool isPositive = percentage >= 0;
-    final Color textColor = isPositive
-        ? (positiveColor ?? const Color(0xff92d050)) // green
-        : (negativeColor ?? const Color(0xfff44336)); // red
-
-    // Format percentage with 2 decimal places + % sign
-    final String displayValue = "${percentage.toStringAsFixed(2)}%";
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          displayValue,
-          style: TextStyle(
-            fontSize: 32,
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
     );
   }
 }

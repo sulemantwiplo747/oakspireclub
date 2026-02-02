@@ -30,7 +30,7 @@ class LoginWrapper extends StatefulWidget {
   });
 
   Widget child;
-  void Function(int)? onTapNav;
+  void Function(int, dynamic)? onTapNav;
   bool showBottomNavigator;
 
   @override
@@ -95,7 +95,7 @@ class _LoginWrapperState extends State<LoginWrapper> {
         onTap: (index) {
           setState(() => _selectedIndex = index);
           if (widget.onTapNav != null) {
-            widget.onTapNav!(index);
+            widget.onTapNav!(index, null);
           }
         },
         items: [

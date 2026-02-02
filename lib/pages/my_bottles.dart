@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MyBottles extends StatefulWidget {
-  const MyBottles({super.key});
+  MyBottles({super.key, this.changeTab, this.pageData});
+  void Function(int, dynamic data)? changeTab;
+  dynamic pageData;
 
   @override
   State<MyBottles> createState() => _MyBottlesState();

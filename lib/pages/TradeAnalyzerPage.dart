@@ -4,13 +4,22 @@ import 'package:bourboneur/pages/tread_analyzer/tread_analyzer_form.dart';
 import 'package:flutter/material.dart';
 
 class TradeAnalyzerPage extends StatefulWidget {
-  TradeAnalyzerPage({super.key});
+  TradeAnalyzerPage({super.key, this.changeTab, this.pageData});
+
+  void Function(int, dynamic)? changeTab;
+  dynamic pageData;
 
   @override
   State<TradeAnalyzerPage> createState() => _TradeAnalyzerPageState();
 }
 
 class _TradeAnalyzerPageState extends State<TradeAnalyzerPage> {
+
+  @override
+  void initState() {    
+    super.initState();
+  }
+
   int _animateIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -67,7 +76,9 @@ class _TradeAnalyzerPageState extends State<TradeAnalyzerPage> {
               StaggeredItemAnimation(
                 index: ++_animateIndex,
                 fadeOnly: true,
-                child: TreadAnalyzerForm(),
+                child: TreadAnalyzerForm(
+                  blueBook: widget.pageData,
+                ),
               ),
             ],
           ),

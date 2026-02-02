@@ -1,10 +1,16 @@
+import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/common/custom_button.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:flutter/material.dart';
 
 class AddToCollection extends StatefulWidget {
-  const AddToCollection({super.key});
+  AddToCollection({
+    super.key,
+    this.blueBook
+  });
+
+  BlueBook? blueBook;
 
   @override
   State<AddToCollection> createState() => _AddToCollectionState();

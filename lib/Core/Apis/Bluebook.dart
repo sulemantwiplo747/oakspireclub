@@ -11,6 +11,7 @@ class _Bluebook extends BaseApi {
   static String BLUEBOOK_GET_ALL = 'bluebook/get-all-bluebooks';
   static String BLUEBOOK_LAST_UPDATED_AT = 'bluebook/get-last-update';
   static String BLUEBOOK_GET_BY_ID = 'bluebook/get-by-id';
+  static String BLUEBOOK_GET_PRICE_HISTORY = 'bluebook/get-price-history';
 
   Future<dynamic> all(
     String page,
@@ -55,6 +56,23 @@ class _Bluebook extends BaseApi {
     }
 
     return BlueBook.fromJson(response.body['data']);
+  }
+
+  Future<dynamic> getPriceHistoryById(
+    String id
+  ) async {
+    
+    var data = {
+      "id": id
+    };
+    var response = await sendGet(BLUEBOOK_GET_PRICE_HISTORY, query: data);
+    if (response == null ) return false;
+    if ( response.body['code'] != 'OK' ) {
+      utils.showToast("Error", response.body['data']);
+      return false;
+    }
+
+    return response.body['data'];
   }
 
   Future<dynamic> create(

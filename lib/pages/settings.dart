@@ -1,14 +1,25 @@
+import 'package:bourboneur/Core/Apis/Auth.dart';
+import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/delete_account.dart';
 import 'package:bourboneur/pages/edit_profile.dart';
 import 'package:bourboneur/pages/settings/settings_menu.dart';
+import 'package:bourboneur/pages/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Settings extends StatelessWidget {
-  // Now stateless – animation is handled inside the wrapper
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+
+  Controller controller = Get.find<Controller>();
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,7 +45,10 @@ class Settings extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => {},
+                    onTap: () {
+                      Auth.logout();
+                      Get.to(() => SignInPage());
+                    },
                     child: const Row(
                       children: [
                         Icon(Icons.logout, color: Color(0xfffe8003), size: 22),
@@ -64,10 +78,13 @@ class Settings extends StatelessWidget {
                 title: "Account",
                 items: [
                   SettingsMenuItem(
-                    label: "Cheers, Nick!",
-                    subLabel: "musselguy@gmail.com",
+                    label: "Cheers, ${controller.user.value.name}!",
+                    subLabel: "${controller.user.value.email}",
                     onTap: () {
-                      Get.to(() => EditProfilePage());
+                      Get.to(() => EditProfilePage())?.then((v)  {
+                        // call the state to reload the page
+                        setState(() {});
+                      });
                     },
                     asset: "assets/images/avatar.png",
                   ),
@@ -133,7 +150,9 @@ class Settings extends StatelessWidget {
                             ),
                             const Spacer(),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                 Get.to(() => const DeleteAccount());
+                              },
                               child: Container(
                                 padding: const EdgeInsets.all(15),
                                 decoration: BoxDecoration(

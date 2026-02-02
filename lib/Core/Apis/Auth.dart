@@ -10,6 +10,7 @@ class _Auth extends BaseApi {
   static String AUTH_LOGIN = 'auth/login';    
   static String AUTH_FORGET_PASSWORD = 'auth/forget-password';    
   static String AUTH_RESET_PASSWORD = 'auth/reset-password';    
+  static String AUTH_UPDATE_PROFILE = 'auth/update';    
   static String AUTH_DELETE = 'auth/delete';    
 
   Future<dynamic> register(
@@ -89,6 +90,29 @@ class _Auth extends BaseApi {
       "otp": otp
     };
     var response = await sendPost(AUTH_RESET_PASSWORD, data);
+    if (response == null ) return false;
+    if ( response.body['code'] != 'OK' ) {
+      utils.showToast("Error", response.body['data']);
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<dynamic> updateProfile(    
+    String userId,
+    String name,
+    String? oldPassword,
+    String? password
+   ) async {
+    
+    var data = {      
+      "user_id": userId,
+      "name": name,
+      "old_password": oldPassword,
+      "password": password
+    };
+    var response = await sendPost(AUTH_UPDATE_PROFILE, data);
     if (response == null ) return false;
     if ( response.body['code'] != 'OK' ) {
       utils.showToast("Error", response.body['data']);

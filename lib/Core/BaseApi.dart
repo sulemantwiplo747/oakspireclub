@@ -65,6 +65,7 @@ class BaseApi extends GetConnect {
       //   utils.showToast("Error", "Failed to reach network");
       //   return null;
       // }
+      print(url);
       var response = await get(url,
           contentType: contentType, headers: headers, query: query);
       if (response.statusCode != 200) {

@@ -152,12 +152,15 @@ class _Collection extends BaseApi {
   }
 
   Future<dynamic> getChartData(
-    String userId
+    String userId,
+    int lookBack
   ) async {
     
     var data = {
-      "user_id": userId
+      "user_id": userId,
+      "look_back": lookBack.toString()
     };
+
     var response = await sendGet(COLLECTION_CHART_DATA, query: data);
     if (response == null ) return false;
     if ( response.body['code'] != 'OK' ) {

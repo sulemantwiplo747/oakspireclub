@@ -29,45 +29,51 @@ class _DashboardPageState extends State<DashboardPage> {
   Controller controller = Get.find<Controller>();
 
   int pageIndex = 2;
+  dynamic pageData;
 
   List<Widget> _pages = <Widget>[];
 
-    @override
+  @override
   void initState() {
     super.initState();
+    _setPage();
+  }
 
+  void _changeIndex(int index, dynamic data ) {
+    pageData = data;
+    pageIndex = index;
+
+    // ned this to pass the data
+    _setPage();
+    
+    setState(() {});
+  }
+
+  void _setPage() {
     _pages = <Widget>[
-       MyBottles(),    
-      BourbonuerTesting(),
-      Home(
-        changeTab: _changeIndex
-      ),
-      TradeAnalyzerPage(),
-      BlueBook(),
+      MyBottles(changeTab: _changeIndex, pageData: pageData),
+      BourbonuerTesting(changeTab: _changeIndex, pageData: pageData),
+      Home(changeTab: _changeIndex, pageData: pageData),
+      TradeAnalyzerPage(changeTab: _changeIndex, pageData: pageData),
+      BlueBook(changeTab: _changeIndex, pageData: pageData),
       Settings(),
     ];
-  }
-  
-
-  void _changeIndex(int index) {    
     
-    setState(() {
-      pageIndex = index;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return LoginWrapper(
-      onTapNav: _changeIndex,
-      child: _pages[pageIndex]
-    );
+    return LoginWrapper(onTapNav: _changeIndex, child: _pages[pageIndex]);
   }
 }
 
 class DashBoardLinkItem extends StatelessWidget {
-  DashBoardLinkItem(
-      {super.key, required this.text, this.onTap, this.flexible = false});
+  DashBoardLinkItem({
+    super.key,
+    required this.text,
+    this.onTap,
+    this.flexible = false,
+  });
 
   final TextSpan text;
   void Function()? onTap;
@@ -80,25 +86,30 @@ class DashBoardLinkItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
-        padding:
-            const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+        padding: const EdgeInsets.only(
+          left: 10,
+          top: 10,
+          bottom: 10,
+          right: 10,
+        ),
         width: flexible != true ? 160 : null,
         height: flexible != true ? 120 : null,
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background.withOpacity(.8),
-            border: Border.all(
-              color: const Color(0Xfffe8003),
-              width: 3,
-            )),
+          color: Theme.of(context).colorScheme.background.withOpacity(.8),
+          border: Border.all(color: const Color(0Xfffe8003), width: 3),
+        ),
         child: Align(
           alignment: flexible != true ? Alignment.centerLeft : Alignment.center,
-          child: Text.rich(text,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white,
-                  fontFamily: 'TradeGothic',
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                  fontSize: 21)),
+          child: Text.rich(
+            text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Colors.white,
+              fontFamily: 'TradeGothic',
+              fontWeight: FontWeight.w800,
+              height: 1.2,
+              fontSize: 21,
+            ),
+          ),
         ),
       ),
     );
@@ -118,8 +129,9 @@ class SocialIcon extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(7),
         decoration: const BoxDecoration(
-            color: Color(0xffff7520),
-            borderRadius: BorderRadius.all(Radius.circular(50))),
+          color: Color(0xffff7520),
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+        ),
         child: Image.asset(icon, width: 20),
       ),
     );
