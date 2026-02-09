@@ -36,7 +36,7 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
   static const _titleColor = Color(0xfffe8003);
   static const _subtitleColor = Color(0xffbfbfad);
 
-  Collection? wishCollection;  
+  Collection? wishCollection;
   Map? trends;
 
   bool isBusy = true;
@@ -61,7 +61,7 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
       widget.blueBook.id!,
       CollectionType.wishlist,
     );
-    wishCollection = data != false ? Collection.fromJson(data) : null;    
+    wishCollection = data != false ? Collection.fromJson(data) : null;
   }
 
   getTrend(key) {
@@ -122,14 +122,11 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
 
   void _onTapAnalyze() {
     Navigator.pop(context);
-    widget.changeTab!(3,  widget.blueBook);
+    widget.changeTab!(3, widget.blueBook);
   }
 
   void _onTapCollection() async {
-    Get.to(() => AddToCollection(
-      blueBook: widget.blueBook,
-    ));
-   
+    Get.to(() => AddToCollection(blueBook: widget.blueBook));
   }
 
   // ────────────────────────────────────────────────
@@ -236,7 +233,7 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                           child: StaggeredItemAnimation(
                             index: 2,
                             child: Container(
-                              padding: const EdgeInsets.all(20),
+                              // padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: _borderColor,
@@ -246,8 +243,16 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                                   _cardBorderRadius,
                                 ),
                               ),
-                              child: Image.asset(
-                                "assets/images/bottle.png",
+                              child: Image.network(
+                                
+                                widget.blueBook.image == null
+                                    ? controller
+                                          .config
+                                          .value
+                                          .pourImagePlaceHolder!
+                                    : controller.config.value.uploadUrl! +
+                                          '/' +
+                                          widget.blueBook.image!,
                                 fit: BoxFit.contain,
                                 height: 280,
                               ),
@@ -263,7 +268,10 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              _buildActionButton("ANALYZE A TRADE", onTap: _onTapAnalyze),
+                              _buildActionButton(
+                                "ANALYZE A TRADE",
+                                onTap: _onTapAnalyze,
+                              ),
                               const SizedBox(height: _spacingSmall),
                               _buildActionButton(
                                 wishCollection == null
@@ -272,7 +280,10 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                                 onTap: _onTapWishList,
                               ),
                               const SizedBox(height: _spacingSmall),
-                              _buildActionButton("ADD TO COLLECTION", onTap: _onTapCollection),
+                              _buildActionButton(
+                                "ADD TO COLLECTION",
+                                onTap: _onTapCollection,
+                              ),
 
                               const Spacer(),
 
@@ -365,18 +376,20 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                 ],
               ),
             ),
-            if ( isBusy )
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-               color: Colors.black.withOpacity(0.45),
-               child: Center(                
-                child:  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xfffe8003)),
+            if (isBusy)
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.black.withOpacity(0.45),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xfffe8003),
+                    ),
                     strokeWidth: 4,
                   ),
-               ),
-            )
+                ),
+              ),
           ],
         ),
       ),

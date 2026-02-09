@@ -96,7 +96,7 @@ class _AddMultiplePopupState extends State<AddMultiplePopup> {
                 setState(() {
                   isAdding = true;
                 });
-                await CollectionApi.addBulk(
+                await CollectionApi.add(
                   widget.bluebook.id!,
                   controller.user.value.id!,
                   widget.pageType,

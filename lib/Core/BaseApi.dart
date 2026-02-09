@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/Core/Constants.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BaseApi extends GetConnect {
@@ -46,7 +47,8 @@ class BaseApi extends GetConnect {
       //   utils.showToast("Error", "Failed to reach network");
       //   return null;
       // }
-      var response = await post(url, FormData(body),
+      final b = body is FormData ? body : FormData(body);
+      var response = await post(url, b,
           contentType: contentType, headers: headers, query: query);
       if (response.statusCode != 200) {
         utils.showToast("Error", "Internal server error.");

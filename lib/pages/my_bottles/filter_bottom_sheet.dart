@@ -1,14 +1,41 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FilterBottomSheet extends StatelessWidget {
-  const FilterBottomSheet({super.key});
+typedef OnSortApply = void Function(String selectedSort);
+
+class FilterBottomSheet extends StatefulWidget {
+  final OnSortApply? onApply;           // ← callback to parent
+  final String initialSort;             // optional: pass current sort from parent
+
+  const FilterBottomSheet({
+    super.key,
+    this.onApply,
+    this.initialSort = 'name_asc',      // default
+  });
+
+  @override
+  State<FilterBottomSheet> createState() => _FilterBottomSheetState();
+}
+
+class _FilterBottomSheetState extends State<FilterBottomSheet> {
+  late String _selectedSort;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedSort = widget.initialSort;
+  }
+
+  void _reset() {
+    setState(() {
+      _selectedSort = 'name_asc';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A), // dark background
+        color: Color(0xFF1A1A1A),
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Padding(
@@ -17,7 +44,6 @@ class FilterBottomSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -38,7 +64,6 @@ class FilterBottomSheet extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Sort Section
             const Text(
               "Sort by",
               style: TextStyle(
@@ -49,31 +74,65 @@ class FilterBottomSheet extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            _FilterOptionTile(title: "Name: A to Z", value: "name_asc"),
-            _FilterOptionTile(title: "Name: Z to A", value: "name_desc"),
-            _FilterOptionTile(title: "Time: Newest First", value: "time_desc"),
-            _FilterOptionTile(title: "Time: Oldest First", value: "time_asc"),
-            _FilterOptionTile(title: "Price: High to Low", value: "price_desc"),
-            _FilterOptionTile(title: "Price: Low to High", value: "price_asc"),
+            // All options now use local state
             _FilterOptionTile(
-              title: "Quantity: Fullest",
-              value: "quantity_desc",
+              title: "Name: A to Z",
+              value: "name_asc",
+              isSelected: _selectedSort == "name_asc",
+              onTap: () => setState(() => _selectedSort = "name_asc"),
             ),
             _FilterOptionTile(
-              title: "Quantity: Emptiest",
-              value: "quantity_asc",
+              title: "Name: Z to A",
+              value: "name_desc",
+              isSelected: _selectedSort == "name_desc",
+              onTap: () => setState(() => _selectedSort = "name_desc"),
+            ),
+            _FilterOptionTile(
+              title: "Time: Newest First",
+              value: "time_desc",
+              isSelected: _selectedSort == "time_desc",
+              onTap: () => setState(() => _selectedSort = "time_desc"),
+            ),
+            _FilterOptionTile(
+              title: "Time: Oldest First",
+              value: "time_asc",
+              isSelected: _selectedSort == "time_asc",
+              onTap: () => setState(() => _selectedSort = "time_asc"),
+            ),
+            _FilterOptionTile(
+              title: "Price: High to Low",
+              value: "price_desc",
+              isSelected: _selectedSort == "price_desc",
+              onTap: () => setState(() => _selectedSort = "price_desc"),
+            ),
+            _FilterOptionTile(
+              title: "Price: Low to High",
+              value: "price_asc",
+              isSelected: _selectedSort == "price_asc",
+              onTap: () => setState(() => _selectedSort = "price_asc"),
+            ),
+            _FilterOptionTile(
+              title: "Fullest",
+              value: "fullest",
+              isSelected: _selectedSort == "fullest",
+              onTap: () => setState(() => _selectedSort = "fullest"),
+            ),
+            _FilterOptionTile(
+              title: "Emptiest",
+              value: "emptiest",
+              isSelected: _selectedSort == "emptiest",
+              onTap: () => setState(() => _selectedSort = "emptiest"),
             ),
 
             const SizedBox(height: 32),
 
-            // Action Buttons
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      // Reset filters logic here
-                      Navigator.pop(context);
+                      _reset();
+                      // You can also pop() here if you want reset → close
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.white54),
@@ -92,7 +151,7 @@ class FilterBottomSheet extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Apply filters logic here
+                      widget.onApply?.call(_selectedSort);  // ← send value back!
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -106,10 +165,7 @@ class FilterBottomSheet extends StatelessWidget {
                     ),
                     child: const Text(
                       "Apply",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -125,18 +181,20 @@ class FilterBottomSheet extends StatelessWidget {
 class _FilterOptionTile extends StatelessWidget {
   final String title;
   final String value;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  const _FilterOptionTile({required this.title, required this.value});
+  const _FilterOptionTile({
+    required this.title,
+    required this.value,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // For now it's static - later you can pass selected value & callback
-    final bool isSelected = false; // ← replace with real state
-
     return GestureDetector(
-      onTap: () {
-        // TODO: Handle selection (you'll probably use state management)
-      },
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

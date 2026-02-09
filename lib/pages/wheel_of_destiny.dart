@@ -259,6 +259,7 @@ class _WheelOfDestinyState extends State<WheelOfDestiny> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: SingleChildScrollView(
         child: Padding(
           padding:

@@ -189,7 +189,7 @@ class _BottleListTableItemState extends State<BottleListTableItem> {
   void _debouncedUpdate() {
     _debounceTimer?.cancel(); // Cancel any existing timer
     _debounceTimer = Timer(Duration(seconds: 1),  () async {
-      await CollectionApi.addBulk(
+      await CollectionApi.add(
         widget.collection.blueBook!.id!,
         controller.user.value.id,
         widget.collection.type == CollectionType.normal.name ?

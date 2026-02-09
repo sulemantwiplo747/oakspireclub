@@ -1,168 +1,247 @@
+import 'package:bourboneur/Core/Apis/Rating.dart';
+import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
+import 'package:bourboneur/Core/Controllers/Rating.dart';
+import 'package:bourboneur/Core/Utils.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/bluebook/bluebook_single.dart';
+import 'package:bourboneur/pages/my_bottles/add_to_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class MyBottlesSingle extends StatefulWidget {
-  const MyBottlesSingle({super.key});
+  MyBottlesSingle({super.key, required this.collection});
+
+  GroupedCollection collection;
 
   @override
   State<MyBottlesSingle> createState() => _MyBottlesSingleState();
 }
 
 class _MyBottlesSingleState extends State<MyBottlesSingle> {
- int _animationIndex = 0;
+  int _animationIndex = 0;
+  Controller controller = Get.find<Controller>();
+  Rating? rating;
+  TextEditingController notesInput = TextEditingController();
 
+  @override
+  void initState() {
+    _getRatings();
+    super.initState();
+  }
+
+  String get diff {
+    double pricePaid = double.parse(widget.collection.pricePaid!);
+    double avgPrice = double.parse(widget.collection.blueBook!.average!);
+    double d = avgPrice - pricePaid;
+    return d.toStringAsFixed(2);
+  }
+
+  double get fill {
+    double fill = double.parse(widget.collection.fill!);
+    return fill / 100;
+  }
+
+  String get trend {
+    double pricePaid = double.parse(widget.collection.pricePaid!);
+    double avgPrice = double.parse(widget.collection.blueBook!.average!);
+    double d = avgPrice - pricePaid;
+
+    var movement = (d / pricePaid * 100) - 100;
+    // print( d / pricePaid * 100);
+    String o = "stable";
+    if (movement > 2) {
+      o = "up";
+    } else if (movement < 2) {
+      o = "down";
+    }
+
+    return o;
+  }
+
+  String get date {
+    DateTime dt = DateTime.fromMillisecondsSinceEpoch(
+      int.parse(widget.collection.createdAt!) * 1000,
+    );
+
+    // Only time (24-hour)
+    String time24 = DateFormat('dd/MM/yyyy').format(dt);
+    return time24;
+  }
+
+  void _getRatings() async {
+    var r = await RatingApi.getByUserIdBluebookId(
+      controller.user.value.id!,
+      widget.collection.blueBook!.id!,
+    );
+    if (r is Rating) {
+      rating = r;
+      notesInput.value = TextEditingValue(text: rating?.notes ?? "");
+    }
+
+    setState(() {});
+  }
+
+  void _onSubmitRating() async {
+     if (!mounted) return;
+
+    final nose = rating?.nose ?? "0";
+    final palate = rating?.palate ?? "0";
+    final finish = rating?.finish ?? "0";
+    
+
+    await RatingApi.rate(
+      widget.collection.blueBook!.id!,
+      controller.user.value.id!,
+      double.parse(nose),
+      double.parse(palate),
+      double.parse(finish),
+      notesInput.text,
+    );
+
+    Utils().showToast("Success", "Saved notes!");
+
+    Navigator.pop(context);
+
+    setState(() {});
+  }
 
   void _showAddTestingNotesBottomSheet(BuildContext context) {
-  final TextEditingController _controller = TextEditingController();
-
-  
-
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true, // Allows it to take more space
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.65,
-        decoration: const BoxDecoration(
-          color: Color(0xFF1A1A1A), // dark background like your theme
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Column(
-          children: [
-            // Drag handle
-            Container(
-              width: 45,
-              height: 5,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.grey[600],
-                borderRadius: BorderRadius.circular(10),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Allows it to take more space
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.65,
+          decoration: const BoxDecoration(
+            color: Color(0xFF1A1A1A), // dark background like your theme
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            children: [
+              // Drag handle
+              Container(
+                width: 45,
+                height: 5,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[600],
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
 
-            // Title
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Add Testing Notes",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xfffe8003), // your accent orange
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 8,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Add Testing Notes",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xfffe8003), // your accent orange
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white70),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white70),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            // const Divider(color: Colors.grey[800], height: 1),
+              // const Divider(color: Colors.grey[800], height: 1),
 
-            // Text field area
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: TextField(
-                  controller: _controller,
-                  maxLines: null,
-                  minLines: 8,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText: "Enter your tasting notes, observations, score...",
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                    filled: true,
-                    fillColor: Colors.grey[900],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Color(0xfffe8003),
-                        width: 2,
+              // Text field area
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: TextField(
+                    controller: notesInput,
+                    maxLines: null,
+                    minLines: 8,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText:
+                          "Enter your tasting notes, observations, score...",
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      filled: true,
+                      fillColor: Colors.grey[900],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(
+                          color: Color(0xfffe8003),
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            // Action buttons
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white70),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+              // Action buttons
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.white70),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        
-                        final note = _controller.text.trim();
-                        if (note.isNotEmpty) {
-                          // You can show snackbar or save to state/database
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Note saved: $note"),
-                              backgroundColor: const Color(0xfffe8003),
-                            ),
-                          );
-                        }
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xfffe8003),
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        "Save Note",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.white70, fontSize: 18),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _onSubmitRating,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xfffe8003),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Save Note",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,12 +256,12 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
               children: [
                 StaggeredItemAnimation(
                   index: ++_animationIndex,
-                  child: const Row(
+                  child: Row(
                     children: [
                       Expanded(
                         child: Text(
-                          "Cheers, Nick.",
-                          style: TextStyle(
+                          "Cheers, ${controller.user.value.name}.",
+                          style: const TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
                             color: Color(0xfffe8003),
@@ -198,7 +277,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   index: ++_animationIndex,
                   fadeOnly: true,
                   child: Container(
-                    padding: const EdgeInsets.all(15),
+                    // padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2, color: Colors.white),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -206,12 +285,25 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Image.asset("assets/images/bottle.png", height: 270),
+                        Image.network(
+                          widget.collection.image == null
+                              ? controller.config.value.pourImagePlaceHolder!
+                              : controller.config.value.uploadUrl! +
+                                    '/' +
+                                    widget.collection.image!,
+                          height: 270,
+                        ),
                         Positioned(
                           top: 5,
                           right: 5,
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(
+                                () => AddToCollection(
+                                  blueBook: widget.collection.blueBook!,
+                                ),
+                              );
+                            },
                             child: const Icon(
                               Icons.edit_outlined,
                               size: 32,
@@ -231,18 +323,23 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        MoreItems(label: "Price Paid", value: "\$55.00"),
+                        MoreItems(
+                          label: "Price Paid",
+                          value: "\$${widget.collection.pricePaid}",
+                        ),
                         MoreItems(
                           label: "Blue Book Value",
-                          value: "\$55.00",
-                          info: "+\$4.55",
+                          value: "\$${widget.collection.blueBook!.average}",
+                          info: "+\$${diff}",
                         ),
                         MoreItems(
                           label: "Price Status",
-                          value: "STABLE",
-                          valueColor: Colors.red,
+                          value: trend.toUpperCase(),
+                          valueColor: trend == "down"
+                              ? Colors.red
+                              : const Color(0xff89d050),
                         ),
-                        MoreItems(label: "Date Added", value: "10/31/25"),
+                        MoreItems(label: "Date Added", value: date),
                       ],
                     ),
                   ),
@@ -252,7 +349,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   index: ++_animationIndex,
                   child: Container(
                     child: CenteredProgressBar(
-                      progress: .3,
+                      progress: fill,
                       progressColor: Color(0xffff7520),
                     ),
                   ),
@@ -264,7 +361,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   index: ++_animationIndex,
                   child: GestureDetector(
                     onTap: () {
-                        _showAddTestingNotesBottomSheet(context);
+                      _showAddTestingNotesBottomSheet(context);
                       // Get.to(() => BlueBook());
                     },
                     child: Container(
@@ -292,7 +389,8 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   index: ++_animationIndex,
                   child: GestureDetector(
                     onTap: () {
-                      // Get.to(() => BlueBook());
+
+                       Navigator.pop(context);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(10),
@@ -323,7 +421,6 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
     );
   }
 }
-
 
 class MoreItems extends StatelessWidget {
   MoreItems({

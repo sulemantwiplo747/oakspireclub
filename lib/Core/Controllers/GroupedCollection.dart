@@ -5,6 +5,9 @@ class GroupedCollection {
   String? type;
   String? count;
   String? price;
+  String? image;  
+  String? fill;
+  String? pricePaid;
   String? createdAt;
   BlueBook? blueBook;
 
@@ -12,7 +15,10 @@ class GroupedCollection {
         this.id,
         this.type,
         this.count,
+        this.image,
         this.price,
+        this.fill,
+        this.pricePaid,
         this.createdAt,
         this.blueBook,
   });
@@ -22,7 +28,10 @@ class GroupedCollection {
     type = json['type'];
     createdAt = json['created_at'].toString();
     count = json['count'].toString();    
+    image = json['image'];
     blueBook = BlueBook.fromJson(json['bluebook']);
+    fill = json['total_fill'];
+    pricePaid = json['total_price_paid'];
 
     price = (int.parse(count!) * int.parse(blueBook!.average!)).toString();
   }
@@ -33,6 +42,9 @@ class GroupedCollection {
       "type": type,
       "count": count,
       "price": price,
+      "image": image,
+      "total_fill": fill,
+      "total_price_paid": pricePaid,
       "created_at": createdAt,
       "bluebook": blueBook?.toJson()
     };

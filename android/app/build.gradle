@@ -34,7 +34,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.bourboneur.mobileapp"
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
