@@ -1,6 +1,9 @@
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/favorite_pour.dart';
+import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+import 'package:get/route_manager.dart';
 
 class TestingContent extends StatefulWidget {
   const TestingContent({super.key});
@@ -64,7 +67,9 @@ class _TestingContentState extends State<TestingContent> {
                       StaggeredItemAnimation(
                         index: ++_animateIndex,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(() => WheelOfDestiny());
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
@@ -89,7 +94,9 @@ class _TestingContentState extends State<TestingContent> {
                       StaggeredItemAnimation(
                         index: ++_animateIndex,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(() => WheelOfDestiny());
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
@@ -113,7 +120,9 @@ class _TestingContentState extends State<TestingContent> {
                       StaggeredItemAnimation(
                         index: ++_animateIndex,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(() => FavoritePour());
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
@@ -156,7 +165,9 @@ class _TestingContentState extends State<TestingContent> {
             StaggeredItemAnimation(
                         index: ++_animateIndex,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            // Get.to(() => Suggestion);
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
