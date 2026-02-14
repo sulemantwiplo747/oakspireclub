@@ -1,9 +1,12 @@
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/explore.dart';
 import 'package:bourboneur/pages/favorite_pour.dart';
+import 'package:bourboneur/pages/good_pour.dart';
 import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:get/route_manager.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class TestingContent extends StatefulWidget {
   const TestingContent({super.key});
@@ -68,7 +71,7 @@ class _TestingContentState extends State<TestingContent> {
                         index: ++_animateIndex,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => WheelOfDestiny());
+                            Get.to(() => ExplorePage());
                           },
                           child: Container(
                             padding: const EdgeInsets.all(15),
@@ -150,12 +153,17 @@ class _TestingContentState extends State<TestingContent> {
                 StaggeredItemAnimation(
                   fadeOnly: true,
                   index: ++_animateIndex,
-                  child: ClipRRect(
+                  child: GestureDetector(
+                    onTap: () {
+                      launchUrlString('https://www.bourboneur.com/shop', mode: LaunchMode.externalApplication);
+                    },
+                    child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: Image.asset(
                       "assets/images/bb-tasting.png",
                       height: 250,
                     ),
+                  ),
                   ),
                 ),
               ],
@@ -166,7 +174,7 @@ class _TestingContentState extends State<TestingContent> {
                         index: ++_animateIndex,
                         child: GestureDetector(
                           onTap: () {
-                            // Get.to(() => Suggestion);
+                            Get.to(() => GoodPourPage());
                           },
                           child: Container(
                             padding: const EdgeInsets.all(15),

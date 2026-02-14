@@ -370,7 +370,7 @@ class Chart extends StatelessWidget {
   List<FlSpot> get spots {
     List<FlSpot> spots = [];
     spots = prices.map((element) {
-      print(prices);
+      // print(prices);
 
       // double y = element.last * (1/minPrice);
       return FlSpot(element.first, element.last);

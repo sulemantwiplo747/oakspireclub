@@ -1,4 +1,5 @@
 import 'package:bourboneur/Core/Apis/Collection.dart';
+import 'package:bourboneur/Core/Apis/Market.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
@@ -22,7 +23,10 @@ class _ChartPageState extends State<ChartPage> {
   Controller controller = Get.find<Controller>();
   List chartData = [];
   List indexData = [];
+  List snpData = [];
+
   String valuation = "0.00";  
+  String invested = "0.00";  
   double overall = 0.00;
   List marketIndex = ['up', 00.00];
   int _animatedIndex = 0;
@@ -46,10 +50,14 @@ class _ChartPageState extends State<ChartPage> {
     chartData = data['data'];    
     indexData = data['index_data'];
 
+    var snp = await MarketApi.snp();
+    snpData = snp;
+
     final NumberFormat formatter = NumberFormat.compact(locale: 'en_us')
       ..maximumFractionDigits = 2;
 
     valuation = formatter.format(double.parse(data['last_price']));
+    invested = formatter.format(double.parse(data['invested']));
 
     overall = double.parse(data['trend_overall']);
 
@@ -109,9 +117,9 @@ class _ChartPageState extends State<ChartPage> {
             children: [
               StaggeredItemAnimation(
                 index: ++_animatedIndex,
-                child: Row(
+                child: const Row(
                   children: [
-                    const Expanded(
+                     Expanded(
                       child: Text(
                         "My Bottles",
                         style: TextStyle(
@@ -122,14 +130,14 @@ class _ChartPageState extends State<ChartPage> {
                         softWrap: true,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.menu,
-                        color: Color(0xfffe8003),
-                        size: 35,
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {},
+                    //   child: const Icon(
+                    //     Icons.menu,
+                    //     color: Color(0xfffe8003),
+                    //     size: 35,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -141,7 +149,8 @@ class _ChartPageState extends State<ChartPage> {
                   data: chartData,
                   indexData: indexData,
                   isLoading: isChartLoading,
-                  valuation: valuation,                  
+                  valuation: valuation,    
+                  invested: invested,              
                   onDateChange: _handleOnChangeDate,
                 ),
               ),

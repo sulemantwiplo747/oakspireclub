@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:bourboneur/Core/Apis/Auth.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/delete_account.dart';
 import 'package:bourboneur/pages/edit_profile.dart';
+import 'package:bourboneur/pages/ios_subscription_page.dart';
+import 'package:bourboneur/pages/portal.dart';
 import 'package:bourboneur/pages/settings/settings_menu.dart';
 import 'package:bourboneur/pages/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +21,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-
   Controller controller = Get.find<Controller>();
-  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,7 +84,7 @@ class _SettingsState extends State<Settings> {
                     label: "Cheers, ${controller.user.value.name}!",
                     subLabel: "${controller.user.value.email}",
                     onTap: () {
-                      Get.to(() => EditProfilePage())?.then((v)  {
+                      Get.to(() => EditProfilePage())?.then((v) {
                         // call the state to reload the page
                         setState(() {});
                       });
@@ -114,8 +117,34 @@ class _SettingsState extends State<Settings> {
                   ),
                   SettingsMenuItem(
                     label: "Billing",
-                    subLabel: "Update you subscription",
-                    onTap: () {},
+                    subLabel: controller.user.value.isFree == "1"
+                        ? "Your subscription is FREE"
+                        : "Update you subscription",
+                    onTap: () {
+                      if (controller.user.value.isFree == "1") return;
+                      if (controller.user.value.lastPaymentMethod == null) {
+                        Platform.isAndroid
+                            ? Get.to(() => PortalPage())
+                            : launchUrl(
+                                Uri.parse(
+                                  "https://apps.apple.com/account/subscriptions",
+                                ),
+                              );
+                      } else if (Platform.isAndroid &&
+                          controller.user.value.lastPaymentMethod ==
+                              "apple_in_app") {
+                        Get.to(() => IosSubscriptionPage());
+                      } else if (controller.user.value.lastPaymentMethod ==
+                          "stripe") {
+                        Get.to(() => PortalPage());
+                      } else {
+                        launchUrl(
+                          Uri.parse(
+                            "https://apps.apple.com/account/subscriptions",
+                          ),
+                        );
+                      }
+                    },
                     asset: "assets/images/billing.png",
                   ),
                 ],
@@ -151,7 +180,7 @@ class _SettingsState extends State<Settings> {
                             const Spacer(),
                             GestureDetector(
                               onTap: () {
-                                 Get.to(() => const DeleteAccount());
+                                Get.to(() => const DeleteAccount());
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(15),

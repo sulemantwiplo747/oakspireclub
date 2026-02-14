@@ -9,12 +9,14 @@ class ChartWidget extends StatefulWidget {
     required this.isLoading,
     required this.valuation,    
     required this.onDateChange,
+    required this.invested
   });
 
   final List data;
   final List indexData;
   final bool isLoading;
   final String valuation;
+  final String invested;
   final void Function(int) onDateChange;
 
   @override
@@ -145,7 +147,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
                                     // Invested amount - always visible
                                     Text(
-                                      "Invested: \$4.2k",
+                                      "Invested: \$${widget.invested}",
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(0.85),
                                         fontFamily: 'Arial',
