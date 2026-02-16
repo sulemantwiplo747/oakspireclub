@@ -6,6 +6,7 @@ class ChartWidget extends StatefulWidget {
     super.key,
     required this.data,
     required this.indexData,
+    required this.snpData,
     required this.isLoading,
     required this.valuation,    
     required this.onDateChange,
@@ -14,6 +15,7 @@ class ChartWidget extends StatefulWidget {
 
   final List data;
   final List indexData;
+  final List snpData;
   final bool isLoading;
   final String valuation;
   final String invested;
@@ -176,7 +178,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               bottom: 20,
             ),
             child: widget.data.isNotEmpty && !widget.isLoading
-                ? Chart(data: widget.data, index: widget.indexData)
+                ? Chart(data: widget.data, index: widget.indexData, snp: widget.snpData)
                 : Center(
                     child: Text(
                       widget.isLoading ? "Syncing..." : "No data available",

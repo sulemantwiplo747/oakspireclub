@@ -25,9 +25,8 @@ class _ChartPageState extends State<ChartPage> {
   List indexData = [];
   List snpData = [];
 
-  String valuation = "0.00";  
+  String valuation = "0.00";
   String invested = "0.00";  
-  double overall = 0.00;
   List marketIndex = ['up', 00.00];
   int _animatedIndex = 0;
 
@@ -47,19 +46,17 @@ class _ChartPageState extends State<ChartPage> {
       controller.user.value.id!,
       lookBack
     );
-    chartData = data['data'];    
+    chartData = data['data'];
     indexData = data['index_data'];
 
-    var snp = await MarketApi.snp();
+    List snp = await MarketApi.snp();
     snpData = snp;
 
     final NumberFormat formatter = NumberFormat.compact(locale: 'en_us')
       ..maximumFractionDigits = 2;
 
     valuation = formatter.format(double.parse(data['last_price']));
-    invested = formatter.format(double.parse(data['invested']));
-
-    overall = double.parse(data['trend_overall']);
+    invested = formatter.format(double.parse(data['invested_value']));
 
     isChartLoading = false;
 
@@ -69,7 +66,7 @@ class _ChartPageState extends State<ChartPage> {
       marketIndex.add(
         double.parse(data['index']['movement'].toString()).toStringAsFixed(2),
       );
-      
+
     }
     setState(() {});
   }
@@ -83,12 +80,18 @@ class _ChartPageState extends State<ChartPage> {
     if ( chartData.isNotEmpty ) {
       Map first = chartData[0];
       Map last = chartData[chartData.length - 1];
-       data[0] = 100 - (double.parse(first['price']) * 100 / double.parse(last['price']));      
+       data[0] = 100 - (double.parse(first['price']) * 100 / double.parse(last['price']));
     }
 
-    if ( indexData.isNotEmpty ) {      
+    if ( indexData.isNotEmpty ) {
       Map last = indexData[indexData.length - 1];
-      data[1] = double.parse(last['price'].toString());      
+      data[1] = double.parse(last['price'].toString());
+    }
+
+    if ( snpData.isNotEmpty ) {
+      Map first = snpData[0];
+      Map last = snpData[snpData.length - 1];
+      data[2] = 100 - (double.parse(first['close'].toString()) * 100 / double.parse(last['close'].toString()));
     }
 
     return data;
@@ -105,7 +108,7 @@ class _ChartPageState extends State<ChartPage> {
   @override
   Widget build(BuildContext context) {
     List data = _buildTrend();
-    
+
 
     return LoginWrapper(
       showBottomNavigator: false,
@@ -148,9 +151,10 @@ class _ChartPageState extends State<ChartPage> {
                 child: ChartWidget(
                   data: chartData,
                   indexData: indexData,
+                  snpData: snpData,
                   isLoading: isChartLoading,
-                  valuation: valuation,    
-                  invested: invested,              
+                  valuation: valuation,
+                  invested: invested,
                   onDateChange: _handleOnChangeDate,
                 ),
               ),
@@ -262,7 +266,7 @@ class _ChartPageState extends State<ChartPage> {
                         negativeColor: Color(0xff92d050),
                       ),
                       CollectionPercent(
-                        percentage: overall,
+                        percentage: data[2],
                         label: "S&P",
                         positiveColor: Color(0xff699ebf),
                         negativeColor: Color(0xff699ebf),

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class Chart extends StatelessWidget {
-  Chart({super.key, required this.data, required this.index});
+  Chart({super.key, required this.data, required this.index, required this.snp });
 
   double maxPrice = 0;
   double minPrice = 0;
@@ -19,6 +19,7 @@ class Chart extends StatelessWidget {
 
   List data;
   List index;
+  List snp;
 
   List<List<double>> prices = [
     // [10, 200],
@@ -48,8 +49,23 @@ class Chart extends StatelessWidget {
     // [1, 472]
   ];
 
+  List<List<double>> snpPrices = [
+    // [10, 200],
+    // [9, 201],
+    // [8, 210],
+    // [7, 260],
+    // [6, 320],
+    // [5.5, 370],
+    // [5, 350],
+    // [4.3, 470],
+    // [3.7, 480],
+    // [3, 490],
+    // [1, 472]
+  ];
+
   List<List<double>> originalPrices = [];
   List<List<double>> originalIndexPrices = [];
+  List<List<double>> originalSnpPrices = [];
 
   double? priceGap;
   double? dayGap;
@@ -165,8 +181,47 @@ class Chart extends StatelessWidget {
       // print(dayGap);
     }
 
+    if ( snp.isNotEmpty )
+    {
+      first = DateTime.parse(data.first['date']);
+      last = DateTime.parse(data.last['date']);
+
+      var d = last!.difference(first!).inDays;
+      int i = 0;
+
+      Map snpData = _listToMap(snp, priceIndex: 'close');
+      double price = 0;
+
+      while (i <= d) {
+        String date = DateFormat(
+          'yyyy-MM-dd',
+        ).format(first!.add(Duration(days: i)));
+
+        if (snpData.containsKey(date)) {
+          price = double.parse(snpData[date]);
+        }
+
+        // if ( maxPrice < price ) {
+        //   maxPrice = price.toDouble();
+        // }
+
+        // if ( minPrice > price ) {
+        //   minPrice = price.toDouble();
+        // }
+
+        snpPrices.add([i.toDouble(), price]);
+
+        i++;
+      }
+
+      // maxX = d.toDouble();
+
+      snpPrices = snpPrices.reversed.toList();
+    }
+
     originalPrices = List.from(prices.map((e) => List<double>.from(e)));
     originalIndexPrices = List.from(indexPrices.map((e) => List<double>.from(e)));
+    originalSnpPrices = List.from(snpPrices.map((e) => List<double>.from(e)));
 
     if (prices.isNotEmpty) {
       final double priceBase = prices.first[1]; // first price value
@@ -174,6 +229,15 @@ class Chart extends StatelessWidget {
         double original = prices[j][1];
         // prices[j][1] = ((original - priceBase) / priceBase) * 100; // % change
         prices[j][1] = original / priceBase;
+      }
+    }
+
+    if (snpPrices.isNotEmpty) {
+      final double snpBase = snpPrices.first[1]; // first price value
+      for (int j = 0; j < snpPrices.length; j++) {
+        double original = snpPrices[j][1];
+        // prices[j][1] = ((original - priceBase) / priceBase) * 100; // % change
+        snpPrices[j][1] = original / snpBase;
       }
     }
 
@@ -187,10 +251,10 @@ class Chart extends StatelessWidget {
     }
   }
 
-  Map<String, String> _listToMap(data) {
+  Map<String, String> _listToMap(data, { priceIndex = 'price' }) {
     Map<String, String> output = {};
     data.forEach((element) {
-      output[element['date']] = element['price'].toString();
+      output[element['date']] = element[priceIndex].toString();
     });
 
     return output;
@@ -225,42 +289,58 @@ class Chart extends StatelessWidget {
         tooltipPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         getTooltipItems: (List<LineBarSpot> touchedSpots) {
           return touchedSpots.map((LineBarSpot touchedSpot) {
-            final bool isPriceLine = touchedSpot.barIndex == 0; // 0 = price, 1 = index
 
             final double value = touchedSpot.y;
             final int dayIndex = touchedSpot.x.toInt();
-            final double displayValue = isPriceLine
-              ? originalPrices[prices.length - 1 - dayIndex][1]   // reverse index because reversed list
-              : originalIndexPrices[indexPrices.length - 1 - dayIndex][1];
+            double displayValue  = 0;
+            String label = "";
+            String formattedValue;
+            Color color;
+            // final double displayValue;
+            switch( touchedSpot.barIndex )
+            {
+              case 2:  // 2 snp bar index
+                displayValue = originalSnpPrices[snpPrices.length - 1 - dayIndex][1];
+                label = "S&P";
+                final formatter = NumberFormat.currency(
+                  locale: 'en_US',
+                  symbol: '\$',
+                  decimalDigits: 0,
+                );
+                formattedValue = formatter.format(displayValue);
+                color = Color(0xff699ebf);
+              case 1: // 1 = index
+                displayValue = originalIndexPrices[indexPrices.length - 1 - dayIndex][1];
+                label = "Index";
+                formattedValue = '${displayValue.toStringAsFixed(2)}%';
+                color = Color(0xff92d050);
+                break;
+              default:
+                displayValue = originalPrices[prices.length - 1 - dayIndex][1];
+                label = "Price";
+                final formatter = NumberFormat.currency(
+                  locale: 'en_US',
+                  symbol: '\$',
+                  decimalDigits: 0,
+                );
+                formattedValue = formatter.format(displayValue);
+                color = Color(0xffff7520);
+              
+            }
+            
 
             // Reconstruct the date
             DateTime date = first!.add(Duration(days: dayIndex));
             String dateStr = DateFormat('MMM d, yyyy').format(date);
 
-            String label = isPriceLine ? 'Price' : 'Index';
-            String formattedValue;
+            
+            
 
-            if (isPriceLine) {
-              // Show original price format (with $ and compact)
-              final formatter = NumberFormat.currency(
-                locale: 'en_US',
-                symbol: '\$',
-                decimalDigits: 0,
-              );
-              formattedValue = formatter.format(displayValue);
-            } else {
-              // Show index as number with 2 decimals + % sign if it makes sense
-              formattedValue = '${displayValue.toStringAsFixed(2)}%';
-              // If your index is not percentage, change to:
-              // formattedValue = value.toStringAsFixed(2);
-            }
 
             return LineTooltipItem(
               '$dateStr\n$label: $formattedValue',
               TextStyle(
-                color: isPriceLine
-                    ? const Color(0xff92d050)   // green for price
-                    : const Color.fromARGB(255, 77, 53, 143), // purple for index
+                color: color, // purple for index
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -303,6 +383,7 @@ class Chart extends StatelessWidget {
   List<LineChartBarData> get lineBarsData1 => [
     lineChartBarData1_1,
     lineChartBarDataIndex,
+    lineChartBarDataSnp
   ];
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
@@ -399,6 +480,20 @@ class Chart extends StatelessWidget {
     return spots;
   }
 
+  List<FlSpot> get snpSpots {
+     List<FlSpot> spots = [];
+    spots = snpPrices.map((element) {
+      // print(prices);
+
+      // double y = element.last * (1/minPrice);
+      return FlSpot(element.first, element.last);
+
+      // element
+    }).toList();
+
+    return spots;
+  }
+
   FlGridData get gridData => FlGridData(
     show: false,
     drawVerticalLine: true,
@@ -440,5 +535,18 @@ class Chart extends StatelessWidget {
     dotData: const FlDotData(show: false),
     belowBarData: BarAreaData(show: false),
     spots: indexSpots,
+  );
+
+  LineChartBarData get lineChartBarDataSnp => LineChartBarData(
+    isCurved: true,    
+    // isStrokeJoinRound: true,
+    curveSmoothness: .5,
+    color: Color(0xff699ebf),
+    barWidth: 2,
+    //  dashArray: [3, 6],
+    isStrokeCapRound: true,    
+    dotData: const FlDotData(show: false),
+    belowBarData: BarAreaData(show: false),
+    spots: snpSpots,
   );
 }
