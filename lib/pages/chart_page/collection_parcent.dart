@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class CollectionPercent extends StatelessWidget {
@@ -32,15 +34,15 @@ class CollectionPercent extends StatelessWidget {
         Text(
           displayValue,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: Platform.isIOS ? 28 : 32,
             color: textColor,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 18,
+          style:  TextStyle(
+              fontSize: Platform.isIOS ? 16 : 18,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -49,3 +51,4 @@ class CollectionPercent extends StatelessWidget {
     );
   }
 }
+
