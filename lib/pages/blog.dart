@@ -73,6 +73,7 @@ class _BlogState extends State<Blog> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: !isLoading ? SingleChildScrollView(
         controller: scrollController,
         child: Stack(

@@ -9,7 +9,12 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class TreadAnalyzerForm extends StatefulWidget {
-  TreadAnalyzerForm({super.key});
+  TreadAnalyzerForm({
+    super.key,
+    this.blueBook
+  });
+
+  BlueBook? blueBook;
 
   @override
   State<TreadAnalyzerForm> createState() => _TreadAnalyzerFormState();
@@ -18,6 +23,22 @@ class TreadAnalyzerForm extends StatefulWidget {
 class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
   List<BlueBook> giving = [];
   List<BlueBook> receiving = [];
+
+  @override
+  void initState() {
+    _preAddBottles();
+    super.initState();
+  }
+
+  void _preAddBottles() {
+    if ( widget.blueBook != null ) {
+      giving.add(widget.blueBook!);
+    }
+
+    // Also check the storage
+    
+    setState(() {});
+  }
 
   void _handleSelect(BlueBook bluebook, bool isGiving) {
     if (isGiving) {

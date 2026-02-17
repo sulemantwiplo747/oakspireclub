@@ -17,7 +17,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 class BlueBook extends StatefulWidget {
-  const BlueBook({super.key});
+  BlueBook({super.key, this.changeTab, this.pageData});
+
+  void Function(int, dynamic)? changeTab;
+  dynamic pageData;
 
   @override
   State<BlueBook> createState() => _BlueBookState();
@@ -43,7 +46,9 @@ class _BlueBookState extends State<BlueBook> {
               100
             ),
           ),
-          BlueBookContent(),
+          BlueBookContent(
+            changeTab: widget.changeTab
+          ),
           // Container(
           // //   color: Colors.red,
           // //   height: double.infinity,
@@ -54,7 +59,9 @@ class _BlueBookState extends State<BlueBook> {
 }
 
 class BlueBookContent extends StatefulWidget {
-  const BlueBookContent({super.key});
+  BlueBookContent({super.key, this.changeTab});
+
+   void Function(int, dynamic)? changeTab;
 
   @override
   State<BlueBookContent> createState() => _BlueBookContentState();
@@ -130,7 +137,8 @@ class _BlueBookContentState extends State<BlueBookContent> {
   }
 
   void _handleOnClickItem(ctrl.BlueBook bluebook) {
-    Get.to(() => BlueBookSinglePage());
+    
+    Get.to(() => BlueBookSinglePage( blueBook: bluebook, changeTab: widget.changeTab ));
   }
 
   @override

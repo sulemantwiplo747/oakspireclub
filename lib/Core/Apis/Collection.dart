@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bourboneur/Core/BaseApi.dart';
 import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
@@ -20,42 +21,41 @@ class _Collection extends BaseApi {
   static String COLLECTION_ALL_GROUPED = 'collection/all/grouped';
   static String COLLECTION_CHART_DATA = 'collection/chart-data';
   static String COLLECTION_IS_IN_COLLECTION = 'collection/is-in-collection';
+  static String COLLECTION_IS_IN_GROUP_COLLECTION = 'collection/is-in-group-collection';
 
   Future<dynamic> add(
     String bottleId,
     String? userId,
-    Enum type
-  ) async {
-    
-    var data = {
-      "bottle_id": bottleId,
-      "user_id": userId,
-      "type": type.name
-    };
-    var response = await sendPost(COLLECTION_ADD, data);
-    if (response == null ) return false;
-    if ( response.body['code'] != 'OK' ) {
-      utils.showToast("Error", response.body['data']);
-      return false;
-    }
-
-    return response.body['data'];
-  }
-
-  Future<dynamic> addBulk(
-    String bottleId,
-    String? userId,
     Enum type,
-    { int quantity = 1 }
+    { int quantity = 1, int fill = 100, double paidPrice = 0, dynamic image }
   ) async {
-    
+
     var data = {
       "bottle_id": bottleId,
       "user_id": userId,
       "type": type.name,
-      "quantity": quantity
+      "quantity": quantity,
+      "fill": fill,
+      "price_paid": paidPrice
     };
-    var response = await sendPost(COLLECTION_ADD_BULK, data);
+
+    final form = FormData(data);
+
+    if ( image != null && image is File ) {
+      final bytes = await image.readAsBytes();
+      final fileName = image.path.split('/').last;
+
+      form.files.add(
+        MapEntry("image", MultipartFile(bytes, filename: fileName))
+      );
+    } else {
+        form.fields.add(
+          MapEntry("image", image)
+        );
+    }
+    
+
+    var response = await sendPost(COLLECTION_ADD, form);
     if (response == null ) return false;
     if ( response.body['code'] != 'OK' ) {
       utils.showToast("Error", response.body['data']);
@@ -152,12 +152,15 @@ class _Collection extends BaseApi {
   }
 
   Future<dynamic> getChartData(
-    String userId
+    String userId,
+    int lookBack
   ) async {
     
     var data = {
-      "user_id": userId
+      "user_id": userId,
+      "look_back": lookBack.toString()
     };
+
     var response = await sendGet(COLLECTION_CHART_DATA, query: data);
     if (response == null ) return false;
     if ( response.body['code'] != 'OK' ) {
@@ -188,6 +191,28 @@ class _Collection extends BaseApi {
 
     return response.body['data'];
   }
+
+  Future<dynamic> isInGroupCollection(
+    String userId,
+    String bottleId,
+    Enum type,
+  ) async {
+    
+    var data = {
+      "user_id": userId,
+      "bottle_id": bottleId,
+      "type" : type.name
+    };
+    var response = await sendPost(COLLECTION_IS_IN_GROUP_COLLECTION, data);
+    if (response == null ) return false;
+    if ( response.body['code'] != 'OK' ) {
+      utils.showToast("Error", response.body['data']);
+      return false;
+    }
+
+    List<Collection> cList = _parseCollection(response.body['data']);
+    return cList;
+  }
   
 
   List<Collection> _parseCollection(List responseBody) {
@@ -208,6 +233,11 @@ class _Collection extends BaseApi {
     }
 
     return list;
+  }
+
+  String fileToBase64Sync(File file) {
+    final bytes = file.readAsBytesSync();
+    return base64Encode(bytes);
   }
 
 }

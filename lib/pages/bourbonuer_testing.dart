@@ -9,7 +9,9 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class BourbonuerTesting extends StatefulWidget {
-  const BourbonuerTesting({super.key});
+  BourbonuerTesting({super.key, this.changeTab, this.pageData});
+  void Function(int, dynamic)? changeTab;
+  dynamic pageData;
 
   @override
   State<BourbonuerTesting> createState() => _BourbonuerTestingState();

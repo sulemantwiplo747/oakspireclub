@@ -28,7 +28,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController controllerCurrentPassword = TextEditingController();
   TextEditingController controllerNewPassword = TextEditingController();
 
-  bool? subscribeToWeeklyBlog;
+  bool changePassword = false;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final user = controller.user.value;
 
     controllerName = TextEditingController(text: user.name ?? '');
-    controllerEmail = TextEditingController(text: user.email ?? '');    
+    controllerEmail = TextEditingController(text: user.email ?? '');
   }
 
   @override
@@ -48,6 +48,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     controllerCurrentPassword.dispose();
     controllerNewPassword.dispose();
     super.dispose();
+  }
+
+  _onTapChangePassword(bool? value) {
+    controllerCurrentPassword.value = const TextEditingValue(text: '');
+    controllerNewPassword.value = const TextEditingValue(text: '');
+    setState(() {
+      changePassword = value == true;
+    });
   }
 
   Future<void> _handleSave() async {
@@ -71,105 +79,112 @@ class _EditProfilePageState extends State<EditProfilePage> {
       return;
     }
 
-    // If user wants to change password → require current password
-    bool wantsToChangePassword = newPass.isNotEmpty;
-    if (wantsToChangePassword) {
+    // If user wants to change password → require current password    
+    if ( changePassword == true ) {
       if (currentPass.isEmpty) {
-        utils.showToast("Error", "Please enter your current password to change it");
+        utils.showToast(
+          "Error",
+          "Please enter your current password to change it",
+        );
         setState(() => isLoading = false);
         return;
       }
 
       if (!utils.isValidPassword(newPass)) {
-        utils.showToast("Error", "New password must be at least 8 characters long");
+        utils.showToast(
+          "Error",
+          "New password must be at least 8 characters long",
+        );
         setState(() => isLoading = false);
         return;
       }
     }
 
-    // // Call update API
-    // final success = await Auth.updateProfile(
-    //   name: name,
-    //   email: email,
-    //   currentPassword: wantsToChangePassword ? currentPass : null,
-    //   newPassword: wantsToChangePassword ? newPass : null,
-    //   subscribeToWeeklyBlog: subscribeToWeeklyBlog,
-    // );
+    bool result = await Auth.updateProfile(
+      controller.user.value.id!,
+      name,
+      controllerCurrentPassword.text,
+      controllerNewPassword.text
+    );
 
-    // setState(() => isLoading = false);
+    controller.user.value.name = name;
 
-    // if (success) {
-    //   utils.showToast("Success", "Profile updated successfully!");
-    //   // Optionally refresh user data
-    //   await controller.refreshUserData();
-    //   Get.back(); // or navigate somewhere else
-    // } else {
-    //   utils.showToast("Error", "Failed to update profile. Please try again.");
-    // }
+    if ( result ) {
+      utils.showToast(
+        "Success",
+        "Profile info is success fully saved.",
+      );
+    }
+
+    
+    setState(() => isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  "Update your details",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium
-                      ?.copyWith(color: Colors.white),
-                ),
-                const SizedBox(height: 30),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                "Update your details",
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineMedium?.copyWith(color: Colors.white),
+              ),
+              const SizedBox(height: 30),
 
-                // Email
-                CustomInput(
-                  label: "Email",
-                  controller: controllerEmail,                  
-                  readOnly: true,
-                ),
-                const SizedBox(height: 20),
+              // Email
+              CustomInput(
+                label: "Email",
+                controller: controllerEmail,
+                readOnly: true,
+              ),
+              const SizedBox(height: 20),
 
-                // Full Name
-                CustomInput(
-                  label: "Full Name",
-                  controller: controllerName,
-                ),
-                const SizedBox(height: 20),
+              // Full Name
+              CustomInput(label: "Full Name", controller: controllerName),
+              const SizedBox(height: 20),
 
-
-                // Current Password (only needed when changing password)
+              // Current Password (only needed when changing password)
+              if (changePassword == true)
                 CustomInput(
                   label: "Current Password",
                   obscureText: true,
-                  controller: controllerCurrentPassword
+                  controller: controllerCurrentPassword,
                 ),
-                const SizedBox(height: 20),
+              if (changePassword == true) const SizedBox(height: 20),
 
-                // New Password
+              // New Password
+              if (changePassword == true)
                 CustomInput(
                   label: "New Password (optional)",
                   obscureText: true,
-                  controller: controllerNewPassword
-                ),
-                const SizedBox(height: 28),
-
-                // Save Button
-                CustomButton(
-                  text: "Save Changes",
-                  onTap: _handleSave,
-                  isLoading: isLoading,
+                  controller: controllerNewPassword,
                 ),
 
-                const SizedBox(height: 60),
-              ],
-            ),
+              CustomCheckBox(
+                label: "I want to change the password",
+                checked: changePassword,
+                onChanged: _onTapChangePassword,
+              ),
+
+              const SizedBox(height: 10),
+
+              // Save Button
+              CustomButton(
+                text: "Save Changes",
+                onTap: _handleSave,
+                isLoading: isLoading,
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }

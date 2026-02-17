@@ -1,13 +1,27 @@
+import 'dart:io';
+
+import 'package:bourboneur/Core/Apis/Auth.dart';
+import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/delete_account.dart';
 import 'package:bourboneur/pages/edit_profile.dart';
+import 'package:bourboneur/pages/ios_subscription_page.dart';
+import 'package:bourboneur/pages/portal.dart';
 import 'package:bourboneur/pages/settings/settings_menu.dart';
+import 'package:bourboneur/pages/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Settings extends StatelessWidget {
-  // Now stateless – animation is handled inside the wrapper
+class Settings extends StatefulWidget {
   const Settings({super.key});
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  Controller controller = Get.find<Controller>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +48,10 @@ class Settings extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => {},
+                    onTap: () {
+                      Auth.logout();
+                      Get.to(() => SignInPage());
+                    },
                     child: const Row(
                       children: [
                         Icon(Icons.logout, color: Color(0xfffe8003), size: 22),
@@ -64,10 +81,13 @@ class Settings extends StatelessWidget {
                 title: "Account",
                 items: [
                   SettingsMenuItem(
-                    label: "Cheers, Nick!",
-                    subLabel: "musselguy@gmail.com",
+                    label: "Cheers, ${controller.user.value.name}!",
+                    subLabel: "${controller.user.value.email}",
                     onTap: () {
-                      Get.to(() => EditProfilePage());
+                      Get.to(() => EditProfilePage())?.then((v) {
+                        // call the state to reload the page
+                        setState(() {});
+                      });
                     },
                     asset: "assets/images/avatar.png",
                   ),
@@ -97,8 +117,34 @@ class Settings extends StatelessWidget {
                   ),
                   SettingsMenuItem(
                     label: "Billing",
-                    subLabel: "Update you subscription",
-                    onTap: () {},
+                    subLabel: controller.user.value.isFree == "1"
+                        ? "Your subscription is FREE"
+                        : "Update you subscription",
+                    onTap: () {
+                      if (controller.user.value.isFree == "1") return;
+                      if (controller.user.value.lastPaymentMethod == null) {
+                        Platform.isAndroid
+                            ? Get.to(() => PortalPage())
+                            : launchUrl(
+                                Uri.parse(
+                                  "https://apps.apple.com/account/subscriptions",
+                                ),
+                              );
+                      } else if (Platform.isAndroid &&
+                          controller.user.value.lastPaymentMethod ==
+                              "apple_in_app") {
+                        Get.to(() => IosSubscriptionPage());
+                      } else if (controller.user.value.lastPaymentMethod ==
+                          "stripe") {
+                        Get.to(() => PortalPage());
+                      } else {
+                        launchUrl(
+                          Uri.parse(
+                            "https://apps.apple.com/account/subscriptions",
+                          ),
+                        );
+                      }
+                    },
                     asset: "assets/images/billing.png",
                   ),
                 ],
@@ -133,7 +179,9 @@ class Settings extends StatelessWidget {
                             ),
                             const Spacer(),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Get.to(() => const DeleteAccount());
+                              },
                               child: Container(
                                 padding: const EdgeInsets.all(15),
                                 decoration: BoxDecoration(

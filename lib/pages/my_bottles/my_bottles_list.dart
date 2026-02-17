@@ -1,13 +1,21 @@
+import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
+import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 
 class MyBottlesList extends StatelessWidget {
-  final List<Map<String, dynamic>> bottles;
-  final Function() onBottleTap; // passing bottle data
+  final List<GroupedCollection> bottles;
+  final Function(GroupedCollection)? onBottleTap; // passing bottle data
+  Controller controller = Get.find<Controller>();
+  Future<bool?> Function(DismissDirection, GroupedCollection) confirmDismiss;
 
-  const MyBottlesList({
+  MyBottlesList({
     super.key,
     required this.bottles,
     required this.onBottleTap,
+    required this.confirmDismiss
   });
 
   @override
@@ -22,7 +30,7 @@ class MyBottlesList extends StatelessWidget {
           final bottle = bottles[index];
 
           return Dismissible(
-            key: ValueKey(bottle['title'].toString() + index.toString()),
+            key: ValueKey(bottle.blueBook!.bottleName.toString() + index.toString()),
 
             // Background when swiping from left → right (start)
             background: Container(              
@@ -59,28 +67,23 @@ class MyBottlesList extends StatelessWidget {
             direction: DismissDirection.horizontal,
 
             // Optional: You can ask for confirmation (especially useful for delete)
-            confirmDismiss: (direction) async {
-              // For now we allow both directions without confirmation
-              // Later you can add dialog only for delete direction
-              // return true;
-              return false;
+            confirmDismiss:  (DismissDirection d)  async {
+                return await confirmDismiss(d, bottle);
             },
 
             // This is called when the item is fully swiped away
-            onDismissed: (direction) {
-              // For now - just empty placeholder
-              // You will later remove item from list here
-              // Example:
-              // if (direction == DismissDirection.endToStart) {
-              //   // delete action
-              // }
-            },
+            // onDismissed: (direction) {
+              
+            //   if (direction == DismissDirection.endToStart) {
+            //     print("Delete");
+            //   }
+            // },
 
             child: MyBottlesItem(
-              title: bottle['title'] as String,
-              priceText: "\$${bottle['price']} (${bottle['quantity']})",
-              imagePath: bottle['image'] as String,
-              onTap: () => onBottleTap(),
+              onTap: onBottleTap,
+              imagePlaceHolder: controller.config.value.pourImagePlaceHolder!,
+              imageUrl:  controller.config.value.uploadUrl!,
+              collections: bottle
             ),
           );
         },
@@ -90,24 +93,26 @@ class MyBottlesList extends StatelessWidget {
 }
 
 
-class MyBottlesItem extends StatelessWidget {
-  final String title; // Main name/description (long text)
-  final String priceText; // e.g. "\$243 (11)"
-  final String? imagePath; // Optional - custom image path  
-  final VoidCallback? onTap; // Optional tap handler
+class MyBottlesItem extends StatelessWidget {  
+  final Function(GroupedCollection)? onTap;   
+  final GroupedCollection collections;
+  String? imagePlaceHolder;
+  String? imageUrl;
 
-  const MyBottlesItem({
+  MyBottlesItem({
     super.key,
-    required this.title,
-    required this.priceText,
-    this.imagePath = "assets/images/bottle.png",
-    this.onTap,
+    required this.collections,    
+    this.onTap,        
+    this.imagePlaceHolder,
+    this.imageUrl
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        if ( onTap != null ) onTap!(collections);
+      },
       child: Container(
         // margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
@@ -126,7 +131,10 @@ class MyBottlesItem extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Image.asset(imagePath!, fit: BoxFit.contain),
+              child: Image.network(
+                collections.image == null ? imagePlaceHolder! : imageUrl! + '/' + collections.image!,
+                fit: BoxFit.contain
+              ),
             ),
 
             const SizedBox(width: 14),
@@ -138,7 +146,7 @@ class MyBottlesItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    title,
+                    collections.blueBook!.bottleName.toString() ,
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.white,
@@ -150,7 +158,7 @@ class MyBottlesItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    priceText,
+                     "\$${collections.pricePaid} (${collections.count})",
                     style: TextStyle(
                       fontSize: 13.5,
                       color: Colors.grey[500],

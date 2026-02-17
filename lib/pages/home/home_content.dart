@@ -1,15 +1,65 @@
+import 'package:bourboneur/Core/Apis/Collection.dart';
+import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/blog.dart';
 import 'package:bourboneur/pages/bluebook.dart';
 import 'package:bourboneur/pages/chart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomeContent extends StatelessWidget {
-  
+class HomeContent extends StatefulWidget {
   HomeContent({super.key, this.changeTab});
 
-   void Function(int)? changeTab;
+  void Function(int, dynamic)? changeTab;
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+  Controller controller = Get.find<Controller>();
+  String? diff = "0.00";
+  String? lastPrice = "0.00";
+  bool upTrend = true;
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  getData() async {
+    var chartData = await CollectionApi.getChartData(
+      controller.user.value.id!,
+      90,
+    );
+    chartData = chartData['data'];
+
+    if ( chartData.length < 1 ) return;
+    
+    final String first = chartData[0]['price'];
+    final String last = chartData[chartData.length - 1]['price'];
+
+    
+    double percent = (100 - (double.parse(first) / double.parse(last)) * 100);
+    upTrend = percent > 0;
+
+    var formatter = NumberFormat.currency(
+      locale: 'en_US',         
+      symbol: '\$',
+      decimalDigits: 2,
+    );
+
+    diff = "${formatter.format((double.parse(first) - double.parse(last)))} (${percent.toStringAsFixed(2)}%)";
+
+    formatter = NumberFormat.compact(
+      locale: 'en_US',   
+    );
+    lastPrice = formatter.format(double.parse(last));
+    // lastPrice = double.parse(last);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +70,14 @@ class HomeContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 1. Greeting
-            const StaggeredItemAnimation(
+            StaggeredItemAnimation(
               index: 0,
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      "Cheers, Nick.",
-                      style: TextStyle(
+                      "Cheers, ${controller.user.value.name}.",
+                      style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Color(0xfffe8003),
@@ -45,7 +95,9 @@ class HomeContent extends StatelessWidget {
               index: 1,
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => ChartPage());
+                  Get.to(() => ChartPage())?.then((result) {
+                    getData();
+                  });
                 },
                 child: Container(
                   padding: const EdgeInsets.all(15),
@@ -53,10 +105,10 @@ class HomeContent extends StatelessWidget {
                     border: Border.all(width: 2, color: Colors.white),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
+                      const Text(
                         "Collection Value",
                         style: TextStyle(
                           fontSize: 19,
@@ -64,32 +116,32 @@ class HomeContent extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 7),
+                      const SizedBox(height: 7),
                       Text(
-                        "\$4.5k",
-                        style: TextStyle(
+                        lastPrice!,
+                        style: const TextStyle(
                           fontSize: 40,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Row(
+                       Row(
                         children: [
                           Icon(
-                            Icons.arrow_drop_up,
-                            color: Color(0xff92d050),
+                            upTrend ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                            color: upTrend ? const Color(0xff92d050) : Colors.red,
                             size: 40,
                           ),
                           Text(
-                            "\$293.44 (+6.90%)",
+                            diff!,
                             style: TextStyle(
                               fontSize: 18,
-                              color: Color(0xff92d050),
+                              color: upTrend ? const Color(0xff92d050) : Colors.red,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(width: 15),
-                          Text(
+                          const SizedBox(width: 10),
+                          const Text(
                             "3 months",
                             style: TextStyle(
                               fontSize: 16,
@@ -111,7 +163,7 @@ class HomeContent extends StatelessWidget {
               index: 2,
               child: GestureDetector(
                 onTap: () {
-                  changeTab!(4);
+                  widget.changeTab!(4, null);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(15),
@@ -137,7 +189,11 @@ class HomeContent extends StatelessWidget {
               index: 3,
               child: Row(
                 children: [
-                  Container(
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => Blog());
+                    },
+                    child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2, color: Colors.white),
@@ -152,6 +208,7 @@ class HomeContent extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                  ),
                   ),
                   const SizedBox(width: 20),
                   Expanded(

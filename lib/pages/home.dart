@@ -5,10 +5,12 @@ import 'package:url_launcher/url_launcher.dart';
 class Home extends StatefulWidget {
   Home({
     super.key,
-    this.changeTab
+    this.changeTab,
+    this.pageData
   });
 
-  void Function(int)? changeTab;
+  void Function(int, dynamic)? changeTab;
+  dynamic pageData;
 
   @override
   State<Home> createState() => _HomeState();

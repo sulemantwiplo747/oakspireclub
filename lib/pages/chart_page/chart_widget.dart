@@ -5,17 +5,21 @@ class ChartWidget extends StatefulWidget {
   const ChartWidget({
     super.key,
     required this.data,
+    required this.indexData,
+    required this.snpData,
     required this.isLoading,
-    required this.valuation,
-    required this.overall,
-    required this.ytd,
+    required this.valuation,    
+    required this.onDateChange,
+    required this.invested
   });
 
   final List data;
+  final List indexData;
+  final List snpData;
   final bool isLoading;
   final String valuation;
-  final String overall;
-  final String ytd;
+  final String invested;
+  final void Function(int) onDateChange;
 
   @override
   State<ChartWidget> createState() => _ChartWidgetState();
@@ -23,9 +27,50 @@ class ChartWidget extends StatefulWidget {
 
 class _ChartWidgetState extends State<ChartWidget> {
   bool _showDetails = false;
+  String selectedDate = '1Y';
+
+  double priceChange = 0;
+
+  int toDays(String time) {
+    int data = 365;
+    switch(time.toLowerCase()) {
+      case '3d':
+        data = 3;
+        break;
+      case '7d':
+        data = 7;
+        break;
+      case '1m':
+        data = 30;
+        break;
+      case '3m':
+        data = 90;
+        break;    
+    }
+    return data;
+  }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // if ( widget.data.isNotEmpty ) {
+    //   print("==PRICE CHANGE===");
+    //   print(widget.data[0]);
+    // }
+    
+    super.initState();
+  }
+
+  void _handleDateChange(String item) {
+    setState(() {
+      selectedDate = item;
+    });
+    
+    widget.onDateChange(toDays(item));
+  }
+
+  @override
+  Widget build(BuildContext context) {    
+    
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white, width: 2),
@@ -104,7 +149,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
                                     // Invested amount - always visible
                                     Text(
-                                      "Invested: \$4.2k",
+                                      "Invested: \$${widget.invested}",
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(0.85),
                                         fontFamily: 'Arial',
@@ -133,7 +178,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               bottom: 20,
             ),
             child: widget.data.isNotEmpty && !widget.isLoading
-                ? Chart(data: widget.data)
+                ? Chart(data: widget.data, index: widget.indexData, snp: widget.snpData)
                 : Center(
                     child: Text(
                       widget.isLoading ? "Syncing..." : "No data available",
@@ -167,10 +212,8 @@ class _ChartWidgetState extends State<ChartWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TimeRangeFilter(
-                onPeriodChanged: (item) {
-                  print(item);
-                },
-                selectedPeriod: "1Y",
+                onPeriodChanged: _handleDateChange,
+                selectedPeriod: selectedDate,
               ),
             ],
           ),
