@@ -95,7 +95,13 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: const SplashPage(),
-      builder: EasyLoading.init(),
+      builder: (context, child) {
+        final mediaQueryData = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQueryData.copyWith(textScaleFactor: 1.0),
+          child: EasyLoading.init()(context, child),
+        );
+      },
     );
   }
 }
