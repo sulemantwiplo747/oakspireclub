@@ -9,9 +9,13 @@ class _Market extends BaseApi {
   static String MARKET_SNP = 'market/snp';
  
 
-  Future<dynamic> snp() async {
+  Future<dynamic> snp(int lookBack) async {
 
-    var response = await sendGet(MARKET_SNP);
+    var data = {
+      "look_back": lookBack.toString()
+    };
+
+    var response = await sendGet(MARKET_SNP, query: data);
     if (response == null ) return false;
     if ( response.body['code'] != 'OK' ) {
       utils.showToast("Error", response.body['data']);

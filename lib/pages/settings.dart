@@ -11,6 +11,7 @@ import 'package:bourboneur/pages/settings/settings_menu.dart';
 import 'package:bourboneur/pages/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
@@ -22,6 +23,20 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   Controller controller = Get.find<Controller>();
+  String versionNumber = "00";
+
+  _getVersion() async {
+    PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      versionNumber = info.buildNumber;
+    });
+  }
+
+  @override
+  void initState() {
+    _getVersion();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +173,7 @@ class _SettingsState extends State<Settings> {
               child: SettingMenu(
                 showTitle: true,
                 title: "Support",
-                color: Colors.red.withValues(alpha: .3),
+                color: Color(0xff9e0000),
                 items: [
                   Padding(
                     padding: EdgeInsetsGeometry.all(15),
@@ -223,12 +238,12 @@ class _SettingsState extends State<Settings> {
             ),
             const SizedBox(height: 20),
 
-            const StaggeredItemAnimation(
+            StaggeredItemAnimation(
               index: 1,
               child: Text(
-                "App version #40",
+                "App version #$versionNumber",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff94bfbf),
                   fontWeight: FontWeight.bold,
                   fontSize: 16,

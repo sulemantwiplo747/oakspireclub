@@ -7,12 +7,14 @@ class BottlesSearchInput extends StatelessWidget {
     this.autoFocus,
     this.onTap,
     this.onChange,
+    this.hintText
   });
 
   bool? readOnly;
   bool? autoFocus;
   void Function()? onTap;
   void Function(String)? onChange;
+  String? hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +30,21 @@ class BottlesSearchInput extends StatelessWidget {
         height: 2.5,
         color: Colors.white,
       ),
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.only(
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.only(
           top: 5,
           bottom: 5,
           left: 36, // ← space for icon
           right: 12,
         ),
-        hintText: "Search thousands of bottles",
-        hintStyle: TextStyle(
+        hintText: hintText ?? "Search thousands of bottles",
+        hintStyle: const TextStyle(
           color: Color.fromARGB(255, 180, 180, 180),
           fontSize: 18,
           height: 2.5,
           fontWeight: FontWeight.bold,
         ),
-        prefixIcon: Padding(
+        prefixIcon: const Padding(
           padding: EdgeInsets.only(left: 12),
           child: Icon(
             Icons.search_rounded,

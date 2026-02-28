@@ -95,7 +95,7 @@ class _HomeContentState extends State<HomeContent> {
               index: 1,
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => ChartPage())?.then((result) {
+                  Get.to(() => ChartPage( changeTab: widget.changeTab ))?.then((result) {
                     getData();
                   });
                 },
@@ -118,7 +118,7 @@ class _HomeContentState extends State<HomeContent> {
                       ),
                       const SizedBox(height: 7),
                       Text(
-                        lastPrice!,
+                        '\$${lastPrice!}',
                         style: const TextStyle(
                           fontSize: 40,
                           color: Colors.white,
@@ -130,12 +130,12 @@ class _HomeContentState extends State<HomeContent> {
                           Icon(
                             upTrend ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                             color: upTrend ? const Color(0xff92d050) : Colors.red,
-                            size: 40,
+                            size: 35,
                           ),
                           Text(
                             diff!,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: upTrend ? const Color(0xff92d050) : Colors.red,
                               fontWeight: FontWeight.bold,
                             ),
@@ -144,7 +144,7 @@ class _HomeContentState extends State<HomeContent> {
                           const Text(
                             "3 months",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -174,7 +174,7 @@ class _HomeContentState extends State<HomeContent> {
                   child: const Text(
                     "Bourbon Blue Book®",
                     style: TextStyle(
-                      fontSize: 27,
+                      fontSize: 25,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -202,7 +202,7 @@ class _HomeContentState extends State<HomeContent> {
                     child: const Text(
                       "Blog",
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -225,7 +225,7 @@ class _HomeContentState extends State<HomeContent> {
                           const Text(
                             "Social",
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 18,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -240,7 +240,8 @@ class _HomeContentState extends State<HomeContent> {
                             },
                             icon: 'assets/images/social/facebook.png',
                           ),
-                          const SizedBox(width: 20),
+                          const Spacer(),
+                          
                           SocialIcon(
                             onTap: () async {
                               final uri = Uri.parse(
@@ -250,7 +251,7 @@ class _HomeContentState extends State<HomeContent> {
                             },
                             icon: 'assets/images/social/instagram.png',
                           ),
-                          const SizedBox(width: 20),
+                          const Spacer(),
                           SocialIcon(
                             onTap: () async {
                               final uri = Uri.parse(
@@ -292,7 +293,7 @@ class SocialIcon extends StatelessWidget {
           color: Color(0xffff7520),
           borderRadius: BorderRadius.all(Radius.circular(50)),
         ),
-        child: Image.asset(icon, width: 20, height: 20),
+        child: Image.asset(icon, width: 17, height: 17),
       ),
     );
   }

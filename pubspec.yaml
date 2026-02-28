@@ -92,6 +92,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/social/
+    - assets/images/bottom/
     - assets/videos/
     - assets/certificate/cert.pem
 

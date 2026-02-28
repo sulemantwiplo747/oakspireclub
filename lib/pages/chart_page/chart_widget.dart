@@ -37,7 +37,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       case '3d':
         data = 3;
         break;
-      case '7d':
+      case '1w':
         data = 7;
         break;
       case '1m':
@@ -244,7 +244,7 @@ class Indicator extends StatelessWidget {
         Text(
           text,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             color: Colors.white,
             // fontWeight: FontWeight.bold,
           ),
@@ -259,7 +259,7 @@ class TimeRangeFilter extends StatelessWidget {
   final ValueChanged<String> onPeriodChanged;
 
   // You can easily add/remove periods here
-  static const List<String> periods = ['3D', '7D', '1M', '3M', '1Y'];
+  static const List<String> periods = ['3D', '1W', '1M', '3M', '1Y'];
 
   const TimeRangeFilter({
     super.key,
@@ -282,12 +282,12 @@ class TimeRangeFilter extends StatelessWidget {
           final isSelected = period == selectedPeriod;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: FilterChip(
               label: Text(
                 period,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   color: isSelected ? Colors.white : Colors.grey[300],
                 ),
@@ -304,7 +304,7 @@ class TimeRangeFilter extends StatelessWidget {
                 ),
               ),
               onSelected: (_) => onPeriodChanged(period),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 6),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           );

@@ -38,10 +38,10 @@ class LoginWrapper extends StatefulWidget {
 }
 
 class _LoginWrapperState extends State<LoginWrapper> {
-  int _selectedIndex = 0; // Tracks the currently selected tab
+  int _selectedIndex = 2; // Tracks the currently selected tab
 
   Widget _buildAnimatedIcon(
-    IconData iconData,
+    String image,
     int index, {
     bool isActive = false,
   }) {
@@ -50,9 +50,18 @@ class _LoginWrapperState extends State<LoginWrapper> {
       scale: selected ? 1.2 : 1.0, // Slight grow on select
       duration: const Duration(milliseconds: 300),
       curve: Curves.elasticOut, // Bouncy feel
-      child: Icon(
-        iconData,
-        color: selected ? const Color(0xFFe06f17) : const Color(0xFFf47c1a),
+      child: Container(
+        width: 35,
+        height: 35,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(image),
+              fit: BoxFit.fitHeight,
+              alignment: Alignment.center
+            )
+        ),
+        // child: Image.asset(image, width: 35),
       ),
     );
   }
@@ -100,48 +109,48 @@ class _LoginWrapperState extends State<LoginWrapper> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: _buildAnimatedIcon(Icons.menu, 0),
-            activeIcon: _buildAnimatedIcon(Icons.menu, 0, isActive: true),
+            icon: _buildAnimatedIcon("assets/images/bottom/menu.png", 0),
+            activeIcon: _buildAnimatedIcon("assets/images/bottom/menu.png", 0, isActive: true),
             label: "Menu",
           ),
           BottomNavigationBarItem(
             icon: _buildAnimatedIcon(
-              Icons.wine_bar_sharp,
+             "assets/images/bottom/glass.png",
               1,
             ), // Replace with your actual icons
             activeIcon: _buildAnimatedIcon(
-              Icons.wine_bar_sharp,
+              "assets/images/bottom/glass.png",
               1,
               isActive: true,
             ),
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: _buildAnimatedIcon(Icons.home, 2),
-            activeIcon: _buildAnimatedIcon(Icons.home, 2, isActive: true),
+            icon: _buildAnimatedIcon("assets/images/bottom/home.png", 2),
+            activeIcon: _buildAnimatedIcon("assets/images/bottom/home.png", 2, isActive: true),
             label: "Explore",
           ),
           BottomNavigationBarItem(
-            icon: _buildAnimatedIcon(Icons.recycling_sharp, 3),
+            icon: _buildAnimatedIcon("assets/images/bottom/recycle.png", 3),
             activeIcon: _buildAnimatedIcon(
-              Icons.recycling_sharp,
+              "assets/images/bottom/recycle.png",
               3,
               isActive: true,
             ),
             label: "Destiny",
           ),
           BottomNavigationBarItem(
-            icon: _buildAnimatedIcon(Icons.local_offer, 4),
+            icon: _buildAnimatedIcon("assets/images/bottom/coupon.png", 4),
             activeIcon: _buildAnimatedIcon(
-              Icons.local_offer,
+              "assets/images/bottom/coupon.png",
               4,
               isActive: true,
             ),
             label: "Suggestions",
           ),
           BottomNavigationBarItem(
-            icon: _buildAnimatedIcon(Icons.settings, 5),
-            activeIcon: _buildAnimatedIcon(Icons.settings, 5, isActive: true),
+            icon: _buildAnimatedIcon("assets/images/bottom/settings.png", 5),
+            activeIcon: _buildAnimatedIcon("assets/images/bottom/settings.png", 5, isActive: true),
             label: "Blog",
           ),
         ],

@@ -35,7 +35,7 @@ class _BlueBookState extends State<BlueBook> {
           Positioned.fill(
             bottom: 0,
             child: Image.asset(
-              'assets/images/new_bg.png',
+              'assets/images/new_bg_cropped.png',
               fit: BoxFit
                   .fitWidth, // or BoxFit.contain if you don't want cropping
               alignment: Alignment.bottomCenter,
@@ -173,7 +173,7 @@ class _BlueBookContentState extends State<BlueBookContent> {
                 style: const TextStyle(
                   fontFamily: 'Arial',
                   color: Colors.white,
-                  fontSize: 35,
+                  fontSize: 32,
                   height: 1,
                   fontWeight: FontWeight.bold,
                 ),
@@ -210,7 +210,7 @@ class _BlueBookContentState extends State<BlueBookContent> {
                 style: const TextStyle(
                   fontFamily: 'Arial',
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Color(0xffea8333),
                   fontSize: 16,
                   height: 1.3,
                 ),
@@ -288,7 +288,7 @@ class _BlueBookContentState extends State<BlueBookContent> {
 
               // ── New instruction text ───────────────────────────────
               Text(
-                "Click on the bottle to get whiskey wise",
+                "click on the bottle to get whiskey wise",
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 16,

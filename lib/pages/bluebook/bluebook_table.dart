@@ -53,10 +53,11 @@ class _BlueBookTableState extends State<BlueBookTable> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Main scrollable content
+        
         ListView.builder(
           controller: _scrollController,
           itemCount: widget.bluebooks.length + (widget.showLoading ? 1 : 0),
+          
           itemBuilder: (context, index) {
             // Loading row at the bottom
             if (index == widget.bluebooks.length && widget.showLoading) {
@@ -75,23 +76,23 @@ class _BlueBookTableState extends State<BlueBookTable> {
             }
 
             final bluebook = widget.bluebooks[index];
-            return _buildRow(bluebook);
+            return _buildRow(bluebook, index);
           },
         ),
 
         // Fixed header
         Container(
           color: const Color(0xffd9e5f8),
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 7),
           child: Row(
             children: [
               const SizedBox(width: 12),
               SizedBox(
-                width: 170,
+                width: 130,
                 child: Text(
                   "Bottle",
                   style: GoogleFonts.bebasNeue(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: Colors.black,
                   ),
                 ),
@@ -101,7 +102,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
                   "Average",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.bebasNeue(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: Colors.black,
                   ),
                 ),
@@ -111,7 +112,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
                   "Low",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.bebasNeue(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: Colors.black,
                   ),
                 ),
@@ -123,7 +124,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
                     "High",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.bebasNeue(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.black,
                     ),
                   ),
@@ -137,7 +138,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
     );
   }
 
-  Widget _buildRow(BlueBook bluebook) {
+  Widget _buildRow(BlueBook bluebook, int index) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(
@@ -154,16 +155,16 @@ class _BlueBookTableState extends State<BlueBookTable> {
             if (widget.onTap != null)  widget.onTap!(bluebook);
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            padding: index == 0 ? const EdgeInsets.only(top: 45, bottom: 7, left: 12, right: 12) : const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
             child: Row(
               children: [
                 SizedBox(
-                  width: 170,
+                  width: 130,
                   child: Text(
                     bluebook.bottleName ?? "—",
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -173,7 +174,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -183,7 +184,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -193,7 +194,7 @@ class _BlueBookTableState extends State<BlueBookTable> {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),

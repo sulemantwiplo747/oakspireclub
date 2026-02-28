@@ -1,5 +1,7 @@
+import 'package:bourboneur/Core/Apis/Collection.dart';
 import 'package:bourboneur/Core/Apis/Rating.dart';
 import 'package:bourboneur/Core/Controller.dart';
+import 'package:bourboneur/Core/Controllers/Collection.dart';
 import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:bourboneur/Core/Controllers/Rating.dart';
 import 'package:bourboneur/Core/Utils.dart';
@@ -28,6 +30,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
 
   @override
   void initState() {
+
     _getRatings();
     super.initState();
   }
@@ -106,6 +109,11 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
     Navigator.pop(context);
 
     setState(() {});
+  }
+
+  void _onBack(v) {
+    Navigator.pop(context);
+    // CollectionApi.grouped(controller.user.value.id!, CollectionType.normal);
   }
 
   void _showAddTestingNotesBottomSheet(BuildContext context) {
@@ -302,7 +310,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                                 () => AddToCollection(
                                   blueBook: widget.collection.blueBook!,
                                 ),
-                              );
+                              )?.then(_onBack);
                             },
                             child: const Icon(
                               Icons.edit_outlined,
@@ -443,21 +451,21 @@ class MoreItems extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 20, color: Colors.white, height: 1.5),
+          style: TextStyle(fontSize: 17, color: Colors.white, height: 1.5),
         ),
         const Spacer(),
         Row(
           children: [
             Text(
               value,
-              style: TextStyle(fontSize: 20, color: valueColor, height: 1.5),
+              style: TextStyle(fontSize: 17, color: valueColor, height: 1.5),
             ),
             if (info != null) SizedBox(width: 5),
             if (info != null)
               Text(
                 "($info)",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 17,
                   color: Color(0xff89d050),
                   height: 1.5,
                 ),

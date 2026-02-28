@@ -90,8 +90,8 @@ class _AddToCollectionState extends State<AddToCollection> {
       totalPrice = q > 0 ? totalPrice / q : 0;
       totalFill = q > 0 ? totalFill / q : 0;
 
-      paidPrice?.value = TextEditingValue(text: totalPrice.toString());
-      quantity?.value = TextEditingValue(text: q.toString());
+      paidPrice?.value = TextEditingValue(text: totalPrice <= 0 ? "" : totalPrice.toString());
+      quantity?.value = TextEditingValue(text: q <= 0 ? "" : q.toString());
 
       _filledPercentage = totalFill;
     }
@@ -127,9 +127,9 @@ class _AddToCollectionState extends State<AddToCollection> {
 
     isSubmitting = false;
     setState(() {});
-
-    Utils().showToast("Success", "New collection added.");
-    Navigator.pop(context);
+    final noti =  widget.blueBook == null ? "New collection added." : "Collection updated successfully";
+    Utils().showToast("Success", noti);
+    Navigator.pop(context);    
   }
 
   _getInitialImage() {
@@ -195,6 +195,7 @@ class _AddToCollectionState extends State<AddToCollection> {
                     StaggeredItemAnimation(
                       index: ++_animationIndex,
                       child: BottlesSearchInput(
+                        hintText: "Search bottles or add your own​",
                         readOnly: true,
                         onTap: () {
                           Get.to(

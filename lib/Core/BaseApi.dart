@@ -71,6 +71,7 @@ class BaseApi extends GetConnect {
       var response = await get(url,
           contentType: contentType, headers: headers, query: query);
       if (response.statusCode != 200) {
+        print(response.statusText);
         utils.showToast('Error', "Internal server error.");
         return null;
       }

@@ -48,7 +48,7 @@ class _Collection extends BaseApi {
       form.files.add(
         MapEntry("image", MultipartFile(bytes, filename: fileName))
       );
-    } else {
+    } else if ( image != null ) {
         form.fields.add(
           MapEntry("image", image)
         );

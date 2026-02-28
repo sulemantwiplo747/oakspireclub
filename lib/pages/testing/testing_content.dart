@@ -64,8 +64,8 @@ class _TestingContentState extends State<TestingContent> {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    spacing: 15,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    spacing: 17,
                     children: [
                       StaggeredItemAnimation(
                         index: ++_animateIndex,
@@ -74,17 +74,17 @@ class _TestingContentState extends State<TestingContent> {
                             Get.to(() => ExplorePage());
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(15),
+                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                             decoration: BoxDecoration(
                               border: Border.all(width: 2, color: Colors.white),
                               borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(15),
                               ),
                             ),
                             child: const Text(
                               "My Tasting Journal",
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 14,
                                 color: Color(0xffbfbfbf),
                                 fontWeight: FontWeight.bold,
                               ),
@@ -92,8 +92,7 @@ class _TestingContentState extends State<TestingContent> {
                             ),
                           ),
                         ),
-                      ),
-                      //  SizedBox(height: 15),
+                      ),                      
                       StaggeredItemAnimation(
                         index: ++_animateIndex,
                         child: GestureDetector(
@@ -101,17 +100,17 @@ class _TestingContentState extends State<TestingContent> {
                             Get.to(() => WheelOfDestiny());
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(15),
+                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                             decoration: BoxDecoration(
                               border: Border.all(width: 2, color: Colors.white),
                               borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(15),
                               ),
                             ),
                             child: const Text(
                               "Virtual Flavor Wheel",
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 14,
                                 color: Color(0xffbfbfbf),
                                 fontWeight: FontWeight.bold,
                               ),
@@ -120,6 +119,7 @@ class _TestingContentState extends State<TestingContent> {
                           ),
                         ),
                       ),
+                      
                       StaggeredItemAnimation(
                         index: ++_animateIndex,
                         child: GestureDetector(
@@ -127,17 +127,17 @@ class _TestingContentState extends State<TestingContent> {
                             Get.to(() => FavoritePour());
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(15),
+                             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                             decoration: BoxDecoration(
                               border: Border.all(width: 2, color: Colors.white),
                               borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(15),
                               ),
                             ),
                             child: const Text(
                               "Favorite Pours",
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 14,
                                 color: Color(0xffbfbfbf),
                                 fontWeight: FontWeight.bold,
                               ),
@@ -161,7 +161,7 @@ class _TestingContentState extends State<TestingContent> {
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: Image.asset(
                       "assets/images/bb-tasting.png",
-                      height: 250,
+                      height: 200,
                     ),
                   ),
                   ),
@@ -181,13 +181,13 @@ class _TestingContentState extends State<TestingContent> {
                             decoration: BoxDecoration(
                               border: Border.all(width: 2, color: Colors.white),
                               borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(15),
                               ),
                             ),
                             child: const Text(
                               "Bourbon Suggestions",                              
                               style: TextStyle(
-                                fontSize: 22,
+                                fontSize: 15,
                                 color: Color(0xffbfbfbf),
                                 fontWeight: FontWeight.bold,
                               ),

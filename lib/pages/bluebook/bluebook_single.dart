@@ -235,6 +235,7 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                             child: Container(
                               // padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
+                                color: Colors.white,
                                 border: Border.all(
                                   color: _borderColor,
                                   width: _borderWidth,

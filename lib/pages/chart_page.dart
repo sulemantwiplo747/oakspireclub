@@ -13,8 +13,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ChartPage extends StatefulWidget {
-  const ChartPage({super.key});
-
+  ChartPage({super.key, this.changeTab});
+  void Function(int, dynamic)? changeTab;
   @override
   State<ChartPage> createState() => _ChartPageState();
 }
@@ -42,6 +42,8 @@ class _ChartPageState extends State<ChartPage> {
   }
 
   getData(int lookBack) async {
+    isChartLoading = true;
+    setState(() {});
     Map<String, dynamic> data = await CollectionApi.getChartData(
       controller.user.value.id!,
       lookBack
@@ -49,7 +51,7 @@ class _ChartPageState extends State<ChartPage> {
     chartData = data['data'];
     indexData = data['index_data'];
 
-    List snp = await MarketApi.snp();
+    List snp = await MarketApi.snp(lookBack);
     snpData = snp;
 
     final NumberFormat formatter = NumberFormat.compact(locale: 'en_us')
@@ -120,9 +122,9 @@ class _ChartPageState extends State<ChartPage> {
             children: [
               StaggeredItemAnimation(
                 index: ++_animatedIndex,
-                child: const Row(
+                child: Row(
                   children: [
-                     Expanded(
+                     const Expanded(
                       child: Text(
                         "My Bottles",
                         style: TextStyle(
@@ -133,14 +135,14 @@ class _ChartPageState extends State<ChartPage> {
                         softWrap: true,
                       ),
                     ),
-                    // GestureDetector(
-                    //   onTap: () {},
-                    //   child: const Icon(
-                    //     Icons.menu,
-                    //     color: Color(0xfffe8003),
-                    //     size: 35,
-                    //   ),
-                    // ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.changeTab!(0, null);
+                        // Get.to(() => )
+                      },
+                      child: Image.asset("assets/images/bottom/menu.png", width: 35),                      
+                    ),
                   ],
                 ),
               ),

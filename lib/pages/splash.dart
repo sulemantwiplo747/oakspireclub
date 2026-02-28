@@ -46,7 +46,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Start the animation as soon as the screen loads
     _controller.forward();
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 1), () {
       _prepareToLaunch();
     });
   }
@@ -180,16 +180,20 @@ class _SplashPageState extends State<SplashPage>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset("assets/images/splash-logo.png", width: 300),
-              const SizedBox(height: 30),
-              Text(
-                "Helping the world become\nwhiskey wise™",
-                textAlign: TextAlign.center,
+              Image.asset("assets/images/logo.png", width: 250),
+              const SizedBox(height: 5),
+              Container(
+                width: 250,
+                alignment: Alignment.center,
+                child: Text(
+                "helping the world become\nwhiskey wise™",
+                textAlign: TextAlign.center,                
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontSize: 20,
+                  fontSize: 21,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
+              ),
               ),
             ],
           ),

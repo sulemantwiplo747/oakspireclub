@@ -36,8 +36,9 @@ class _PriceRangeBarState extends State<PriceRangeBar> {
   void _calculateProgress() {
     final current = widget.currentPrice ?? 0;
     double newProgress = 0.0;
-
-    if (current <= widget.lowPrice) {
+    if ( widget.lowPrice == widget.highPrice ) {
+      newProgress = 1.0;
+    }else if (current <= widget.lowPrice) {
       newProgress = 0.0;
     } else if (current >= widget.highPrice) {
       newProgress = 1.0;

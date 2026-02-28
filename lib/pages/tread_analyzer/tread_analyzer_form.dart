@@ -200,26 +200,26 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
             "GIVING",
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               height: 1,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           _buildGiving(),
           const SizedBox(height: 20),
           const Text(
             "GETTING",
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               height: 1,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           _buildReceiving(),
           const SizedBox(height: 20),
          GestureDetector(
@@ -229,12 +229,12 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 border: Border.all(width: 2, color: Colors.white),
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
               ),
               child: const Text(
-                "Analyze Trade",
+                "ANALYZE TRADE",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 16,
                   color: Color(0xffbfbfbf),
                   fontWeight: FontWeight.bold,
                 ),
@@ -242,7 +242,7 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
               ),
             ),
          ),
-          SizedBox(height: 20),
+          SizedBox(height: 40),
           GestureDetector(
             onTap: _onTapPersonalUse,
             child: SizedBox(
@@ -251,14 +251,14 @@ class _TreadAnalyzerFormState extends State<TreadAnalyzerForm> {
                 "*Personal Use Only",
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 18,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
-                  color: Color(0xffe17f2f),
-                  decoration: TextDecoration.underline,
+                  color: Color(0xffdcac00),
+                  // decoration: TextDecoration.underline,
                   decorationStyle: TextDecorationStyle.solid,
                   decorationThickness: 2,
-                  decorationColor: Color(0xffe17f2f),
+                  decorationColor: Color(0xffdcac00),
                 ),
               ),
             ),
@@ -285,8 +285,8 @@ class AnalyzerInput extends StatelessWidget {
 
   Widget getInput() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+      margin: const EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.only(left: 15, right: 15, top: 7, bottom: 7),
       decoration: BoxDecoration(
         color: const Color(0xffb17e00),
         border: Border.all(width: 2, color: const Color(0xff622f15)),
@@ -300,7 +300,7 @@ class AnalyzerInput extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),

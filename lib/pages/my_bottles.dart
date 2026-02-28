@@ -145,7 +145,7 @@ class _MyBottlesState extends State<MyBottles> {
   }
 
   onBottleTap(GroupedCollection collection) {
-    Get.to(() => MyBottlesSingle(collection: collection));
+    Get.to(() => MyBottlesSingle(collection: collection))?.then((v) {getListItems();});
   }
 
   Future<bool?> onSwipe(DismissDirection d, GroupedCollection collection) async {
@@ -260,6 +260,7 @@ class _MyBottlesState extends State<MyBottles> {
 
                 // === SEARCH AREA ===== //
                 BottlesSearchInput(
+                  hintText: "search your collection...",
                   // readOnly: true,
                   onChange: (v) {
                     searchQuery.value = v;

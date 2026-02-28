@@ -54,6 +54,8 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
   _handleConfirm(int button, BlueBook bluebook) async {
     // If the page type is search we are going to call only confirm
     if (widget.pageType == SearchPageType.trade) {
+      if ( button == 1 ) Navigator.pop(context);
+      
       if (widget.onSelect != null) widget.onSelect!(bluebook);
       Utils().showToast('Success', "You bottle is now added.");
       return;
