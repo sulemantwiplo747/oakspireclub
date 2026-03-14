@@ -34,7 +34,7 @@ class CollectionPercent extends StatelessWidget {
         Text(
           displayValue,
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 20,
             color: textColor,
             fontWeight: FontWeight.bold,
           ),

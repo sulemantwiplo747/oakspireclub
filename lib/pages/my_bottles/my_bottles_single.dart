@@ -9,6 +9,7 @@ import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/bluebook/bluebook_single.dart';
 import 'package:bourboneur/pages/my_bottles/add_to_collection.dart';
+import 'package:bourboneur/pages/my_testing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -151,7 +152,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Add Testing Notes",
+                      "Add Tasting Notes",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -289,7 +290,9 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                     decoration: BoxDecoration(
                       border: Border.all(width: 2, color: Colors.white),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      color: Colors.white
                     ),
+                    clipBehavior: Clip.hardEdge,
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -369,8 +372,8 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   index: ++_animationIndex,
                   child: GestureDetector(
                     onTap: () {
-                      _showAddTestingNotesBottomSheet(context);
-                      // Get.to(() => BlueBook());
+                      // _showAddTestingNotesBottomSheet(context);
+                      Get.to(() => MyTesting());
                     },
                     child: Container(
                       padding: const EdgeInsets.all(10),
@@ -381,7 +384,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                         ),
                       ),
                       child: const Text(
-                        "Add Testing Notes",
+                        "Add Tasting Notes",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,

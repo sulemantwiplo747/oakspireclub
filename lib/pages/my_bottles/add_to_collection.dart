@@ -151,7 +151,7 @@ class _AddToCollectionState extends State<AddToCollection> {
     }
 
     // if no image found use bluebook image
-    if (blueBook != null) {
+    if (blueBook != null &&  blueBook!.image != null) {
       return Image.network(
         height: 240,
         fit: BoxFit.contain,

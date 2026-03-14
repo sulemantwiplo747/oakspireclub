@@ -4,7 +4,10 @@ import 'package:bourboneur/Core/Controllers/BlueBooks.dart';
 import 'package:bourboneur/Core/Controllers/GroupedCollection.dart';
 import 'package:bourboneur/common/login_wrapper.dart';
 import 'package:bourboneur/common/staggered_item_animation.dart';
+import 'package:bourboneur/pages/bottles_list.dart';
 import 'package:bourboneur/pages/bottles_search.dart';
+import 'package:bourboneur/pages/favorite_pour.dart';
+import 'package:bourboneur/pages/import_export.dart';
 import 'package:bourboneur/pages/my_bottles/bottles_search.dart';
 import 'package:bourboneur/pages/my_bottles/filter_bottom_sheet.dart';
 import 'package:bourboneur/pages/my_bottles/add_to_collection.dart';
@@ -301,13 +304,15 @@ class _MyBottlesState extends State<MyBottles> {
                 StaggeredItemAnimation(
                   index: 2,
                   child: Container(
-                    padding: EdgeInsetsGeometry.only(top: 15, bottom: 15),
+                    padding: EdgeInsetsGeometry.only(top: 10, bottom: 10),
                     child: GestureDetector(
                       onTap: () {
-                        // Get.to(() => BlueBook());
+                        Get.to(() => ImportExportPage())?.then((v) {
+                            getListItems();
+                          });
                       },
                       child: Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
                           border: Border.all(width: 2, color: Colors.white),
                           borderRadius: const BorderRadius.all(
@@ -316,6 +321,37 @@ class _MyBottlesState extends State<MyBottles> {
                         ),
                         child: const Text(
                           "Import or Export",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ==== Wishlist button ====
+                StaggeredItemAnimation(
+                  index: 2,
+                  child: Container(
+                    padding: EdgeInsetsGeometry.only(top: 10, bottom: 10),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => BottlesList(isWishlist: true,));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.white),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                        ),
+                        child: const Text(
+                          "Wishlist",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 22,

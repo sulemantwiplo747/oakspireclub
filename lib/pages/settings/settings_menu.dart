@@ -110,7 +110,7 @@ class SettingsMenuItem extends StatelessWidget {
                 subLabel,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xff94bfbf),
+                  color: Color(0xffD3D3D3),
                   fontSize: 16,
                 ),
               ),

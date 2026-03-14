@@ -115,8 +115,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
   }
 
   _handleCreateConfirm(BlueBook bluebook) {
-    if (widget.pageType == SearchPageType.wishlist ||
-        widget.pageType == SearchPageType.normal) {
+    if (widget.pageType == SearchPageType.wishlist) {
       Utils().showToast("Success", "You bottle is now added.");
     } else {
       // Navigator.pop(context);

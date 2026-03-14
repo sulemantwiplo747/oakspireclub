@@ -29,6 +29,7 @@ class _BottleListSortState extends State<BottleListSort> {
     return Column(
       children: [
         Container(
+          clipBehavior: Clip.hardEdge,
           decoration: const BoxDecoration(
               color: Color(0xffe17f2f),
               borderRadius: BorderRadius.all(Radius.circular(30))),
@@ -39,6 +40,7 @@ class _BottleListSortState extends State<BottleListSort> {
         ),
         const SizedBox(height: 20),
         Container(
+          clipBehavior: Clip.hardEdge,
             decoration: const BoxDecoration(
                 color: Color(0xffe17f2f),
                 borderRadius: BorderRadius.all(Radius.circular(30))),

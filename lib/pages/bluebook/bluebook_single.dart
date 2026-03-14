@@ -244,6 +244,7 @@ class _BlueBookSinglePageState extends State<BlueBookSinglePage> {
                                   _cardBorderRadius,
                                 ),
                               ),
+                              clipBehavior: Clip.hardEdge,
                               child: Image.network(
                                 
                                 widget.blueBook.image == null

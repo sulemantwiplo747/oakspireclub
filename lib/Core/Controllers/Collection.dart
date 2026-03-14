@@ -23,7 +23,7 @@ class Collection {
     id = json['id'].toString();    
     type = json['type'];
     fill = json['fill'];
-    image = json['image'].toString();
+    image = json['image']?.toString();
     pricePaid = json['price_paid'];
     createdAt = json['created_at'].toString();
     blueBook = BlueBook.fromJson(json['bluebook']);

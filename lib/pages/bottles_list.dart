@@ -143,6 +143,7 @@ class _BottlesListState extends State<BottlesList> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
         child: Stack(
       children: [
         Container(

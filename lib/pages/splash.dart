@@ -46,7 +46,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Start the animation as soon as the screen loads
     _controller.forward();
-    Timer(const Duration(seconds: 1), () {
+    Timer(const Duration(seconds: 3), () {
       _prepareToLaunch();
     });
   }

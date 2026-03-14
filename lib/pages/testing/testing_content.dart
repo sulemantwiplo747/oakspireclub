@@ -2,6 +2,7 @@ import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/explore.dart';
 import 'package:bourboneur/pages/favorite_pour.dart';
 import 'package:bourboneur/pages/good_pour.dart';
+import 'package:bourboneur/pages/my_testing.dart';
 import 'package:bourboneur/pages/wheel_of_destiny.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
@@ -71,7 +72,7 @@ class _TestingContentState extends State<TestingContent> {
                         index: ++_animateIndex,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => ExplorePage());
+                            Get.to(() => MyTesting());
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -97,7 +98,7 @@ class _TestingContentState extends State<TestingContent> {
                         index: ++_animateIndex,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(() => WheelOfDestiny());
+                            Get.to(() => ExplorePage());
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),

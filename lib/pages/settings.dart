@@ -225,7 +225,7 @@ class _SettingsState extends State<Settings> {
                           "You will need to update your subscription separately",
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Color(0xff94bfbf),
+                            color: Color(0xffD3D3D3),
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -244,7 +244,7 @@ class _SettingsState extends State<Settings> {
                 "App version #$versionNumber",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Color(0xff94bfbf),
+                  color: Color(0xffD3D3D3),
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),

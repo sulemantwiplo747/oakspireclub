@@ -17,6 +17,7 @@ class BaseApi extends GetConnect {
     allowAutoSignedCert = true;
     super.onInit();
     initStorage();
+    
     httpClient.baseUrl = Constants.API_BASE_URL;
     httpClient.timeout = const Duration(seconds: 60);
   }
@@ -50,7 +51,7 @@ class BaseApi extends GetConnect {
       final b = body is FormData ? body : FormData(body);
       var response = await post(url, b,
           contentType: contentType, headers: headers, query: query);
-      if (response.statusCode != 200) {
+      if (response.statusCode != 200) {        
         utils.showToast("Error", "Internal server error.");
         return null;
       }
@@ -80,5 +81,5 @@ class BaseApi extends GetConnect {
 
   }
 
-  BaseApi() : super(timeout: const Duration(seconds: 2));
+  BaseApi() : super();
 }

@@ -89,6 +89,7 @@ class _BottleImagePickerState extends State<BottleImagePicker> {
             decoration: BoxDecoration(
               border: Border.all(width: 2, color: Colors.white),
               borderRadius: const BorderRadius.all(Radius.circular(15)),
+              color: hasImage ? Colors.white : null
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
