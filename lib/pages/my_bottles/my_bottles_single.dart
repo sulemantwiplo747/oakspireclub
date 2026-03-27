@@ -13,6 +13,7 @@ import 'package:bourboneur/pages/my_testing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 
 class MyBottlesSingle extends StatefulWidget {
   MyBottlesSingle({super.key, required this.collection});
@@ -36,11 +37,12 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
     super.initState();
   }
 
-  String get diff {
+  double get diff {
     double pricePaid = double.parse(widget.collection.pricePaid!);
     double avgPrice = double.parse(widget.collection.blueBook!.average!);
     double d = avgPrice - pricePaid;
-    return d.toStringAsFixed(2);
+    
+    return d ;
   }
 
   double get fill {
@@ -51,16 +53,17 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
   String get trend {
     double pricePaid = double.parse(widget.collection.pricePaid!);
     double avgPrice = double.parse(widget.collection.blueBook!.average!);
-    double d = avgPrice - pricePaid;
-
-    var movement = (d / pricePaid * 100) - 100;
-    // print( d / pricePaid * 100);
+    
+    var movement = (avgPrice / pricePaid * 100) - 100;
+     print((avgPrice / pricePaid * 100) - 100);
     String o = "stable";
     if (movement > 2) {
       o = "up";
-    } else if (movement < 2) {
+    } else if (movement < -2) {
       o = "down";
     }
+
+    print(o);    
 
     return o;
   }
@@ -71,7 +74,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
     );
 
     // Only time (24-hour)
-    String time24 = DateFormat('dd/MM/yyyy').format(dt);
+    String time24 = DateFormat('MM/dd/yyyy').format(dt);
     return time24;
   }
 
@@ -341,7 +344,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                         MoreItems(
                           label: "Blue Book Value",
                           value: "\$${widget.collection.blueBook!.average}",
-                          info: "+\$${diff}",
+                          info:  diff < 0  ? "-\$${diff.abs().toStringAsFixed(2)}" : "+\$${diff.toStringAsFixed(2)}" ,
                         ),
                         MoreItems(
                           label: "Price Status",

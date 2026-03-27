@@ -109,7 +109,7 @@ class _TestingContentState extends State<TestingContent> {
                               ),
                             ),
                             child: const Text(
-                              "Virtual Flavor Wheel",
+                              "Bourbon Flavor Guide",
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Color(0xffbfbfbf),

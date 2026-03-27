@@ -107,6 +107,11 @@ class MyBottlesItem extends StatelessWidget {
     this.imageUrl
   });
 
+  double get fill {
+    double fill = double.parse(collections.fill!);
+    return fill / 100;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -175,7 +180,7 @@ class MyBottlesItem extends StatelessWidget {
             Icon(
               Icons.check_circle_outline,
               size: 24,
-              color: Colors.grey[700],
+              color: fill < 1 ? Colors.grey[700] : Colors.green,
             ),
           ],
         ),

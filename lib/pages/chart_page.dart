@@ -86,8 +86,11 @@ class _ChartPageState extends State<ChartPage> {
     }
 
     if ( indexData.isNotEmpty ) {
+      Map first = indexData[0];
       Map last = indexData[indexData.length - 1];
-      data[1] = double.parse(last['price'].toString());
+       data[1] = 100 - (double.parse(first['price']) * 100 / double.parse(last['price']));
+      // Map last = indexData[indexData.length - 1];
+      // data[1] = double.parse(last['price'].toString());
     }
 
     if ( snpData.isNotEmpty ) {

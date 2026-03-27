@@ -167,7 +167,7 @@ class _MyBottlesState extends State<MyBottles> {
         quantity: newQ,
         fill: double.parse(collection.fill!).toInt(),
         paidPrice: double.tryParse(collection.pricePaid!) ?? 0.0,
-        image: collection.image ?? collection.blueBook!.image!
+        image: collection.image ?? collection.blueBook!.image ?? null
       );
       
     } else {
@@ -179,7 +179,7 @@ class _MyBottlesState extends State<MyBottles> {
         quantity: newQ,
         fill: double.parse(collection.fill!).toInt(),
         paidPrice: double.tryParse(collection.pricePaid!) ?? 0.0,
-        image: collection.image ?? collection.blueBook!.image!
+        image: collection.image ?? collection.blueBook!.image ?? null
       );
     }
 
@@ -220,6 +220,13 @@ class _MyBottlesState extends State<MyBottles> {
                           softWrap: true,
                         ),
                       ),
+                      GestureDetector(
+                        onTap: () {
+                            Get.to(() => WheelOfDestiny(exportCollection: true));
+                        },
+                        child: const Icon( Icons.outbox, color: Color(0xffff7520), size: 40 ),
+                      ),
+                      const SizedBox(width: 7),
                       GestureDetector(
                         onTap: () {
                           Get.to(() => WheelOfDestiny());

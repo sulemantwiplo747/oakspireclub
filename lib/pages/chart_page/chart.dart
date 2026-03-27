@@ -73,183 +73,294 @@ class Chart extends StatelessWidget {
   DateTime? first;
   DateTime? last;
 
+  // _prepareData() {
+  //   if (data.isNotEmpty) {
+  //     first = DateTime.parse(data.first['date']);
+  //     last = DateTime.parse(data.last['date']);
+
+  //     var d = last!.difference(first!).inDays;
+  //     int i = 0;
+
+  //     Map mapData = _listToMap(data);
+  //     double price = 0;
+
+  //     while (i <= d) {
+  //       String date = DateFormat(
+  //         'yyyy-MM-dd',
+  //       ).format(first!.add(Duration(days: i)));
+
+  //       if (mapData.containsKey(date)) {
+  //         price = double.parse(mapData[date]);
+  //       }
+
+  //       if (maxPrice < price) {
+  //         maxPrice = price.toDouble();
+  //       }
+
+  //       if (minPrice > price) {
+  //         minPrice = price.toDouble();
+  //       }
+
+  //       prices.add([i.toDouble(), price]);
+
+  //       i++;
+  //     }
+
+  //     // return;
+
+  //     // minPrice = double.parse(data.last['price']);
+
+  //     // data.forEach((element ) {
+
+  //     //   int price = int.parse(element['price']);
+  //     //   if ( maxPrice < price ) {
+  //     //     maxPrice = price.toDouble();
+  //     //   }
+
+  //     //   if ( minPrice > price ) {
+  //     //     minPrice = price.toDouble();
+  //     //   }
+
+  //     //   prices.add([i.toDouble(), double.parse(element['price'])]);
+
+  //     //   i++;
+
+  //     // });
+
+  //     maxX = d.toDouble();
+
+  //     prices = prices.reversed.toList();
+  //     priceGap = maxPrice - minPrice;
+  //     priceGap = (priceGap! / maxY).ceilToDouble();
+  //     priceGap = priceGap == 0 ? 1 : priceGap;
+  //     dayGap = (maxX / 4).ceil().toDouble();
+  //     // print(dayGap);
+  //   }
+
+  //   if (index.isNotEmpty) {
+  //     first = DateTime.parse(data.first['date']);
+  //     last = DateTime.parse(data.last['date']);
+
+  //     var d = last!.difference(first!).inDays;
+  //     int i = 0;
+
+  //     Map indexData = _listToMap(index);
+  //     double price = 0;
+
+  //     while (i <= d) {
+  //       String date = DateFormat(
+  //         'yyyy-MM-dd',
+  //       ).format(first!.add(Duration(days: i)));
+
+  //       if (indexData.containsKey(date)) {
+  //         price = double.parse(indexData[date]);
+  //       }
+
+  //       // if ( maxPrice < price ) {
+  //       //   maxPrice = price.toDouble();
+  //       // }
+
+  //       // if ( minPrice > price ) {
+  //       //   minPrice = price.toDouble();
+  //       // }
+
+  //       indexPrices.add([i.toDouble(), price]);
+
+  //       i++;
+  //     }
+
+  //     // maxX = d.toDouble();
+
+  //     indexPrices = indexPrices.reversed.toList();
+  //     // print("===INDEX DATA====");
+  //     // print(indexPrices);
+  //     // priceGap = maxPrice - minPrice;
+  //     // priceGap = (priceGap! / maxY).ceilToDouble();
+  //     // priceGap = priceGap == 0 ? 1 : priceGap;
+  //     // dayGap = (maxX / 4).ceil().toDouble();
+  //     // print(dayGap);
+  //   }
+
+  //   if ( snp.isNotEmpty )
+  //   {
+  //     first = DateTime.parse(data.first['date']);
+  //     last = DateTime.parse(data.last['date']);
+
+  //     var d = last!.difference(first!).inDays;
+  //     int i = 0;
+
+  //     Map snpData = _listToMap(snp, priceIndex: 'close');
+  //     double price = 0;
+
+  //     while (i <= d) {
+  //       String date = DateFormat(
+  //         'yyyy-MM-dd',
+  //       ).format(first!.add(Duration(days: i)));
+
+  //       if (snpData.containsKey(date)) {
+  //         price = double.parse(snpData[date]);
+  //       }
+
+  //       // if ( maxPrice < price ) {
+  //       //   maxPrice = price.toDouble();
+  //       // }
+
+  //       // if ( minPrice > price ) {
+  //       //   minPrice = price.toDouble();
+  //       // }
+
+  //       snpPrices.add([i.toDouble(), price]);
+
+  //       i++;
+  //     }
+
+  //     // maxX = d.toDouble();
+
+  //     snpPrices = snpPrices.reversed.toList();
+  //   }
+
+  //   originalPrices = List.from(prices.map((e) => List<double>.from(e)));
+  //   originalIndexPrices = List.from(indexPrices.map((e) => List<double>.from(e)));
+  //   originalSnpPrices = List.from(snpPrices.map((e) => List<double>.from(e)));
+
+  //   // if (prices.isNotEmpty) {
+  //   //   final double priceBase = prices.first[1]; // first price value
+  //   //   for (int j = 0; j < prices.length; j++) {
+  //   //     double original = prices[j][1];
+  //   //      prices[j][1] = ((original - priceBase) / priceBase) * 100; // % change
+  //   //     // prices[j][1] = original / priceBase;
+  //   //   }
+  //   // }
+
+  //   // if (snpPrices.isNotEmpty) {
+  //   //   final double snpBase = snpPrices.first[1]; // first price value
+  //   //   for (int j = 0; j < snpPrices.length; j++) {
+  //   //     double original = snpPrices[j][1];
+  //   //     snpPrices[j][1] = ((original - snpBase) / snpBase) * 100; // % change
+  //   //     //snpPrices[j][1] = original / snpBase;
+  //   //   }
+  //   // }
+
+  //   // if (indexPrices.isNotEmpty) {
+  //   //   final double indexBase = indexPrices.first[1];
+  //   //   for (int j = 0; j < indexPrices.length; j++) {
+  //   //     double original = indexPrices[j][1];
+  //   //     indexPrices[j][1] = ((original - indexBase) / indexBase) * 100;
+  //   //     //indexPrices[j][1] = original / indexBase;
+  //   //   }
+
+  //   //   print("awesome");
+  //   // }
+  // }
+
   _prepareData() {
-    if (data.isNotEmpty) {
-      first = DateTime.parse(data.first['date']);
-      last = DateTime.parse(data.last['date']);
+  if (data.isEmpty) return;
 
-      var d = last!.difference(first!).inDays;
-      int i = 0;
+  // ── Parse dates ────────────────────────────────
+  first = DateTime.parse(data.first['date']);
+  last  = DateTime.parse(data.last['date']);
+  final days = last!.difference(first!).inDays;
+  maxX = days.toDouble();
 
-      Map mapData = _listToMap(data);
-      double price = 0;
+  // ── Convert lists to date → value maps ─────────
+  final priceMap = _listToMap(data, priceIndex: 'price');
+  final indexMap = _listToMap(index);
+  final snpMap   = _listToMap(snp, priceIndex: 'close');
 
-      while (i <= d) {
-        String date = DateFormat(
-          'yyyy-MM-dd',
-        ).format(first!.add(Duration(days: i)));
+  // ── Build daily series (fill gaps with previous value) ──
+  prices = [];
+  indexPrices = [];
+  snpPrices = [];
 
-        if (mapData.containsKey(date)) {
-          price = double.parse(mapData[date]);
-        }
+  double? firstPrice;
+  double? firstIndex;
+  double? firstSnp;
 
-        if (maxPrice < price) {
-          maxPrice = price.toDouble();
-        }
+  for (int i = 0; i <= days; i++) {
+    final date = DateFormat('yyyy-MM-dd').format(first!.add(Duration(days: i)));
+    final x = i.toDouble();
 
-        if (minPrice > price) {
-          minPrice = price.toDouble();
-        }
-
-        prices.add([i.toDouble(), price]);
-
-        i++;
-      }
-
-      // return;
-
-      // minPrice = double.parse(data.last['price']);
-
-      // data.forEach((element ) {
-
-      //   int price = int.parse(element['price']);
-      //   if ( maxPrice < price ) {
-      //     maxPrice = price.toDouble();
-      //   }
-
-      //   if ( minPrice > price ) {
-      //     minPrice = price.toDouble();
-      //   }
-
-      //   prices.add([i.toDouble(), double.parse(element['price'])]);
-
-      //   i++;
-
-      // });
-
-      maxX = d.toDouble();
-
-      prices = prices.reversed.toList();
-      priceGap = maxPrice - minPrice;
-      priceGap = (priceGap! / maxY).ceilToDouble();
-      priceGap = priceGap == 0 ? 1 : priceGap;
-      dayGap = (maxX / 4).ceil().toDouble();
-      // print(dayGap);
+    // Price series
+    double p = 0;
+    if (priceMap.containsKey(date)) {
+      p = double.tryParse(priceMap[date]!) ?? 0;
+      firstPrice ??= p;
+    } else if (prices.isNotEmpty) {
+      p = prices.last[1]; // carry forward
     }
+    prices.add([x, p]);
 
-    if (index.isNotEmpty) {
-      first = DateTime.parse(data.first['date']);
-      last = DateTime.parse(data.last['date']);
-
-      var d = last!.difference(first!).inDays;
-      int i = 0;
-
-      Map indexData = _listToMap(index);
-      double price = 0;
-
-      while (i <= d) {
-        String date = DateFormat(
-          'yyyy-MM-dd',
-        ).format(first!.add(Duration(days: i)));
-
-        if (indexData.containsKey(date)) {
-          price = double.parse(indexData[date]);
-        }
-
-        // if ( maxPrice < price ) {
-        //   maxPrice = price.toDouble();
-        // }
-
-        // if ( minPrice > price ) {
-        //   minPrice = price.toDouble();
-        // }
-
-        indexPrices.add([i.toDouble(), price]);
-
-        i++;
-      }
-
-      // maxX = d.toDouble();
-
-      indexPrices = indexPrices.reversed.toList();
-      // print("===INDEX DATA====");
-      // print(indexPrices);
-      // priceGap = maxPrice - minPrice;
-      // priceGap = (priceGap! / maxY).ceilToDouble();
-      // priceGap = priceGap == 0 ? 1 : priceGap;
-      // dayGap = (maxX / 4).ceil().toDouble();
-      // print(dayGap);
+    // Index series
+    double idx = 0;
+    if (indexMap.containsKey(date)) {
+      idx = double.tryParse(indexMap[date]!) ?? 0;
+      firstIndex ??= idx;
+    } else if (indexPrices.isNotEmpty) {
+      idx = indexPrices.last[1];
     }
+    indexPrices.add([x, idx]);
 
-    if ( snp.isNotEmpty )
-    {
-      first = DateTime.parse(data.first['date']);
-      last = DateTime.parse(data.last['date']);
-
-      var d = last!.difference(first!).inDays;
-      int i = 0;
-
-      Map snpData = _listToMap(snp, priceIndex: 'close');
-      double price = 0;
-
-      while (i <= d) {
-        String date = DateFormat(
-          'yyyy-MM-dd',
-        ).format(first!.add(Duration(days: i)));
-
-        if (snpData.containsKey(date)) {
-          price = double.parse(snpData[date]);
-        }
-
-        // if ( maxPrice < price ) {
-        //   maxPrice = price.toDouble();
-        // }
-
-        // if ( minPrice > price ) {
-        //   minPrice = price.toDouble();
-        // }
-
-        snpPrices.add([i.toDouble(), price]);
-
-        i++;
-      }
-
-      // maxX = d.toDouble();
-
-      snpPrices = snpPrices.reversed.toList();
+    // S&P series
+    double s = 0;
+    if (snpMap.containsKey(date)) {
+      s = double.tryParse(snpMap[date]!) ?? 0;
+      firstSnp ??= s;
+    } else if (snpPrices.isNotEmpty) {
+      s = snpPrices.last[1];
     }
+    snpPrices.add([x, s]);
+  }
 
-    originalPrices = List.from(prices.map((e) => List<double>.from(e)));
-    originalIndexPrices = List.from(indexPrices.map((e) => List<double>.from(e)));
-    originalSnpPrices = List.from(snpPrices.map((e) => List<double>.from(e)));
+  // Save original values for tooltip
+  originalPrices = List.from(prices.map((e) => [...e]));
+  originalIndexPrices = List.from(indexPrices.map((e) => [...e]));
+  originalSnpPrices = List.from(snpPrices.map((e) => [...e]));
 
-    if (prices.isNotEmpty) {
-      final double priceBase = prices.first[1]; // first price value
-      for (int j = 0; j < prices.length; j++) {
-        double original = prices[j][1];
-        // prices[j][1] = ((original - priceBase) / priceBase) * 100; // % change
-        prices[j][1] = original / priceBase;
-      }
-    }
-
-    if (snpPrices.isNotEmpty) {
-      final double snpBase = snpPrices.first[1]; // first price value
-      for (int j = 0; j < snpPrices.length; j++) {
-        double original = snpPrices[j][1];
-        // prices[j][1] = ((original - priceBase) / priceBase) * 100; // % change
-        snpPrices[j][1] = original / snpBase;
-      }
-    }
-
-    if (indexPrices.isNotEmpty) {
-      final double indexBase = indexPrices.first[1];
-      for (int j = 0; j < indexPrices.length; j++) {
-        double original = indexPrices[j][1];
-        // indexPrices[j][1] = ((original - indexBase) / indexBase) * 100;
-        indexPrices[j][1] = original / indexBase;
-      }
+  // ── Normalize to % change from first non-zero value ───────────────
+  if (firstPrice != null && firstPrice > 0) {
+    for (var point in prices) {
+      point[1] = ((point[1] - firstPrice) / firstPrice) * 100;
     }
   }
+
+  if (firstIndex != null && firstIndex > 0) {
+    for (var point in indexPrices) {
+      point[1] = ((point[1] - firstIndex) / firstIndex) * 100;
+    }
+  }
+
+  if (firstSnp != null && firstSnp > 0) {
+    for (var point in snpPrices) {
+      point[1] = ((point[1] - firstSnp) / firstSnp) * 100;
+    }
+  }
+
+  // ── Calculate chart bounds after normalization ──
+  double globalMin = 0;
+  double globalMax = 0;
+
+  for (var series in [prices, indexPrices, snpPrices]) {
+    for (var p in series) {
+      if (p[1] < globalMin) globalMin = p[1];
+      if (p[1] > globalMax) globalMax = p[1];
+    }
+  }
+
+  minPrice = globalMin;
+  maxPrice = globalMax;
+  priceGap = ((maxPrice - minPrice) / 8).ceilToDouble(); // ~8 grid lines
+  if (priceGap == 0) priceGap = 1;
+  dayGap = (maxX / 5).ceilToDouble(); // reasonable bottom labels
+
+  // Reverse if you want oldest date on left (most charts do)
+  // Comment out if you prefer newest on left
+  prices = prices.reversed.toList();
+  indexPrices = indexPrices.reversed.toList();
+  snpPrices = snpPrices.reversed.toList();
+  originalPrices = originalPrices.reversed.toList();
+  originalIndexPrices = originalIndexPrices.reversed.toList();
+  originalSnpPrices = originalSnpPrices.reversed.toList();
+}
 
   Map<String, String> _listToMap(data, { priceIndex = 'price' }) {
     Map<String, String> output = {};
@@ -312,7 +423,12 @@ class Chart extends StatelessWidget {
               case 1: // 1 = index
                 displayValue = originalIndexPrices[indexPrices.length - 1 - dayIndex][1];
                 label = "Index";
-                formattedValue = '${displayValue.toStringAsFixed(2)}%';
+                final formatter = NumberFormat.currency(
+                  locale: 'en_US',
+                  symbol: '\$',
+                  decimalDigits: 0,
+                );
+                formattedValue = formatter.format(displayValue);
                 color = Color(0xff92d050);
                 break;
               default:
