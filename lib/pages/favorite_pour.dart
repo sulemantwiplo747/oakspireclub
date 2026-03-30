@@ -81,6 +81,7 @@ class _FavoritePourState extends State<FavoritePour> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
         child: Stack(
       children: [
         SingleChildScrollView(

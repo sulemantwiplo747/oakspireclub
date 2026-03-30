@@ -89,6 +89,7 @@ class _MyRatingsState extends State<MyRatings> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
         child: Stack(
       children: [
         SingleChildScrollView(

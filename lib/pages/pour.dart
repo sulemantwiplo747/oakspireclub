@@ -19,10 +19,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PourPage extends StatefulWidget {
-  PourPage({super.key, this.id, this.idType = 'rating'});
+  PourPage({super.key, this.id, this.bottleImage, this.idType = 'rating'});
 
   String? id;
   String? idType;
+  String? bottleImage;
 
   @override
   State<PourPage> createState() => _PourPageState();
@@ -95,6 +96,14 @@ class _PourPageState extends State<PourPage> {
     });
   }
 
+  _buildImageUrl() {
+    if ( widget.bottleImage != null ) return widget.bottleImage;
+
+    return blueBook!.image == null ?
+      controller.config.value.pourImagePlaceHolder! :
+      controller.config.value.uploadUrl! + '/' + blueBook!.image!;
+  }
+
   _handleSelect(BlueBook b) async {
     Navigator.pop(context);
     setState(() {
@@ -162,9 +171,7 @@ class _PourPageState extends State<PourPage> {
     }
 
     Get.to(() => PourNote(
-        imageUrl: blueBook!.image == null
-            ? controller.config.value.pourImagePlaceHolder!
-            : controller.config.value.uploadUrl! + '/' + blueBook!.image!,
+        imageUrl: _buildImageUrl(),
         name: blueBook!.bottleName!,
         onNoteChange: _handleNoteChange,
         note: note));
@@ -230,6 +237,7 @@ class _PourPageState extends State<PourPage> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: !isLoading
           ? SingleChildScrollView(
               child: Column(
@@ -280,13 +288,7 @@ class _PourPageState extends State<PourPage> {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
                                   image: DecorationImage(
-                                      image: NetworkImage(blueBook!.image ==
-                                              null
-                                          ? controller.config.value
-                                              .pourImagePlaceHolder!
-                                          : controller.config.value.uploadUrl! +
-                                              '/' +
-                                              blueBook!.image!),
+                                      image: NetworkImage(_buildImageUrl()),
                                       fit: BoxFit.contain)),
                             ),
                             Column(

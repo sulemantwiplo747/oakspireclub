@@ -205,6 +205,7 @@ class _GoodPourPageState extends State<GoodPourPage> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: SingleChildScrollView(
         child: Column(
           children: [

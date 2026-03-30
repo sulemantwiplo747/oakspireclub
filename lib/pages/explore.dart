@@ -17,6 +17,7 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 25, bottom: 25),

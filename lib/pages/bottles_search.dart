@@ -126,6 +126,7 @@ class _BottlesSearchPageState extends State<BottlesSearchPage> {
   @override
   Widget build(BuildContext context) {
     return LoginWrapper(
+      showBottomNavigator: false,
       child: Stack(
         children: [
           SingleChildScrollView(

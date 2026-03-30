@@ -10,6 +10,7 @@ import 'package:bourboneur/common/staggered_item_animation.dart';
 import 'package:bourboneur/pages/bluebook/bluebook_single.dart';
 import 'package:bourboneur/pages/my_bottles/add_to_collection.dart';
 import 'package:bourboneur/pages/my_testing.dart';
+import 'package:bourboneur/pages/pour.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -113,6 +114,12 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
     Navigator.pop(context);
 
     setState(() {});
+  }
+  
+  _buildImageUrl() {
+    return widget.collection.image == null
+              ? controller.config.value.pourImagePlaceHolder!
+              : controller.config.value.uploadUrl! + '/' + widget.collection.image!;
   }
 
   void _onBack(v) {
@@ -300,11 +307,7 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                       alignment: Alignment.center,
                       children: [
                         Image.network(
-                          widget.collection.image == null
-                              ? controller.config.value.pourImagePlaceHolder!
-                              : controller.config.value.uploadUrl! +
-                                    '/' +
-                                    widget.collection.image!,
+                          _buildImageUrl(),
                           height: 270,
                         ),
                         Positioned(
@@ -376,7 +379,11 @@ class _MyBottlesSingleState extends State<MyBottlesSingle> {
                   child: GestureDetector(
                     onTap: () {
                       // _showAddTestingNotesBottomSheet(context);
-                      Get.to(() => MyTesting());
+                      Get.to(() => PourPage(
+                        id: widget.collection.blueBook!.id,
+                        bottleImage: _buildImageUrl(),
+                        idType: 'bluebook',
+                      ));
                     },
                     child: Container(
                       padding: const EdgeInsets.all(10),
