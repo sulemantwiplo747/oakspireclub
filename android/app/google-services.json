@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "570904028386",
-    "project_id": "bourboneur-c374d",
-    "storage_bucket": "bourboneur-c374d.firebasestorage.app"
+    "project_number": "1078950606869",
+    "project_id": "oakspireclub",
+    "storage_bucket": "oakspireclub.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:570904028386:android:5ad7da3729a25e13c6aabb",
+        "mobilesdk_app_id": "1:1078950606869:android:0bae066b997fbb94e5761c",
         "android_client_info": {
-          "package_name": "com.bourboneur.mobileapp"
+          "package_name": "com.oakspire.club"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBhMES6y9lcoqdPT5qmvA_3G5AQ9ZOZBms"
+          "current_key": "AIzaSyC6qMLuAi2RGC9UxQjZhCqgMFodMzxQykA"
         }
       ],
       "services": {

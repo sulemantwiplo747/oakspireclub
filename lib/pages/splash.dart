@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:store_redirect/store_redirect.dart';
-import 'package:video_player/video_player.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -133,7 +132,7 @@ class _SplashPageState extends State<SplashPage>
     // Get the token each time the application loads
     token ??= await FirebaseMessaging.instance.getToken();
 
-    print("Firebase: " + token.toString());
+    print("Firebase: $token");
 
     // Save the initial token to the database
     if (token != null) {
@@ -187,7 +186,7 @@ class _SplashPageState extends State<SplashPage>
               //   alignment: Alignment.center,
               //   child: Text(
               //   "helping the world become\nwhiskey wise™",
-              //   textAlign: TextAlign.center,                
+              //   textAlign: TextAlign.center,
               //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               //     fontSize: 21,
               //     fontWeight: FontWeight.bold,

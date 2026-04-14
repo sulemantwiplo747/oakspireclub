@@ -51,11 +51,11 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBhMES6y9lcoqdPT5qmvA_3G5AQ9ZOZBms',
-    appId: '1:570904028386:android:5ad7da3729a25e13c6aabb',
-    messagingSenderId: '570904028386',
-    projectId: 'bourboneur-c374d',
-    storageBucket: 'bourboneur-c374d.firebasestorage.app',
+    apiKey: 'AIzaSyC6qMLuAi2RGC9UxQjZhCqgMFodMzxQykA',
+    appId: '1:1078950606869:android:0bae066b997fbb94e5761c',
+    messagingSenderId: '1078950606869',
+    projectId: 'oakspireclub',
+    storageBucket: 'oakspireclub.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '570904028386',
     projectId: 'bourboneur-c374d',
     storageBucket: 'bourboneur-c374d.firebasestorage.app',
-    iosBundleId: 'com.app.bourboneur',
+    iosBundleId: 'com.oakspire.club',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

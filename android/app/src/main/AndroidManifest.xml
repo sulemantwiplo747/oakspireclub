@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     
     <application
-        android:label="Bourboneur"
+        android:label="Oak Spire Club"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

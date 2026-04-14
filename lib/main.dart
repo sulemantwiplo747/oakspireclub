@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:bourboneur/Core/BlogController.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/notification_services.dart';
-import 'package:bourboneur/firebase_options.dart';
 import 'package:bourboneur/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -23,7 +22,7 @@ void main() async {
   context.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
   FirebaseApp defaultApp = await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
+    // options: DefaultFirebaseOptions.currentPlatform
   );
   await NotificationService().initInfo();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -98,7 +97,9 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         final mediaQueryData = MediaQuery.of(context);
         return MediaQuery(
-          data: mediaQueryData.copyWith(textScaleFactor: 1.0),
+          data: mediaQueryData.copyWith(
+            textScaler: const TextScaler.linear(1.0),
+          ),
           child: EasyLoading.init()(context, child),
         );
       },
