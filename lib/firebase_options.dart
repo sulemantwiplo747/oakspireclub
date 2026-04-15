@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD7pcPqzM3Ojj4Qlf_b0uPr22dhuw5dvgE',
-    appId: '1:570904028386:ios:9f5836bb8c7d2625c6aabb',
-    messagingSenderId: '570904028386',
-    projectId: 'bourboneur-c374d',
-    storageBucket: 'bourboneur-c374d.firebasestorage.app',
+    apiKey: 'AIzaSyCSpCdjwqnY8HlIxOVk99DDGi9Dyq18sI8',
+    appId: '1:1078950606869:ios:b99a49f8e64cb8f7e5761c',
+    messagingSenderId: '1078950606869',
+    projectId: 'oakspireclub',
+    storageBucket: 'oakspireclub.firebasestorage.app',
     iosBundleId: 'com.oakspire.club',
   );
 

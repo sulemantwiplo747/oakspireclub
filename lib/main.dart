@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bourboneur/Core/BlogController.dart';
 import 'package:bourboneur/Core/Controller.dart';
 import 'package:bourboneur/Core/notification_services.dart';
 import 'package:bourboneur/pages/splash.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,25 +18,39 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   ByteData data = await rootBundle.load('assets/certificate/cert.pem');
   SecurityContext context = SecurityContext.defaultContext;
   context.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
-  FirebaseApp defaultApp = await Firebase.initializeApp(
+  await Firebase.initializeApp(
     // options: DefaultFirebaseOptions.currentPlatform
   );
+  await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   await NotificationService().initInfo();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   Get.put(Controller(), permanent: true);
   Get.put(BlogController(), permanent: true);
-  runApp(const MyApp());
+  runZonedGuarded(
+    () => runApp(MyApp(analytics: FirebaseAnalytics.instance)),
+    (error, stack) =>
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
+  );
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.analytics});
+
+  final FirebaseAnalytics analytics;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -49,6 +66,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Bourboneur',
+      navigatorObservers: <NavigatorObserver>[
+        FirebaseAnalyticsObserver(analytics: widget.analytics),
+      ],
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF000000),
         textTheme: const TextTheme(
